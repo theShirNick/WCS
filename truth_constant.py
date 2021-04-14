@@ -1,5 +1,5 @@
 from enum import Enum
 class TruthConstant(Enum):
+    FALSE = 0
     TRUE = 1
-    FALSE = 2
-    UNKNOWN = 3
+    UNKNOWN = 2
