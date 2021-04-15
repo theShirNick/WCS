@@ -8,6 +8,8 @@ def negation(atom1: Atom) -> Atom:
     '''
 
     atom_result = Atom()
+
+    # Find resulting value
     if atom1.value == TruthConstant.UNKNOWN:
         atom_result.value = TruthConstant.UNKNOWN
     elif atom1.value == TruthConstant.TRUE:
@@ -16,6 +18,12 @@ def negation(atom1: Atom) -> Atom:
         atom_result.value = TruthConstant.TRUE
     else:
         raise Exception(f"Could not perform negation: ¬{atom1.value}")
+    
+    # Name the new atom; use paratheses if needed
+    if any(substring in atom1.name for substring in ["∧", "∨", "→", "↔" ]):
+        atom_result.name = f"¬({atom1.name})"
+    else:
+        atom_result.name = f"¬{atom1.name}"
     return atom_result
 
 def conjunction(atom1: Atom, atom2: Atom) -> Atom:
@@ -32,6 +40,9 @@ def conjunction(atom1: Atom, atom2: Atom) -> Atom:
         atom_result.value = TruthConstant.TRUE
     else:
         raise Exception(f"Could not perform conjunction: {atom1.value} ∧ {atom2.value}")
+
+    # Name the new atom; use TODO paratheses if needed
+    atom_result.name = f"{atom1.name}∧{atom2.name}"
     return atom_result
         
 def disjunction(atom1: Atom, atom2: Atom) -> Atom:
@@ -40,6 +51,8 @@ def disjunction(atom1: Atom, atom2: Atom) -> Atom:
     '''
 
     atom_result = Atom()
+
+    # Find resulting value
     if atom1.value == TruthConstant.TRUE or atom2.value == TruthConstant.TRUE:
         atom_result.value = TruthConstant.TRUE
     elif atom1.value == TruthConstant.UNKNOWN or atom2.value == TruthConstant.UNKNOWN:
@@ -48,6 +61,12 @@ def disjunction(atom1: Atom, atom2: Atom) -> Atom:
         atom_result.value = TruthConstant.FALSE
     else:
         raise Exception(f"Could not perform disjunction: {atom1.value} ∨ {atom2.value}")
+
+    # Name the new atom; use paratheses if needed
+    if any(substring in atom1.name for substring in ["∧", "→", "↔" ]):
+        atom_result.name = f"({atom1.name}∨{atom2.name})"
+    else:
+        atom_result.name = f"{atom1.name}∨{atom2.name}"
     return atom_result
 
 def implication(atom1: Atom, atom2: Atom) -> Atom:
@@ -58,6 +77,8 @@ def implication(atom1: Atom, atom2: Atom) -> Atom:
     '''
 
     atom_result = Atom()
+
+    # Find resulting value
     if atom1.value == TruthConstant.FALSE or atom2.value == TruthConstant.TRUE:
         atom_result.value = TruthConstant.TRUE
     elif atom1.value == TruthConstant.UNKNOWN and atom2.value == TruthConstant.UNKNOWN:
@@ -68,6 +89,9 @@ def implication(atom1: Atom, atom2: Atom) -> Atom:
         atom_result.value = TruthConstant.FALSE
     else:
         raise Exception(f"Could not perform implication: {atom1.value} → {atom2.value}")
+
+    # Name the new atom; TODO use paratheses if needed
+    atom_result.name=f"{atom1.name}→{atom2.name}"
     return atom_result
 
 def equivalence(atom1: Atom, atom2: Atom) -> Atom:
@@ -78,6 +102,8 @@ def equivalence(atom1: Atom, atom2: Atom) -> Atom:
     '''
 
     atom_result = Atom()
+
+    # Find resulting value
     if atom1.value == atom2.value:
         atom_result.value = TruthConstant.TRUE
     elif atom1.value == TruthConstant.UNKNOWN or atom2.value == TruthConstant.UNKNOWN:
@@ -86,4 +112,7 @@ def equivalence(atom1: Atom, atom2: Atom) -> Atom:
         atom_result.value = TruthConstant.FALSE
     else:
         raise Exception(f"Could not perform equivalence: {atom1.value} ↔ {atom2.value}")
+
+    # Name the new atom; TODO use paratheses if needed
+    atom_result.name=f"{atom1.name}↔{atom2.name}"
     return atom_result

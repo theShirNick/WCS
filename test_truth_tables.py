@@ -3,9 +3,9 @@ from truth_tables import *
 import unittest
 import random
 
-T = Atom(TruthConstant.TRUE)
-F = Atom(TruthConstant.FALSE)
-U = Atom(TruthConstant.UNKNOWN)
+T = Atom(TruthConstant.TRUE, "T")
+F = Atom(TruthConstant.FALSE, "F")
+U = Atom(TruthConstant.UNKNOWN, "U")
 def getRandomAtom():
     rnd = random.randint(0, 2)
     if rnd == 0:
@@ -36,10 +36,10 @@ class TestTruthTables(unittest.TestCase):
         self.assertEqual(disjunction(F,U).value, TruthConstant.UNKNOWN)   
 
     def test_implication(self):
-            self.assertEqual(implication(F,getRandomAtom()).value, TruthConstant.TRUE) 
-            self.assertEqual(implication(getRandomAtom(),T).value, TruthConstant.TRUE) 
-            self.assertNotEqual(implication(U,getRandomAtom()).value, TruthConstant.FALSE) 
-            self.assertEqual(implication(U,U).value, TruthConstant.TRUE)
+        self.assertEqual(implication(F,getRandomAtom()).value, TruthConstant.TRUE) 
+        self.assertEqual(implication(getRandomAtom(),T).value, TruthConstant.TRUE) 
+        self.assertNotEqual(implication(U,getRandomAtom()).value, TruthConstant.FALSE) 
+        self.assertEqual(implication(U,U).value, TruthConstant.TRUE)
     
     def test_equivalence(self):
         self.assertEqual(equivalence(F,F).value, TruthConstant.TRUE)
@@ -50,4 +50,12 @@ class TestTruthTables(unittest.TestCase):
     def test_combined(self):
         self.assertEqual(equivalence(negation(T), conjunction(F, getRandomAtom())).value, TruthConstant.TRUE)
         self.assertEqual(implication(negation(disjunction(T, getRandomAtom())), getRandomAtom()).value, TruthConstant.TRUE)
+
+    def test_str(self):
+        R = getRandomAtom()
+        self.assertEqual(str(equivalence(negation(T), conjunction(F, R))), f"¬T↔F∧{R.name} ⊨ T")
+        R1 = getRandomAtom()
+        R2 = getRandomAtom()
+        self.assertEqual(str(implication(negation(disjunction(T, R1)), R2)), f"¬(T∨{R1.name})→{R2.name} ⊨ T")
+        self.assertEqual(str(disjunction(F,negation(U))), f"F∨¬U ⊨ U")
   
