@@ -1,10 +1,11 @@
-from atom import Atom
-import truth_tables as tt
-import truth_constant as tc
+from atom import *
+from truth_tables import * 
 
-a = Atom(tc.TruthConstant.UNKNOWN, "a")
-b = Atom(tc.TruthConstant.UNKNOWN, "b")
-c = Atom(tc.TruthConstant.TRUE, "c")
-res = tt.implication(a,tt.conjunction(b,c))
+a = Atom(TruthConstant.FALSE, "a")
+b = Atom(TruthConstant.UNKNOWN, "b")
+c = Atom(TruthConstant.TRUE, "c")
+print(f"with a = {a.value.value}, with b = {b.value.value}, with c = {c.value.value}")
+res = implication(a,conjunction(b,c))
 print(res)
-print(str(tt.disjunction(a,tt.negation(tt.conjunction(b,c)))))
+print(str(disjunction(a,negation(conjunction(b,c)))))
+print(str(disjunction(a,conjunction(disjunction(b,c), a))))

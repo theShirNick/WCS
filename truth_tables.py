@@ -42,7 +42,14 @@ def conjunction(atom1: Atom, atom2: Atom) -> Atom:
         raise Exception(f"Could not perform conjunction: {atom1.value} ∧ {atom2.value}")
 
     # Name the new atom; use TODO paratheses if needed
-    atom_result.name = f"{atom1.name}∧{atom2.name}"
+    if any(substring in atom1.name for substring in ["∨", "→", "↔" ]) and any(substring in atom2.name for substring in ["∨", "→", "↔" ]):
+        atom_result.name = f"({atom1.name})∧({atom2.name})"
+    elif any(substring in atom1.name for substring in ["∨", "→", "↔" ]):
+        atom_result.name = f"({atom1.name})∧{atom2.name}"
+    elif any(substring in atom2.name for substring in ["∨", "→", "↔" ]):
+        atom_result.name = f"{atom1.name}∧({atom2.name})"
+    else:
+        atom_result.name = f"{atom1.name}∧{atom2.name}"
     return atom_result
         
 def disjunction(atom1: Atom, atom2: Atom) -> Atom:
@@ -63,7 +70,7 @@ def disjunction(atom1: Atom, atom2: Atom) -> Atom:
         raise Exception(f"Could not perform disjunction: {atom1.value} ∨ {atom2.value}")
 
     # Name the new atom; use paratheses if needed
-    if any(substring in atom1.name for substring in ["∧", "→", "↔" ]):
+    if any(substring in atom1.name for substring in ["∧", "→", "↔" ]) and any(substring in atom2.name for substring in ["∧", "→", "↔" ]):
         atom_result.name = f"({atom1.name}∨{atom2.name})"
     else:
         atom_result.name = f"{atom1.name}∨{atom2.name}"

@@ -58,4 +58,6 @@ class TestTruthTables(unittest.TestCase):
         R2 = getRandomAtom()
         self.assertEqual(str(implication(negation(disjunction(T, R1)), R2)), f"¬(T∨{R1.name})→{R2.name} ⊨ T")
         self.assertEqual(str(disjunction(F,negation(U))), f"F∨¬U ⊨ U")
-  
+        self.assertEqual(str(implication(F,conjunction(U,T))), f"F→U∧T ⊨ T")
+        self.assertEqual(str(disjunction(F,negation(conjunction(U,T)))), f"F∨¬(U∧T) ⊨ U")
+        self.assertEqual(str(disjunction(F,conjunction(disjunction(U,T), F))), f"F∨(U∨T)∧F ⊨ F")
