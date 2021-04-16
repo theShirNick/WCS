@@ -1,6 +1,7 @@
 from atom import *
 from truth_tables import * 
 from clauses import *
+from program import *
 import unittest
 import random
 
@@ -16,13 +17,11 @@ def getRandomAtom():
     elif rnd == 2:
         return U
 
+fact = Fact(getRandomAtom())
+assump = Assumption(getRandomAtom())
+rule = Rule(getRandomAtom(), getRandomAtom())
 
-class TestClauses(unittest.TestCase):
+
+class TestProgram(unittest.TestCase):
     def test_str(self):
-        R = getRandomAtom()
-        self.assertEqual(str(Fact(R)), f"{R.name} ← T")
-        R = getRandomAtom()
-        self.assertEqual(str(Assumption(R)), f"{R.name} ← ⊥")
-        R1 = getRandomAtom()
-        R2 = getRandomAtom()
-        self.assertEqual(str(Rule(R1,R2)), f"{R1.name} ← {R2.name}")
+        self.assertEqual(str(Program([fact, assump, rule])), f"{str(fact)},\n{str(assump)},\n{str(rule)},\n")

@@ -4,7 +4,7 @@ import unittest
 import random
 
 T = Atom(TruthConstant.TRUE, "T")
-F = Atom(TruthConstant.FALSE, "F")
+F = Atom(TruthConstant.FALSE, "⊥")
 U = Atom(TruthConstant.UNKNOWN, "U")
 def getRandomAtom():
     rnd = random.randint(0, 2)
@@ -41,6 +41,13 @@ class TestTruthTables(unittest.TestCase):
         self.assertNotEqual(implication(U,getRandomAtom()).value, TruthConstant.FALSE) 
         self.assertEqual(implication(U,U).value, TruthConstant.TRUE)
     
+    def test_reverse(self):
+        self.assertEqual(reverse(getRandomAtom(),F).value, TruthConstant.TRUE) 
+        self.assertEqual(reverse(T,getRandomAtom()).value, TruthConstant.TRUE) 
+        self.assertNotEqual(reverse(getRandomAtom(),U).value, TruthConstant.FALSE) 
+        self.assertEqual(reverse(U,U).value, TruthConstant.TRUE)
+        
+    
     def test_equivalence(self):
         self.assertEqual(equivalence(F,F).value, TruthConstant.TRUE)
         self.assertEqual(equivalence(U,U).value, TruthConstant.TRUE)
@@ -53,11 +60,12 @@ class TestTruthTables(unittest.TestCase):
 
     def test_str(self):
         R = getRandomAtom()
-        self.assertEqual(str(equivalence(negation(T), conjunction(F, R))), f"¬T↔F∧{R.name} ⊨ T")
+        self.assertEqual(str(equivalence(negation(T), conjunction(F, R))), f"¬T↔⊥∧{R.name} ⊨ T")
         R1 = getRandomAtom()
         R2 = getRandomAtom()
         self.assertEqual(str(implication(negation(disjunction(T, R1)), R2)), f"¬(T∨{R1.name})→{R2.name} ⊨ T")
-        self.assertEqual(str(disjunction(F,negation(U))), f"F∨¬U ⊨ U")
-        self.assertEqual(str(implication(F,conjunction(U,T))), f"F→U∧T ⊨ T")
-        self.assertEqual(str(disjunction(F,negation(conjunction(U,T)))), f"F∨¬(U∧T) ⊨ U")
-        self.assertEqual(str(disjunction(F,conjunction(disjunction(U,T), F))), f"F∨(U∨T)∧F ⊨ F")
+        self.assertEqual(str(reverse(R2, negation(disjunction(T, R1)))), f"{R2.name}←¬(T∨{R1.name}) ⊨ T")
+        self.assertEqual(str(disjunction(F,negation(U))), f"⊥∨¬U ⊨ U")
+        self.assertEqual(str(implication(F,conjunction(U,T))), f"⊥→U∧T ⊨ T")
+        self.assertEqual(str(disjunction(F,negation(conjunction(U,T)))), f"⊥∨¬(U∧T) ⊨ U")
+        self.assertEqual(str(disjunction(F,conjunction(disjunction(U,T), F))), f"⊥∨(U∨T)∧⊥ ⊨ ⊥")

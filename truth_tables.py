@@ -42,7 +42,7 @@ def conjunction(atom1: Atom, atom2: Atom) -> Atom:
         raise Exception(f"Could not perform conjunction: {atom1.value} ∧ {atom2.value}")
 
     # Name the new atom; use TODO paratheses if needed
-    if any(substring in atom1.name for substring in ["∨", "→", "↔" ]) and any(substring in atom2.name for substring in ["∨", "→", "↔" ]):
+    if any(substring in atom1.name for substring in ["∨", "←", "→", "↔" ]) and any(substring in atom2.name for substring in ["∨", "→", "↔" ]):
         atom_result.name = f"({atom1.name})∧({atom2.name})"
     elif any(substring in atom1.name for substring in ["∨", "→", "↔" ]):
         atom_result.name = f"({atom1.name})∧{atom2.name}"
@@ -70,35 +70,64 @@ def disjunction(atom1: Atom, atom2: Atom) -> Atom:
         raise Exception(f"Could not perform disjunction: {atom1.value} ∨ {atom2.value}")
 
     # Name the new atom; use paratheses if needed
-    if any(substring in atom1.name for substring in ["∧", "→", "↔" ]) and any(substring in atom2.name for substring in ["∧", "→", "↔" ]):
+    if any(substring in atom1.name for substring in ["∧", "←", "→", "↔" ]) and any(substring in atom2.name for substring in ["∧", "→", "↔" ]):
         atom_result.name = f"({atom1.name}∨{atom2.name})"
     else:
         atom_result.name = f"{atom1.name}∨{atom2.name}"
     return atom_result
 
-def implication(atom1: Atom, atom2: Atom) -> Atom:
+def implication(head: Atom, body: Atom) -> Atom:
     '''
     Binary material conditional (→) operation for Łukasiewicz three-valued logic
 
-    If atom1 then atom2
+    head → body
+
+    "If head then body"
     '''
 
     atom_result = Atom()
 
     # Find resulting value
-    if atom1.value == TruthConstant.FALSE or atom2.value == TruthConstant.TRUE:
+    if head.value == TruthConstant.FALSE or body.value == TruthConstant.TRUE:
         atom_result.value = TruthConstant.TRUE
-    elif atom1.value == TruthConstant.UNKNOWN and atom2.value == TruthConstant.UNKNOWN:
+    elif head.value == TruthConstant.UNKNOWN and body.value == TruthConstant.UNKNOWN:
         atom_result.value = TruthConstant.TRUE
-    elif atom1.value == TruthConstant.UNKNOWN or atom2.value == TruthConstant.UNKNOWN:
+    elif head.value == TruthConstant.UNKNOWN or body.value == TruthConstant.UNKNOWN:
         atom_result.value = TruthConstant.UNKNOWN
-    elif atom1.value == TruthConstant.TRUE and atom2.value == TruthConstant.FALSE:
+    elif head.value == TruthConstant.TRUE and body.value == TruthConstant.FALSE:
         atom_result.value = TruthConstant.FALSE
     else:
-        raise Exception(f"Could not perform implication: {atom1.value} → {atom2.value}")
+        raise Exception(f"Could not perform implication: {head.value} → {body.value}")
 
     # Name the new atom; TODO use paratheses if needed
-    atom_result.name=f"{atom1.name}→{atom2.name}"
+    atom_result.name=f"{head.name}→{body.name}"
+    return atom_result
+
+def reverse(body: Atom, head: Atom) -> Atom:
+    '''
+    Reverse of implication (←) operation for Łukasiewicz three-valued logic
+
+    body ← head
+
+    "body if head"
+    '''
+
+    atom_result = Atom()
+
+    # Find resulting value
+    if head.value == TruthConstant.FALSE or body.value == TruthConstant.TRUE:
+        atom_result.value = TruthConstant.TRUE
+    elif head.value == TruthConstant.UNKNOWN and body.value == TruthConstant.UNKNOWN:
+        atom_result.value = TruthConstant.TRUE
+    elif head.value == TruthConstant.UNKNOWN or body.value == TruthConstant.UNKNOWN:
+        atom_result.value = TruthConstant.UNKNOWN
+    elif head.value == TruthConstant.TRUE and body.value == TruthConstant.FALSE:
+        atom_result.value = TruthConstant.FALSE
+    else:
+        raise Exception(f"Could not perform  reverse implication: {body.value} ← {head.value}")
+
+    # Name the new atom; TODO use paratheses if needed
+    atom_result.name=f"{body.name}←{head.name}"
     return atom_result
 
 def equivalence(atom1: Atom, atom2: Atom) -> Atom:

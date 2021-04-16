@@ -1,30 +1,47 @@
+from abc import ABC, abstractmethod
 from atom import Atom
 
-class Fact:
+class Clause(ABC):
+    @abstractmethod
+    def __str__(self):
+        pass
 
-    def __init__(self, atom: Atom):
+
+class Fact(Clause):
+
+    def __init__(self, body: Atom):
         '''
-        T → atom 
-        '''
-
-        self.atom = atom
-
-class Assumption:
-
-    def __init__(self, atom: Atom):
-        '''
-        F → atom 
+        body ← T 
         '''
 
-        self.atom = atom
+        self.body = body
+    
+    def __str__(self):
+        return f"{self.body.name} ← T"
 
-class Rule:
+class Assumption(Clause):
 
-    def __init__(self, antecedent: Atom, consequent: Atom):
+    def __init__(self, body: Atom):
         '''
-        antecedent → consequent 
+        body ← ⊥
+        '''
+    
+        self.body = body
 
-        if antecedent then consequent
+    def __str__(self):
+        return f"{self.body.name} ← ⊥"
+
+class Rule(Clause):
+
+    def __init__(self, body: Atom, head: Atom):
+        '''
+        body ← head
+
+        "if head then body" or "body if head"
         '''
 
-        self.antecedent = antecedent
+        self.head = head
+        self.body = body
+    
+    def __str__(self):
+        return f"{self.body.name} ← {self.head.name}"
