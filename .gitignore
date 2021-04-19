@@ -127,4 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# manual inserts
 workspace.code-workspace
+trash_for_testing.py
+wcs_env/
