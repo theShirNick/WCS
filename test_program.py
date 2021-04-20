@@ -24,4 +24,4 @@ rule = Rule(getRandomAtom(), getRandomAtom())
 
 class TestProgram(unittest.TestCase):
     def test_str(self):
-        self.assertEqual(str(Program([fact, assump, rule])), f"{str(fact)},\n{str(assump)},\n{str(rule)},\n")
+        self.assertEqual(str(Program([fact, assump, rule])), f"{str(fact)},\n{str(assump)},\n{str(rule)}")

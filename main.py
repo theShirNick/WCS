@@ -1,5 +1,10 @@
+import itertools
+from interpretation import Interpretation
 import sys
 import os
+import re
+
+
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtGui import QFontDatabase
 from PySide6.QtWidgets import QApplication
@@ -7,7 +12,10 @@ from PySide6.QtCore import QFile, QIODevice, Slot
 
 from qt_material import apply_stylesheet
 
+import itertools
+
 from program import *
+# from interpretation import *
 
 
 if __name__ == "__main__":
@@ -26,7 +34,7 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     # setup stylesheet
-    QFontDatabase.addApplicationFont('ui/JAi_____.TTF')
+    QFontDatabase.addApplicationFont('ui/Courier Prime.ttf')
     apply_stylesheet(app, theme='dark_lightgreen.xml')
 
     # load custom style additions
@@ -43,17 +51,27 @@ if __name__ == "__main__":
     window.clear_program_button.setProperty('class', 'danger')
     window.undo_button.setProperty('class', 'warning')
     
-
+    atoms = dict()
     clauses = []
     program = Program(clauses)
+
+    def process_input(input: str):
+        '''
+        UNFINISHED
+
+        Recognize atoms in input: add new ones, reuse old ones.
+        '''
+
+        if input not in atoms:
+            atoms[input] = Atom(name=input)
 
     # Fact Input
     @Slot()
     def add_fact():
-        fact_text = window.fact_line_edit.text()
-        fact = Fact(Atom(name=fact_text))
+        fact_text = window.fact_line_edit.text().strip(' ')
+        process_input(fact_text)
+        fact = Fact(atoms[fact_text])
         clauses.append(fact)
-        program = Program(clauses)
 
         window.fact_line_edit.clear()
         window.output_text_edit.clear()
@@ -65,10 +83,10 @@ if __name__ == "__main__":
     # Assumption Input
     @Slot()
     def add_assumption():
-        assumption_text = window.assumption_line_edit.text()
-        assumption = Assumption(Atom(name=assumption_text))
+        assumption_text = window.assumption_line_edit.text().strip(' ')
+        process_input(assumption_text)
+        assumption = Assumption(atoms[assumption_text])      
         clauses.append(assumption)
-        program = Program(clauses)
 
         window.assumption_line_edit.clear()
         window.output_text_edit.clear()
@@ -80,11 +98,12 @@ if __name__ == "__main__":
     # Rule Input
     @Slot()
     def add_rule():
-        rule_body_text = window.rule_body_line_edit.text()
-        rule_head_text = window.rule_head_line_edit.text()
-        rule = Rule(Atom(name=rule_body_text), Atom(name=rule_head_text))
+        rule_body_text = window.rule_body_line_edit.text().strip(' ')
+        process_input(rule_body_text)
+        rule_head_text = window.rule_head_line_edit.text().strip(' ')
+        process_input(rule_head_text)
+        rule = Rule(atoms[rule_body_text], atoms[rule_head_text])
         clauses.append(rule)
-        program = Program(clauses)
 
         window.rule_body_line_edit.clear()
         window.rule_head_line_edit.clear()
@@ -98,13 +117,59 @@ if __name__ == "__main__":
     @Slot()
     def clear_program():
         clauses.clear()
-        program = Program(clauses)
+        atoms.clear()
         window.output_text_edit.clear()
 
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
 
-    
+    # Test "All False" Interpretation <<<<<<<<<< TODO remove
+    @Slot()
+    def test_all_false_interpretation():
+        interp = Interpretation(set(), set(atoms.values()), set())
+        window.output_text_edit.clear()
+        if interp.isModel(program):
+            window.output_text_edit.appendPlainText(f"{str(interp)}\nIs a model for\n{str(program)}")
+        else:
+           window.output_text_edit.appendPlainText(f"{str(interp)}\nIs not a model for\n{str(program)}")
+    # Connect the All False button to the function
+    window.clever_button.clicked.connect(test_all_false_interpretation)
+
+    # Find Models
+    # @Slot()
+    # def find_models():
+    #     window.output_text_edit.clear()
+
+    #     atoms_set = set(atoms.values())
+    #     interpretations = get_interpretations(atoms_set)
+
+    #     window.output_text_edit.appendPlainText(f"{str(program)}\nAdmits the following models:")
+
+    #     for interpretation in interpretations:
+    #         if interpretation.isModel(program):
+    #             window.output_text_edit.appendPlainText(str(interpretation))
+
+    # # Connect the Find Models button to the function
+    # window.find_models_button.clicked.connect(find_models)
+
+
+    # # Methods for generating interpretations TODO: move and optimize 
+    # def powerset(iterable):
+    #     "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    #     s = list(iterable)
+    #     tuple = itertools.chain.from_iterable(itertools.combinations(s, r) for r in range(len(s)+1))
+    #     return tuple
+
+    # def get_interpretations(atoms_set: set[Atom]) -> list[Interpretation]: # (self?)
+    #     interpretations = []  
+    #     for i in itertools.permutations(powerset(atoms_set), 3):
+    #         candidate_truths = set(i[0])
+    #         candidate_falses = set(i[1])
+    #         candidate_unknowns = set(i[2])
+    #         if candidate_truths & candidate_falses == set() and candidate_truths & candidate_unknowns == set() and candidate_falses & candidate_unknowns == set():
+    #             interpretations.append(Interpretation(candidate_truths, candidate_falses, candidate_unknowns))
+    #     return interpretations
+
     # run GUI
     window.show()
     sys.exit(app.exec_())

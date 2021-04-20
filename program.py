@@ -13,4 +13,8 @@ class Program:
         s = ""
         for clause in self.clauses:
             s = s + str(clause)  +",\n" 
-        return s
+        return s[:-2]
+    
+    
+
+    
