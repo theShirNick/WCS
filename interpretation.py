@@ -4,7 +4,7 @@ from program import Program
 
 class Interpretation:
     '''
-    An interpretation is three sets of atoms: mapped to T, ⊥, and U, accordingly   
+    An interpretation is three sets of atoms: mapped to ⊤, ⊥, and U, accordingly   
     '''
 
     def __init__(self, trues: set[Atom], falses: set[Atom], unknowns: set[Atom]):
@@ -22,7 +22,7 @@ class Interpretation:
         for atom in unknowns:
             atom.value = TruthConstant.UNKNOWN
 
-        if self.trues & self.falses & self.unknowns != set():
+        if self.trues & self.falses != set() or self.falses & self.unknowns != set() or self.trues & self.unknowns != set():
             raise Exception("Invalid sets of interpetation. Intersection of trues, falses and unknowns is not equal to empty set")
     
     def __str__(self) -> str:

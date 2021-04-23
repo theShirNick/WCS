@@ -15,16 +15,16 @@ class Fact(Clause):
 
     def __init__(self, body: Atom):
         '''
-        body ← T 
+        body ← ⊤ 
         '''
 
         self.body = body
     
     def __str__(self):
-        return f"{self.body.name} ← T"
+        return f"{self.body.name} ← ⊤"
     
     def resolve(self) -> Atom:
-        return reverse(self.body, Atom(TruthConstant.TRUE, "T"))
+        return reverse(self.body, Atom(TruthConstant.TRUE.value, TruthConstant.TRUE))
 
 class Assumption(Clause):
 
@@ -39,7 +39,7 @@ class Assumption(Clause):
         return f"{self.body.name} ← ⊥"
 
     def resolve(self) -> Atom:
-        return reverse(self.body, Atom(TruthConstant.FALSE, "⊥"))
+        return reverse(self.body, Atom(TruthConstant.FALSE.value, TruthConstant.FALSE))
 
 class Rule(Clause):
 

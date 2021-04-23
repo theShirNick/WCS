@@ -7,7 +7,7 @@ def negation(atom1: Atom) -> Atom:
 
     '''
 
-    atom_result = Atom()
+    atom_result = Atom("test_atom")
 
     # Find resulting value
     if atom1.value == TruthConstant.UNKNOWN:
@@ -20,7 +20,7 @@ def negation(atom1: Atom) -> Atom:
         raise Exception(f"Could not perform negation: ¬{atom1.value}")
     
     # Name the new atom; use paratheses if needed
-    if any(substring in atom1.name for substring in ["∧", "∨", "→", "↔" ]):
+    if any(substring in atom1.name for substring in ["∧", "∨", "→","←", "↔" ]):
         atom_result.name = f"¬({atom1.name})"
     else:
         atom_result.name = f"¬{atom1.name}"
@@ -31,7 +31,7 @@ def conjunction(atom1: Atom, atom2: Atom) -> Atom:
     Binary AND (∧) operation for Łukasiewicz three-valued logic
     '''
 
-    atom_result = Atom()
+    atom_result = Atom("test_atom")
     if atom1.value == TruthConstant.FALSE or atom2.value == TruthConstant.FALSE:
         atom_result.value = TruthConstant.FALSE
     elif atom1.value == TruthConstant.UNKNOWN or atom2.value == TruthConstant.UNKNOWN:
@@ -57,7 +57,7 @@ def disjunction(atom1: Atom, atom2: Atom) -> Atom:
     Binary OR (∨) operation for Łukasiewicz three-valued logic
     '''
 
-    atom_result = Atom()
+    atom_result = Atom("test_atom")
 
     # Find resulting value
     if atom1.value == TruthConstant.TRUE or atom2.value == TruthConstant.TRUE:
@@ -85,7 +85,7 @@ def implication(head: Atom, body: Atom) -> Atom:
     "If head then body"
     '''
 
-    atom_result = Atom()
+    atom_result = Atom("test_atom")
 
     # Find resulting value
     if head.value == TruthConstant.FALSE or body.value == TruthConstant.TRUE:
@@ -112,7 +112,7 @@ def reverse(body: Atom, head: Atom) -> Atom:
     "body if head"
     '''
 
-    atom_result = Atom()
+    atom_result = Atom("test_atom")
 
     # Find resulting value
     if head.value == TruthConstant.FALSE or body.value == TruthConstant.TRUE:
@@ -137,7 +137,7 @@ def equivalence(atom1: Atom, atom2: Atom) -> Atom:
     atom1 iff atom2
     '''
 
-    atom_result = Atom()
+    atom_result = Atom("test_atom")
 
     # Find resulting value
     if atom1.value == atom2.value:

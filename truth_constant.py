@@ -1,6 +1,6 @@
 from enum import Enum
 class TruthConstant(Enum):
-    FALSE = "⊥"
-    TRUE = "T"
+    FALSE   = "⊥"
+    TRUE    = "⊤"
     UNKNOWN = "U"
 

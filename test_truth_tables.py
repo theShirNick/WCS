@@ -3,9 +3,9 @@ from truth_tables import *
 import unittest
 import random
 
-T = Atom(TruthConstant.TRUE, "T")
-F = Atom(TruthConstant.FALSE, "⊥")
-U = Atom(TruthConstant.UNKNOWN, "U")
+T = Atom("⊤", TruthConstant.TRUE )
+F = Atom("⊥",TruthConstant.FALSE)
+U = Atom("U",TruthConstant.UNKNOWN)
 def getRandomAtom():
     rnd = random.randint(0, 2)
     if rnd == 0:
@@ -60,12 +60,12 @@ class TestTruthTables(unittest.TestCase):
 
     def test_str(self):
         R = getRandomAtom()
-        self.assertEqual(str(equivalence(negation(T), conjunction(F, R))), f"¬T↔⊥∧{R.name} ⊨ T")
+        self.assertEqual(str(equivalence(negation(T), conjunction(F, R))), f"¬⊤↔⊥∧{R.name} ⊨ ⊤")
         R1 = getRandomAtom()
         R2 = getRandomAtom()
-        self.assertEqual(str(implication(negation(disjunction(T, R1)), R2)), f"¬(T∨{R1.name})→{R2.name} ⊨ T")
-        self.assertEqual(str(reverse(R2, negation(disjunction(T, R1)))), f"{R2.name}←¬(T∨{R1.name}) ⊨ T")
+        self.assertEqual(str(implication(negation(disjunction(T, R1)), R2)), f"¬(⊤∨{R1.name})→{R2.name} ⊨ ⊤")
+        self.assertEqual(str(reverse(R2, negation(disjunction(T, R1)))), f"{R2.name}←¬(⊤∨{R1.name}) ⊨ ⊤")
         self.assertEqual(str(disjunction(F,negation(U))), f"⊥∨¬U ⊨ U")
-        self.assertEqual(str(implication(F,conjunction(U,T))), f"⊥→U∧T ⊨ T")
-        self.assertEqual(str(disjunction(F,negation(conjunction(U,T)))), f"⊥∨¬(U∧T) ⊨ U")
-        self.assertEqual(str(disjunction(F,conjunction(disjunction(U,T), F))), f"⊥∨(U∨T)∧⊥ ⊨ ⊥")
+        self.assertEqual(str(implication(F,conjunction(U,T))), f"⊥→U∧⊤ ⊨ ⊤")
+        self.assertEqual(str(disjunction(F,negation(conjunction(U,T)))), f"⊥∨¬(U∧⊤) ⊨ U")
+        self.assertEqual(str(disjunction(F,conjunction(disjunction(U,T), F))), f"⊥∨(U∨⊤)∧⊥ ⊨ ⊥")

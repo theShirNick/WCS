@@ -20,9 +20,9 @@ def getRandomAtom():
 class TestClauses(unittest.TestCase):
     def test_str(self):
         R = getRandomAtom()
-        self.assertEqual(str(Fact(R)), f"{R.name} ← T")
+        self.assertEqual(str(Fact(R)), f"{R.name} ← {TruthConstant.TRUE.value}")
         R = getRandomAtom()
-        self.assertEqual(str(Assumption(R)), f"{R.name} ← ⊥")
+        self.assertEqual(str(Assumption(R)), f"{R.name} ← {TruthConstant.FALSE.value}")
         R1 = getRandomAtom()
         R2 = getRandomAtom()
         self.assertEqual(str(Rule(R1,R2)), f"{R1.name} ← {R2.name}")

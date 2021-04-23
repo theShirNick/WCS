@@ -44,6 +44,9 @@
     <property name="readOnly">
      <bool>true</bool>
     </property>
+    <property name="placeholderText">
+     <string/>
+    </property>
    </widget>
    <widget class="QPushButton" name="clear_program_button">
     <property name="geometry">
@@ -81,7 +84,12 @@
     <property name="font">
      <font>
       <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>Undo [NOT IMPLEMENTED]</string>
     </property>
     <property name="text">
      <string>↶</string>
@@ -98,6 +106,11 @@
       <width>291</width>
       <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Test &quot;All False&quot; Interpretation</string>
@@ -142,6 +155,11 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Add Assumption</string>
        </property>
@@ -157,6 +175,11 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>Add Fact</string>
@@ -182,22 +205,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
-      <widget class="QLineEdit" name="rule_head_line_edit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier New</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="3">
       <widget class="QPushButton" name="add_rule_button">
        <property name="sizePolicy">
@@ -206,43 +213,16 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Add Rule</string>
        </property>
        <property name="flat">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLineEdit" name="fact_line_edit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier New</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLineEdit" name="rule_body_line_edit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier New</family>
-         <pointsize>14</pointsize>
-        </font>
        </property>
       </widget>
      </item>
@@ -254,7 +234,7 @@
         </font>
        </property>
        <property name="text">
-        <string>T</string>
+        <string>⊤</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -312,6 +292,38 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QLineEdit" name="fact_line_edit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLineEdit" name="rule_head_line_edit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="1">
       <widget class="QLabel" name="reverse_label_3">
        <property name="font">
@@ -324,6 +336,22 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLineEdit" name="rule_body_line_edit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>14</pointsize>
+        </font>
        </property>
       </widget>
      </item>
@@ -342,6 +370,19 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>fact_line_edit</tabstop>
+  <tabstop>assumption_line_edit</tabstop>
+  <tabstop>rule_body_line_edit</tabstop>
+  <tabstop>rule_head_line_edit</tabstop>
+  <tabstop>clever_button</tabstop>
+  <tabstop>clear_program_button</tabstop>
+  <tabstop>add_fact_button</tabstop>
+  <tabstop>add_assumption_button</tabstop>
+  <tabstop>add_rule_button</tabstop>
+  <tabstop>undo_button</tabstop>
+  <tabstop>output_text_edit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
