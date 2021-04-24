@@ -14,16 +14,16 @@ class Interpretation:
         self.unknowns = unknowns
 
         for atom in trues:
-            atom.value = TruthConstant.TRUE
+            atom.ground_value = TruthConstant.TRUE
 
         for atom in falses:
-            atom.value = TruthConstant.FALSE
+            atom.ground_value = TruthConstant.FALSE
 
         for atom in unknowns:
-            atom.value = TruthConstant.UNKNOWN
+            atom.ground_value = TruthConstant.UNKNOWN
 
         if self.trues & self.falses != set() or self.falses & self.unknowns != set() or self.trues & self.unknowns != set():
-            raise Exception("Invalid sets of interpetation. Intersection of trues, falses and unknowns is not equal to empty set")
+            raise Exception("Invalid sets of interpetation. Sets must be mutually exclusive")
     
     def __str__(self) -> str:
         s = "〈{"
@@ -48,16 +48,16 @@ class Interpretation:
 
         isModel = True
         for clause in program.clauses:
-            if clause.resolve().value != TruthConstant.TRUE:
+            if clause.evaluate() != TruthConstant.TRUE:
                 isModel = False
         return isModel
 
     def __reset_values(self):
         for atom in self.trues:
-            atom.value = TruthConstant.TRUE
+            atom.ground_value = TruthConstant.TRUE
 
         for atom in self.falses:
-            atom.value = TruthConstant.FALSE
+            atom.ground_value = TruthConstant.FALSE
 
         for atom in self.unknowns:
-            atom.value = TruthConstant.UNKNOWN
+            atom.ground_value = TruthConstant.UNKNOWN

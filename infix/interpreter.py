@@ -1,6 +1,5 @@
-from parse_infix.nodes import *
+from infix.nodes import *
 from truth_tables import *
-from atom import Atom
 
 
 class Interpreter:
@@ -15,7 +14,7 @@ class Interpreter:
         return method(node)
 
     def visit_AtomNode(self, node):
-        return node.atom
+        return node.atom.ground_value
     
     def visit_ConjunctionNode(self, node):
         return conjunction(self.visit(node.node_a), self.visit(node.node_b))

@@ -1,13 +1,13 @@
-from parse_infix.tokens import Token, TokenType
+from infix.tokens import Token, TokenType
 
 from atom import *
 
 
 WHITESPACE  = ' \n\t'
 NAMECHARS   = '.-_' 
-CONJUNCTION = '∨|'
-DISJUNSTION = '^∧&' 
-NEGATION    = '~¬!'
+CONJUNCTION = '∨'
+DISJUNSTION = '∧' 
+NEGATION    = '¬'
 
 class Lexer:
     def __init__(self, text: str, atoms: dict[Atom]) -> None:

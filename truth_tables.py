@@ -1,82 +1,52 @@
-from atom import *
 from truth_constant import * 
 
-def negation(atom1: Atom) -> Atom:
+def negation(truth_val: TruthConstant) -> TruthConstant:
     '''
     Unary NOT (¬) operation for Łukasiewicz three-valued logic
-
     '''
 
-    atom_result = Atom("test_atom")
-
     # Find resulting value
-    if atom1.value == TruthConstant.UNKNOWN:
-        atom_result.value = TruthConstant.UNKNOWN
-    elif atom1.value == TruthConstant.TRUE:
-        atom_result.value = TruthConstant.FALSE
-    elif atom1.value == TruthConstant.FALSE:
-        atom_result.value = TruthConstant.TRUE
+    if truth_val == TruthConstant.UNKNOWN:
+        return TruthConstant.UNKNOWN
+    elif truth_val == TruthConstant.TRUE:
+        return TruthConstant.FALSE
+    elif truth_val == TruthConstant.FALSE:
+        return TruthConstant.TRUE
     else:
-        raise Exception(f"Could not perform negation: ¬{atom1.value}")
+        raise Exception(f"Could not perform negation: ¬{truth_val}")
     
-    # Name the new atom; use paratheses if needed
-    if any(substring in atom1.name for substring in ["∧", "∨", "→","←", "↔" ]):
-        atom_result.name = f"¬({atom1.name})"
-    else:
-        atom_result.name = f"¬{atom1.name}"
-    return atom_result
 
-def conjunction(atom1: Atom, atom2: Atom) -> Atom:
+def conjunction(truth_val1: TruthConstant, truth_val2: TruthConstant) -> TruthConstant:
     '''
     Binary AND (∧) operation for Łukasiewicz three-valued logic
     '''
 
-    atom_result = Atom("test_atom")
-    if atom1.value == TruthConstant.FALSE or atom2.value == TruthConstant.FALSE:
-        atom_result.value = TruthConstant.FALSE
-    elif atom1.value == TruthConstant.UNKNOWN or atom2.value == TruthConstant.UNKNOWN:
-        atom_result.value = TruthConstant.UNKNOWN
-    elif atom1.value == TruthConstant.TRUE and atom2.value == TruthConstant.TRUE:
-        atom_result.value = TruthConstant.TRUE
+    if truth_val1 == TruthConstant.FALSE or truth_val2 == TruthConstant.FALSE:
+        return TruthConstant.FALSE
+    elif truth_val1 == TruthConstant.UNKNOWN or truth_val2 == TruthConstant.UNKNOWN:
+        return TruthConstant.UNKNOWN
+    elif truth_val1 == TruthConstant.TRUE and truth_val2 == TruthConstant.TRUE:
+        return TruthConstant.TRUE
     else:
-        raise Exception(f"Could not perform conjunction: {atom1.value} ∧ {atom2.value}")
+        raise Exception(f"Could not perform conjunction: {truth_val1} ∧ {truth_val2}")
 
-    # Name the new atom; use TODO paratheses if needed
-    if any(substring in atom1.name for substring in ["∨", "←", "→", "↔" ]) and any(substring in atom2.name for substring in ["∨", "→", "↔" ]):
-        atom_result.name = f"({atom1.name})∧({atom2.name})"
-    elif any(substring in atom1.name for substring in ["∨", "→", "↔" ]):
-        atom_result.name = f"({atom1.name})∧{atom2.name}"
-    elif any(substring in atom2.name for substring in ["∨", "→", "↔" ]):
-        atom_result.name = f"{atom1.name}∧({atom2.name})"
-    else:
-        atom_result.name = f"{atom1.name}∧{atom2.name}"
-    return atom_result
         
-def disjunction(atom1: Atom, atom2: Atom) -> Atom:
+def disjunction(truth_val1: TruthConstant, truth_val2: TruthConstant) -> TruthConstant:
     '''
     Binary OR (∨) operation for Łukasiewicz three-valued logic
     '''
 
-    atom_result = Atom("test_atom")
-
     # Find resulting value
-    if atom1.value == TruthConstant.TRUE or atom2.value == TruthConstant.TRUE:
-        atom_result.value = TruthConstant.TRUE
-    elif atom1.value == TruthConstant.UNKNOWN or atom2.value == TruthConstant.UNKNOWN:
-        atom_result.value = TruthConstant.UNKNOWN
-    elif atom1.value == TruthConstant.FALSE and atom2.value == TruthConstant.FALSE:
-        atom_result.value = TruthConstant.FALSE
+    if truth_val1 == TruthConstant.TRUE or truth_val2 == TruthConstant.TRUE:
+        return TruthConstant.TRUE
+    elif truth_val1 == TruthConstant.UNKNOWN or truth_val2 == TruthConstant.UNKNOWN:
+        return TruthConstant.UNKNOWN
+    elif truth_val1 == TruthConstant.FALSE and truth_val2 == TruthConstant.FALSE:
+        return TruthConstant.FALSE
     else:
-        raise Exception(f"Could not perform disjunction: {atom1.value} ∨ {atom2.value}")
+        raise Exception(f"Could not perform disjunction: {truth_val1} ∨ {truth_val2}")
 
-    # Name the new atom; use paratheses if needed
-    if any(substring in atom1.name for substring in ["∧", "←", "→", "↔" ]) and any(substring in atom2.name for substring in ["∧", "→", "↔" ]):
-        atom_result.name = f"({atom1.name}∨{atom2.name})"
-    else:
-        atom_result.name = f"{atom1.name}∨{atom2.name}"
-    return atom_result
-
-def implication(head: Atom, body: Atom) -> Atom:
+def implication(head_value: TruthConstant, body_value: TruthConstant) -> TruthConstant:
     '''
     Binary material conditional (→) operation for Łukasiewicz three-valued logic
 
@@ -85,25 +55,19 @@ def implication(head: Atom, body: Atom) -> Atom:
     "If head then body"
     '''
 
-    atom_result = Atom("test_atom")
-
     # Find resulting value
-    if head.value == TruthConstant.FALSE or body.value == TruthConstant.TRUE:
-        atom_result.value = TruthConstant.TRUE
-    elif head.value == TruthConstant.UNKNOWN and body.value == TruthConstant.UNKNOWN:
-        atom_result.value = TruthConstant.TRUE
-    elif head.value == TruthConstant.UNKNOWN or body.value == TruthConstant.UNKNOWN:
-        atom_result.value = TruthConstant.UNKNOWN
-    elif head.value == TruthConstant.TRUE and body.value == TruthConstant.FALSE:
-        atom_result.value = TruthConstant.FALSE
+    if head_value == TruthConstant.FALSE or body_value == TruthConstant.TRUE:
+        return TruthConstant.TRUE
+    elif head_value == TruthConstant.UNKNOWN and body_value == TruthConstant.UNKNOWN:
+        return TruthConstant.TRUE
+    elif head_value == TruthConstant.UNKNOWN or body_value == TruthConstant.UNKNOWN:
+        return TruthConstant.UNKNOWN
+    elif head_value == TruthConstant.TRUE and body_value == TruthConstant.FALSE:
+        return TruthConstant.FALSE
     else:
-        raise Exception(f"Could not perform implication: {head.value} → {body.value}")
+        raise Exception(f"Could not perform implication: {head_value} → {body_value}")
 
-    # Name the new atom; TODO use paratheses if needed
-    atom_result.name=f"{head.name}→{body.name}"
-    return atom_result
-
-def reverse(body: Atom, head: Atom) -> Atom:
+def reverse(body_value: TruthConstant, head_value: TruthConstant) -> TruthConstant:
     '''
     Reverse of implication (←) operation for Łukasiewicz three-valued logic
 
@@ -112,43 +76,31 @@ def reverse(body: Atom, head: Atom) -> Atom:
     "body if head"
     '''
 
-    atom_result = Atom("test_atom")
-
     # Find resulting value
-    if head.value == TruthConstant.FALSE or body.value == TruthConstant.TRUE:
-        atom_result.value = TruthConstant.TRUE
-    elif head.value == TruthConstant.UNKNOWN and body.value == TruthConstant.UNKNOWN:
-        atom_result.value = TruthConstant.TRUE
-    elif head.value == TruthConstant.UNKNOWN or body.value == TruthConstant.UNKNOWN:
-        atom_result.value = TruthConstant.UNKNOWN
-    elif head.value == TruthConstant.TRUE and body.value == TruthConstant.FALSE:
-        atom_result.value = TruthConstant.FALSE
+    if head_value == TruthConstant.FALSE or body_value == TruthConstant.TRUE:
+        return TruthConstant.TRUE
+    elif head_value == TruthConstant.UNKNOWN and body_value == TruthConstant.UNKNOWN:
+        return TruthConstant.TRUE
+    elif head_value == TruthConstant.UNKNOWN or body_value == TruthConstant.UNKNOWN:
+        return TruthConstant.UNKNOWN
+    elif head_value == TruthConstant.TRUE and body_value == TruthConstant.FALSE:
+        return TruthConstant.FALSE
     else:
-        raise Exception(f"Could not perform  reverse implication: {body.value} ← {head.value}")
+        raise Exception(f"Could not perform  reverse implication: {body_value} ← {head_value}")
 
-    # Name the new atom; TODO use paratheses if needed
-    atom_result.name=f"{body.name}←{head.name}"
-    return atom_result
-
-def equivalence(atom1: Atom, atom2: Atom) -> Atom:
+def equivalence(truth_val1: TruthConstant, truth_val2: TruthConstant) -> TruthConstant:
     '''
     Binary biconditional (↔) operation for Łukasiewicz three-valued logic
 
-    atom1 iff atom2
+    truth_val1 iff truth_val2
     '''
 
-    atom_result = Atom("test_atom")
-
     # Find resulting value
-    if atom1.value == atom2.value:
-        atom_result.value = TruthConstant.TRUE
-    elif atom1.value == TruthConstant.UNKNOWN or atom2.value == TruthConstant.UNKNOWN:
-        atom_result.value = TruthConstant.UNKNOWN
-    elif atom1.value == TruthConstant.FALSE or atom2.value == TruthConstant.FALSE:
-        atom_result.value = TruthConstant.FALSE
+    if truth_val1 == truth_val2:
+        return TruthConstant.TRUE
+    elif truth_val1 == TruthConstant.UNKNOWN or truth_val2 == TruthConstant.UNKNOWN:
+        return TruthConstant.UNKNOWN
+    elif truth_val1 == TruthConstant.FALSE or truth_val2 == TruthConstant.FALSE:
+        return TruthConstant.FALSE
     else:
-        raise Exception(f"Could not perform equivalence: {atom1.value} ↔ {atom2.value}")
-
-    # Name the new atom; TODO use paratheses if needed
-    atom_result.name=f"{atom1.name}↔{atom2.name}"
-    return atom_result
+        raise Exception(f"Could not perform equivalence: {truth_val1} ↔ {truth_val2}")

@@ -1,19 +1,19 @@
 from abc import ABC, abstractmethod
 from truth_constant import TruthConstant
 from truth_tables import reverse
-from atom import Atom
+from infix.expression import InfixExpression
 
 class Clause(ABC):
     @abstractmethod
     def __str__(self):
         pass
     
-    def resolve() -> Atom:
+    def evaluate() -> TruthConstant:
         pass
 
 class Fact(Clause):
 
-    def __init__(self, body: Atom):
+    def __init__(self, body: InfixExpression):
         '''
         body ← ⊤ 
         '''
@@ -21,14 +21,14 @@ class Fact(Clause):
         self.body = body
     
     def __str__(self):
-        return f"{self.body.name} ← ⊤"
+        return f"{self.body.expression} ← ⊤"
     
-    def resolve(self) -> Atom:
-        return reverse(self.body, Atom(TruthConstant.TRUE.value, TruthConstant.TRUE))
+    def evaluate(self) -> TruthConstant:
+        return reverse(self.body.evaluate(), TruthConstant.TRUE)
 
 class Assumption(Clause):
 
-    def __init__(self, body: Atom):
+    def __init__(self, body: InfixExpression):
         '''
         body ← ⊥
         '''
@@ -36,14 +36,14 @@ class Assumption(Clause):
         self.body = body
 
     def __str__(self):
-        return f"{self.body.name} ← ⊥"
+        return f"{self.body.expression} ← ⊥"
 
-    def resolve(self) -> Atom:
-        return reverse(self.body, Atom(TruthConstant.FALSE.value, TruthConstant.FALSE))
+    def evaluate(self) -> TruthConstant:
+        return reverse(self.body.evaluate(), TruthConstant.FALSE)
 
 class Rule(Clause):
 
-    def __init__(self, body: Atom, head: Atom):
+    def __init__(self, body: InfixExpression, head: InfixExpression):
         '''
         body ← head
 
@@ -54,7 +54,8 @@ class Rule(Clause):
         self.body = body
     
     def __str__(self):
-        return f"{self.body.name} ← {self.head.name}"
+        return f"{self.body.expression} ← {self.head.expression}"
 
-    def resolve(self) -> Atom:
-        return reverse(self.body, self.head)
+    def evaluate(self) -> TruthConstant:
+
+        return reverse(self.body.evaluate(), self.head.evaluate())

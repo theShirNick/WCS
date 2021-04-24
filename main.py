@@ -14,8 +14,9 @@ from qt_material import apply_stylesheet
 
 import itertools
 
-from program import *
-# from interpretation import *
+from program import Program
+from clauses import Fact, Rule, Assumption
+from infix.expression import InfixExpression
 
 
 if __name__ == "__main__":
@@ -57,22 +58,13 @@ if __name__ == "__main__":
     clauses = []
     program = Program(clauses)
 
-    def process_input(input: str):
-        '''
-        UNFINISHED
-
-        Recognize atoms in input: add new ones, reuse old ones.
-        '''
-
-        if input not in atoms:
-            atoms[input] = Atom(name=input)
-
+    # def unify_notation(str) -> str:
+    #     return str.replace('&', '∧').replace('^', '∧').replace('˜', '¬').replace('!', '¬').replace('|', '∨')
     # Fact Input
     @Slot()
     def add_fact():
-        fact_text = window.fact_line_edit.text().strip(' ')
-        process_input(fact_text)
-        fact = Fact(atoms[fact_text])
+        fact_text = InfixExpression(window.fact_line_edit.text(), atoms)
+        fact = Fact(fact_text)
         clauses.append(fact)
 
         window.fact_line_edit.clear()
@@ -85,9 +77,8 @@ if __name__ == "__main__":
     # Assumption Input
     @Slot()
     def add_assumption():
-        assumption_text = window.assumption_line_edit.text().strip(' ')
-        process_input(assumption_text)
-        assumption = Assumption(atoms[assumption_text])      
+        assumption_text = InfixExpression(window.assumption_line_edit.text(), atoms)
+        assumption = Assumption(assumption_text)      
         clauses.append(assumption)
 
         window.assumption_line_edit.clear()
@@ -100,11 +91,9 @@ if __name__ == "__main__":
     # Rule Input
     @Slot()
     def add_rule():
-        rule_body_text = window.rule_body_line_edit.text().strip(' ')
-        process_input(rule_body_text)
-        rule_head_text = window.rule_head_line_edit.text().strip(' ')
-        process_input(rule_head_text)
-        rule = Rule(atoms[rule_body_text], atoms[rule_head_text])
+        rule_body_text = InfixExpression( window.rule_body_line_edit.text(), atoms)
+        rule_head_text = InfixExpression(window.rule_head_line_edit.text(), atoms)
+        rule = Rule(rule_body_text, rule_head_text)
         clauses.append(rule)
 
         window.rule_body_line_edit.clear()

@@ -1,5 +1,5 @@
-from parse_infix.tokens import TokenType
-from parse_infix.nodes import *
+from infix.tokens import TokenType
+from infix.nodes import *
 
 class Parser:
     def  __init__(self, tokens) -> None:
