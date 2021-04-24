@@ -1,0 +1,27 @@
+from parse_infix.nodes import *
+from truth_tables import *
+from atom import Atom
+
+
+class Interpreter:
+    def visit(self, node):
+        '''
+        Generic for a method to visit a node and compute.
+
+        Returns the appropriate method for the type of node, i.e. visit_AtomNode
+        '''
+        method_name = f'visit_{type(node).__name__}'
+        method = getattr(self, method_name)
+        return method(node)
+
+    def visit_AtomNode(self, node):
+        return node.atom
+    
+    def visit_ConjunctionNode(self, node):
+        return conjunction(self.visit(node.node_a), self.visit(node.node_b))
+
+    def visit_DisjunctionNode(self, node):
+        return disjunction(self.visit(node.node_a), self.visit(node.node_b))
+
+    def visit_NegationNode(self, node):
+        return negation(self.visit(node.node))

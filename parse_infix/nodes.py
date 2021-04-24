@@ -3,10 +3,10 @@ from atom import Atom
 
 @dataclass
 class AtomNode:
-    value: Atom
+    atom: Atom
 
     def __repr__(self) -> str:
-        return f"{self.value}"
+        return f"{self.atom}"
 
 @dataclass
 class ConjunctionNode:
