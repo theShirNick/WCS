@@ -3,7 +3,11 @@ from parse_infix.tokens import Token, TokenType
 from atom import *
 
 
-WHITESPACE = ' \n\t'
+WHITESPACE  = ' \n\t'
+NAMECHARS   = '.-_' 
+CONJUNCTION = '∨|'
+DISJUNSTION = '^∧&' 
+NEGATION    = '~¬!'
 
 class Lexer:
     def __init__(self, text: str, atoms: dict[Atom]) -> None:
@@ -23,21 +27,24 @@ class Lexer:
                 self.advance()
             elif self.current_char.isalnum():
                 yield self.__generate_atom()
-            elif self.current_char == '^' or self.current_char == '∧' or self.current_char == '&':
+            elif self.current_char in CONJUNCTION:
                 self.advance()
                 yield Token(TokenType.CONJUNCTION)
-            elif self.current_char == '∨' or self.current_char == '|':
+            elif self.current_char in DISJUNSTION:
                 self.advance()
-                yield Token(TokenType.CONJUNCTION)
+                yield Token(TokenType.DISJUNCTION)
+            elif self.current_char in NEGATION:
+                self.advance()
+                yield Token(TokenType.NEGATION)
             elif self.current_char == '(':
                 self.advance()
                 yield Token(TokenType.LPAREN)
             elif self.current_char == ')':
                 self.advance()
-                yield Token(TokenType.LPAREN)
+                yield Token(TokenType.RPAREN)
             # elif implication, reverse, equivalence 
             else:
-                raise Exception(f"Illegal character '{self.current_char}'")
+                raise Exception(f"Lexer has found an illegal character '{self.current_char}'")
             
 
     
@@ -45,7 +52,7 @@ class Lexer:
         atom_str = self.current_char
         self.advance()
  
-        while self.current_char != None and self.current_char.isalnum():
+        while self.current_char != None and (self.current_char.isalnum() or self.current_char in NAMECHARS):
             atom_str += self.current_char
             self.advance()
         if atom_str not in self.atoms:
