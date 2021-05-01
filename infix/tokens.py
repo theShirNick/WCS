@@ -8,9 +8,10 @@ class TokenType(Enum):
    NEGATION     = 3
    LPAREN       = 4
    RPAREN       = 5
-#    IMPLICATION  = 6
-#    REVERSE      = 7
-#    EQUIVALENCE  = 8
+   TRUTHCONST   = 6
+#    IMPLICATION  = 7
+#    REVERSE      = 8
+#    EQUIVALENCE  = 9
 
 @dataclass
 class Token:

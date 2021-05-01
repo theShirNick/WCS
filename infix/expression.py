@@ -6,12 +6,14 @@ from typing import Any, Iterator
 from atom import Atom
 class InfixExpression:
     def __init__(self, expression: str, atoms: dict[str, Atom]) -> None:
-        self.expression = expression.replace('&', '∧').replace('^', '∧').replace('~', '¬').replace('!', '¬').replace('|', '∨')
+        self.expression = expression
         self.atoms = atoms
-        self.__parse_lexer_tokens(self.__get_lexer_tokens())
+        self.token_string = str(self.__parse_lexer_tokens(self.__get_lexer_tokens()))
 
         
 
+    def __repr__(self) -> str:
+        return self.token_string
 
     def __get_lexer_tokens(self) -> Iterator:
         return Lexer(self.expression, self.atoms).generate_tokens()
@@ -24,3 +26,19 @@ class InfixExpression:
     
     def evaluate(self) -> TruthConstant:
         return self.__interpret(self.__parse_lexer_tokens(self.__get_lexer_tokens()))
+    
+    def disjoin(self, expr:'InfixExpression') -> 'InfixExpression':
+        '''
+        Append an infix expression by disjunction of another infix expression. Atom sets must match by identity (is) 
+        '''
+
+        if self.atoms is expr.atoms:
+            return InfixExpression(f'({self.expression}) ∨ ({expr.expression})', self.atoms)
+        else:
+            raise Exception('Could not append to InfixExpression: sets of atoms do not match')
+
+    def __eq__(self, other):
+        if self.token_string == other.token_string and self.atoms is other.atoms:
+            return True
+        else:
+            return False

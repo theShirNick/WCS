@@ -122,7 +122,7 @@
    <widget class="QLabel" name="input_label">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>20</x>
       <y>40</y>
       <width>101</width>
       <height>16</height>
@@ -135,10 +135,10 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>70</y>
-      <width>342</width>
-      <height>164</height>
+      <x>20</x>
+      <y>60</y>
+      <width>381</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -147,68 +147,10 @@
      </font>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="3">
-      <widget class="QPushButton" name="add_assumption_button">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>9</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Add Assumption</string>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="3">
-      <widget class="QPushButton" name="add_fact_button">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>9</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Add Fact</string>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="assumption_line_edit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier New</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
       <widget class="QPushButton" name="add_rule_button">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -227,104 +169,22 @@
       </widget>
      </item>
      <item row="0" column="2">
-      <widget class="QLabel" name="fact_label">
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>⊤</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="assumption_label">
+      <widget class="QLineEdit" name="rule_head_line_edit">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="font">
         <font>
+         <family>Courier New</family>
          <pointsize>14</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>⊥</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="reverse_label_2">
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string> ←</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLabel" name="reverse_label_1">
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string> ←</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLineEdit" name="fact_line_edit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier New</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLineEdit" name="rule_head_line_edit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier New</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
       <widget class="QLabel" name="reverse_label_3">
        <property name="font">
         <font>
@@ -339,10 +199,10 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="0" column="0">
       <widget class="QLineEdit" name="rule_body_line_edit">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -356,6 +216,32 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="wcP_button">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>170</y>
+      <width>51</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>Weakly Complete the Program</string>
+    </property>
+    <property name="text">
+     <string>𝑤𝑐𝒫</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -371,52 +257,16 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <tabstops>
-  <tabstop>fact_line_edit</tabstop>
-  <tabstop>assumption_line_edit</tabstop>
   <tabstop>rule_body_line_edit</tabstop>
   <tabstop>rule_head_line_edit</tabstop>
   <tabstop>clever_button</tabstop>
   <tabstop>clear_program_button</tabstop>
-  <tabstop>add_fact_button</tabstop>
-  <tabstop>add_assumption_button</tabstop>
   <tabstop>add_rule_button</tabstop>
   <tabstop>undo_button</tabstop>
   <tabstop>output_text_edit</tabstop>
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>fact_line_edit</sender>
-   <signal>returnPressed()</signal>
-   <receiver>add_fact_button</receiver>
-   <slot>animateClick()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>96</x>
-     <y>116</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>283</x>
-     <y>116</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>assumption_line_edit</sender>
-   <signal>returnPressed()</signal>
-   <receiver>add_assumption_button</receiver>
-   <slot>animateClick()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>87</x>
-     <y>186</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>279</x>
-     <y>186</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>rule_body_line_edit</sender>
    <signal>returnPressed()</signal>

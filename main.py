@@ -15,7 +15,7 @@ from qt_material import apply_stylesheet
 import itertools
 
 from program import Program
-from clauses import Fact, Rule, Assumption
+from clauses import Clause, Rule, WC_Rule
 from infix.expression import InfixExpression
 
 
@@ -45,48 +45,16 @@ if __name__ == "__main__":
 
     # force style 
     window.output_text_edit.setProperty('class', 'mono_font')
-    window.fact_line_edit.setProperty('class', 'mono_font')
-    window.assumption_line_edit.setProperty('class', 'mono_font')
     window.rule_head_line_edit.setProperty('class', 'mono_font')
     window.rule_body_line_edit.setProperty('class', 'mono_font')
-    window.fact_label.setProperty('class', 'mono_font')
-    window.assumption_label.setProperty('class', 'mono_font')
     window.clear_program_button.setProperty('class', 'danger')
     window.undo_button.setProperty('class', 'warning')
     
     atoms = dict()
     clauses = []
     program = Program(clauses)
+    wc_program = Program([])
 
-    # def unify_notation(str) -> str:
-    #     return str.replace('&', '∧').replace('^', '∧').replace('˜', '¬').replace('!', '¬').replace('|', '∨')
-    # Fact Input
-    @Slot()
-    def add_fact():
-        fact_text = InfixExpression(window.fact_line_edit.text(), atoms)
-        fact = Fact(fact_text)
-        clauses.append(fact)
-
-        window.fact_line_edit.clear()
-        window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText(str(program))
-
-    # Connect the Fact button to the function
-    window.add_fact_button.clicked.connect(add_fact)
-
-    # Assumption Input
-    @Slot()
-    def add_assumption():
-        assumption_text = InfixExpression(window.assumption_line_edit.text(), atoms)
-        assumption = Assumption(assumption_text)      
-        clauses.append(assumption)
-
-        window.assumption_line_edit.clear()
-        window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText(str(program))
-
-    # Connect the Assumption button to the function
-    window.add_assumption_button.clicked.connect(add_assumption)
 
     # Rule Input
     @Slot()
@@ -100,9 +68,20 @@ if __name__ == "__main__":
         window.rule_head_line_edit.clear()
         window.output_text_edit.clear()
         window.output_text_edit.appendPlainText(str(program))
-
     # Connect the Rule button to the function
     window.add_rule_button.clicked.connect(add_rule)
+
+
+    # wcP Button
+    @Slot()
+    def wcP():
+        global wc_program
+        wc_program = program.weakly_complete()
+        window.output_text_edit.clear()
+        window.output_text_edit.appendPlainText(str(wc_program))
+
+    # Connect the wcP button to the function
+    window.wcP_button.clicked.connect(wcP)
 
     # Clear Program
     @Slot()
@@ -119,10 +98,17 @@ if __name__ == "__main__":
     def test_all_false_interpretation():
         interp = Interpretation(set(), set(atoms.values()), set())
         window.output_text_edit.clear()
-        if interp.isModel(program):
-            window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊨ Is a model for\n{str(program)}")
+        if len(wc_program.clauses) == 0:
+            if interp.isModel(program):
+                window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊨ Is a model for\n{str(program)}")
+            else:
+                window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊭ Is not a model for\n{str(program)}")
         else:
-           window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊭ Is not a model for\n{str(program)}")
+            if interp.isModel(wc_program):
+                window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊨ Is a model for\n{str(wc_program)}")
+            else:
+                window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊭ Is not a model for\n{str(wc_program)}")
+
     # Connect the All False button to the function
     window.clever_button.clicked.connect(test_all_false_interpretation)
 

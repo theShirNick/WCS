@@ -16,6 +16,9 @@ class Interpreter:
     def visit_AtomNode(self, node):
         return node.atom.ground_value
     
+    def visit_TruthConstNode(self, node):
+        return node.truth_constant
+    
     def visit_ConjunctionNode(self, node):
         return conjunction(self.visit(node.node_a), self.visit(node.node_b))
 

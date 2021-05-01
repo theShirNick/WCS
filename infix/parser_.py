@@ -101,6 +101,10 @@ class Parser:
         elif token.type == TokenType.ATOM:
             self.advance()
             return AtomNode(token.value)
+        
+        elif token.type == TokenType.TRUTHCONST:
+            self.advance()
+            return TruthConstNode(token.value)
 
         elif token.type == TokenType.NEGATION:
             self.advance()
