@@ -9,5 +9,5 @@
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.unittestEnabled": true,
-    "python.pythonPath": "c:\\Users\\kolya\\Google Drive\\WCS Job\\WCS\\wcs_env\\Scripts\\python.exe"
+    "python.pythonPath": "WCS_env\\Scripts\\python.exe"
 }

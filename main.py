@@ -43,6 +43,7 @@ if __name__ == "__main__":
     # force style 
     window.output_text_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'mono_font')
+    window.input_program_text_edit.setProperty('class', 'background_active_input')
     window.rule_head_line_edit.setProperty('class', 'mono_font')
     window.rule_body_line_edit.setProperty('class', 'mono_font')
     window.clear_program_button.setProperty('class', 'danger')
