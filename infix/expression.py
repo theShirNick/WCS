@@ -1,3 +1,4 @@
+from infix.tokens import TokenType
 from infix.interpreter import Interpreter
 from truth_constant import TruthConstant
 from infix.parser_ import Parser
@@ -7,8 +8,15 @@ from atom import Atom
 class InfixExpression:
     def __init__(self, expression: str, atoms: dict[str, Atom]) -> None:
         self.expression = expression
-        self.atoms = atoms
+        self.atoms = atoms # reference set of atoms
         self.token_string = str(self.__parse_lexer_tokens(self.__get_lexer_tokens()))
+        self.atoms_here = set()
+        for token in self.__get_lexer_tokens():
+            if token.type == TokenType.ATOM:
+                self.atoms_here.add(token.value)
+                
+
+
 
         
 

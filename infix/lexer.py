@@ -58,18 +58,17 @@ class Lexer:
         while self.current_char != None and (self.current_char.isalnum() or self.current_char in NAMECHARS):
             str += self.current_char
             self.advance()
-        str_lower = str.lower()
-        if str_lower == 'not':
+        if  str.lower() == 'not':
             return Token(TokenType.NEGATION)
-        elif str_lower == 'and':
+        elif  str.lower() == 'and':
             return Token(TokenType.CONJUNCTION)
-        elif str_lower == 'or':
+        elif  str.lower() == 'or':
             return Token(TokenType.DISJUNCTION)
-        elif str_lower == 't':
+        elif str == 'T':
             return Token(TokenType.TRUTHCONST, TruthConstant.TRUE)
-        elif str_lower == 'f':
+        elif str == 'F':
             return Token(TokenType.TRUTHCONST, TruthConstant.FALSE)
-        elif str_lower == 'u':
+        elif str == 'U':
             return Token(TokenType.TRUTHCONST, TruthConstant.UNKNOWN)
 
         

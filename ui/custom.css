@@ -1,3 +1,6 @@
 .mono_font {{
     font-family: "Overpass Mono", "Lucida Console", monospace;
   }}
+  .light_font {{
+    font-weight: normal;
+  }}

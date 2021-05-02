@@ -6,32 +6,35 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>960</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
-    <height>600</height>
+    <width>960</width>
+    <height>540</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>800</width>
-    <height>600</height>
+    <width>960</width>
+    <height>540</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>WCS Reasoner</string>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPlainTextEdit" name="output_text_edit">
     <property name="geometry">
      <rect>
       <x>410</x>
-      <y>60</y>
-      <width>291</width>
+      <y>48</y>
+      <width>461</width>
       <height>401</height>
      </rect>
     </property>
@@ -51,8 +54,8 @@
    <widget class="QPushButton" name="clear_program_button">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>60</y>
+      <x>890</x>
+      <y>50</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -75,8 +78,8 @@
    <widget class="QPushButton" name="undo_button">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>110</y>
+      <x>890</x>
+      <y>100</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -98,46 +101,36 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="clever_button">
+   <widget class="QPushButton" name="phi_plus_button">
     <property name="geometry">
      <rect>
-      <x>412</x>
-      <y>470</y>
-      <width>291</width>
+      <x>890</x>
+      <y>220</y>
+      <width>51</width>
       <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>9</pointsize>
+      <pointsize>16</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>Iterate the Semantic Operator</string>
+    </property>
     <property name="text">
-     <string>Test &quot;All False&quot; Interpretation</string>
+     <string>Φ++</string>
     </property>
     <property name="flat">
      <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="input_label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>101</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Input Clauses:</string>
     </property>
    </widget>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>60</y>
-      <width>381</width>
+      <y>50</y>
+      <width>371</width>
       <height>61</height>
      </rect>
     </property>
@@ -147,24 +140,18 @@
      </font>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="3">
-      <widget class="QPushButton" name="add_rule_button">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="0" column="1">
+      <widget class="QLabel" name="reverse_label_3">
        <property name="font">
         <font>
-         <pointsize>9</pointsize>
+         <pointsize>14</pointsize>
         </font>
        </property>
        <property name="text">
-        <string>Add Rule</string>
+        <string> ←</string>
        </property>
-       <property name="flat">
-        <bool>true</bool>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -181,21 +168,6 @@
          <family>Courier New</family>
          <pointsize>14</pointsize>
         </font>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="reverse_label_3">
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string> ←</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -220,8 +192,8 @@
    <widget class="QPushButton" name="wcP_button">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>170</y>
+      <x>890</x>
+      <y>160</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -243,13 +215,77 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QPlainTextEdit" name="input_program_text_edit">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>190</y>
+      <width>371</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="input_program_button">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>450</y>
+      <width>371</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Input Program</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="input_clause_button">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>110</y>
+      <width>371</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Input Clause</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>960</width>
      <height>26</height>
     </rect>
    </property>
@@ -259,9 +295,8 @@
  <tabstops>
   <tabstop>rule_body_line_edit</tabstop>
   <tabstop>rule_head_line_edit</tabstop>
-  <tabstop>clever_button</tabstop>
+  <tabstop>phi_plus_button</tabstop>
   <tabstop>clear_program_button</tabstop>
-  <tabstop>add_rule_button</tabstop>
   <tabstop>undo_button</tabstop>
   <tabstop>output_text_edit</tabstop>
  </tabstops>
@@ -286,7 +321,7 @@
   <connection>
    <sender>rule_head_line_edit</sender>
    <signal>returnPressed()</signal>
-   <receiver>add_rule_button</receiver>
+   <receiver>input_clause_button</receiver>
    <slot>animateClick()</slot>
    <hints>
     <hint type="sourcelabel">

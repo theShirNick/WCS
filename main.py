@@ -1,9 +1,6 @@
-import itertools
-from interpretation import Interpretation
 import sys
 import os
-import re
-
+from collections import deque
 
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtGui import QFontDatabase
@@ -12,11 +9,11 @@ from PySide6.QtCore import QFile, QIODevice, Slot
 
 from qt_material import apply_stylesheet
 
-import itertools
-
+from interpretation import Interpretation
 from program import Program
-from clauses import Clause, Rule, WC_Rule
+from clauses import Rule
 from infix.expression import InfixExpression
+from phi import phi
 
 
 if __name__ == "__main__":
@@ -45,20 +42,24 @@ if __name__ == "__main__":
 
     # force style 
     window.output_text_edit.setProperty('class', 'mono_font')
+    window.input_program_text_edit.setProperty('class', 'mono_font')
     window.rule_head_line_edit.setProperty('class', 'mono_font')
     window.rule_body_line_edit.setProperty('class', 'mono_font')
     window.clear_program_button.setProperty('class', 'danger')
     window.undo_button.setProperty('class', 'warning')
-    
+    window.phi_plus_button.setProperty('class', 'light_font')
+    window.wcP_button.setProperty('class', 'light_font')
+
+    # Important stuff starts here
     atoms = dict()
     clauses = []
     program = Program(clauses)
     wc_program = Program([])
-
+    interpretation_stack = deque()
 
     # Rule Input
     @Slot()
-    def add_rule():
+    def input_clause():
         rule_body_text = InfixExpression( window.rule_body_line_edit.text(), atoms)
         rule_head_text = InfixExpression(window.rule_head_line_edit.text(), atoms)
         rule = Rule(rule_body_text, rule_head_text)
@@ -69,8 +70,25 @@ if __name__ == "__main__":
         window.output_text_edit.clear()
         window.output_text_edit.appendPlainText(str(program))
     # Connect the Rule button to the function
-    window.add_rule_button.clicked.connect(add_rule)
+    window.input_clause_button.clicked.connect(input_clause)
 
+    # Rule Input
+    @Slot()
+    def input_program():
+        program_text = window.input_program_text_edit.toPlainText().replace(':-', '←').replace('-:', '←').replace(' if ', '←')
+
+        split_clauses = program_text.split(',')
+
+        for clause in split_clauses:
+            body, head = clause.split('←', 1)
+            program.clauses.append(Rule(InfixExpression(body, atoms), InfixExpression(head, atoms)))
+        
+
+        window.input_program_text_edit.clear()
+        window.output_text_edit.clear()
+        window.output_text_edit.appendPlainText(str(program))
+    # Connect the Rule button to the function
+    window.input_program_button.clicked.connect(input_program)
 
     # wcP Button
     @Slot()
@@ -79,7 +97,6 @@ if __name__ == "__main__":
         wc_program = program.weakly_complete()
         window.output_text_edit.clear()
         window.output_text_edit.appendPlainText(str(wc_program))
-
     # Connect the wcP button to the function
     window.wcP_button.clicked.connect(wcP)
 
@@ -89,28 +106,28 @@ if __name__ == "__main__":
         clauses.clear()
         atoms.clear()
         window.output_text_edit.clear()
-
+        interpretation_stack.clear()
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
 
-    # Test "All False" Interpretation <<<<<<<<<< TODO remove
     @Slot()
-    def test_all_false_interpretation():
-        interp = Interpretation(set(), set(atoms.values()), set())
+    def phi_plus():
         window.output_text_edit.clear()
         if len(wc_program.clauses) == 0:
-            if interp.isModel(program):
-                window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊨ Is a model for\n{str(program)}")
-            else:
-                window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊭ Is not a model for\n{str(program)}")
+            window.output_text_edit.appendPlainText("Don't forget to weakly complete your program!")
+            return
         else:
-            if interp.isModel(wc_program):
-                window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊨ Is a model for\n{str(wc_program)}")
-            else:
-                window.output_text_edit.appendPlainText(f"{str(interp)}\n ⊭ Is not a model for\n{str(wc_program)}")
-
-    # Connect the All False button to the function
-    window.clever_button.clicked.connect(test_all_false_interpretation)
+            if len(interpretation_stack) == 0:
+                interpretation_stack.append(Interpretation(set(), set(), set(atoms.values() )))
+            window.output_text_edit.appendPlainText(f"Φ iteration {len(interpretation_stack) -1} with\n{str(interpretation_stack[-1])}")
+            next_phi = phi(wc_program, interpretation_stack[-1])
+            if interpretation_stack[-1] == next_phi:
+                window.output_text_edit.appendPlainText(f"Fixed point found")
+            else:     
+                interpretation_stack.append(next_phi)
+                window.output_text_edit.appendPlainText(f"The consequence is {str(next_phi)}")   
+    # Connect the Φ++ button to the function
+    window.phi_plus_button.clicked.connect(phi_plus)
 
     
     # run GUI

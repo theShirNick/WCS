@@ -28,16 +28,16 @@ class Interpretation:
     def __str__(self) -> str:
         s = "〈{"
         for atom in self.trues:
-            s = s + atom.name +","
+            s = s + atom.name +", "
         if self.trues != set(): # if not empty
-            s = s[:-1] # delete the last coma
+            s = s[:-2] # delete the last comma
         else:
             s = s + "∅"
         s = s + "}, {"
         for atom in self.falses:
-            s = s + atom.name +","
+            s = s + atom.name +", "
         if self.falses != set(): # if not empty
-            s = s[:-1] # delete the last coma
+            s = s[:-2] # delete the last comma 
         else:
             s = s + "∅"
         s = s + "}〉"
@@ -61,3 +61,12 @@ class Interpretation:
 
         for atom in self.unknowns:
             atom.ground_value = TruthConstant.UNKNOWN
+    
+    def clone(self) -> 'Interpretation':
+        return Interpretation(self.trues.copy(), self.falses.copy(), self.unknowns.copy())
+    
+    def __eq__(self, other):
+        if self.trues == other.trues and self.falses == other.falses and self.unknowns == other.unknowns:
+            return True
+        else:
+            return False
