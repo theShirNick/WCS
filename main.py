@@ -12,6 +12,7 @@ from qt_material import apply_stylesheet
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
+from abductive_framework import Abducible
 from infix.expression import InfixExpression
 from phi import phi
 
@@ -44,8 +45,8 @@ if __name__ == "__main__":
     window.output_text_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'background_active_input')
-    window.rule_head_line_edit.setProperty('class', 'mono_font')
-    window.rule_body_line_edit.setProperty('class', 'mono_font')
+    window.abducible_head_line_edit.setProperty('class', 'mono_font')
+    window.abducible_body_line_edit.setProperty('class', 'mono_font')
     window.clear_program_button.setProperty('class', 'danger')
     window.undo_button.setProperty('class', 'warning')
     window.phi_plus_button.setProperty('class', 'light_font')
@@ -53,27 +54,14 @@ if __name__ == "__main__":
 
     # Important stuff starts here
     atoms = dict()
+    observations = set()
     clauses = []
     program = Program(clauses)
     wc_program = Program([])
+    abducibles = set() 
     interpretation_stack = deque()
 
-    # Rule Input
-    @Slot()
-    def input_clause():
-        rule_body_text = InfixExpression( window.rule_body_line_edit.text(), atoms)
-        rule_head_text = InfixExpression(window.rule_head_line_edit.text(), atoms)
-        rule = Rule(rule_body_text, rule_head_text)
-        clauses.append(rule)
-
-        window.rule_body_line_edit.clear()
-        window.rule_head_line_edit.clear()
-        window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText(str(program))
-    # Connect the Rule button to the function
-    window.input_clause_button.clicked.connect(input_clause)
-
-    # Rule Input
+    # Program Input
     @Slot()
     def input_program():
         program_text = window.input_program_text_edit.toPlainText().replace(':-', '←').replace('-:', '←').replace(' if ', '←')
@@ -87,9 +75,52 @@ if __name__ == "__main__":
 
         window.input_program_text_edit.clear()
         window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText(str(program))
-    # Connect the Rule button to the function
+        window.output_text_edit.appendPlainText("𝒫:\n" + str(program))
+        if len(abducibles) > 0:
+            window.output_text_edit.appendPlainText("𝒜:\n%s"%( abducibles ))
+        if len(observations) > 0:
+            window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
+    # Connect the Program button to the function
     window.input_program_button.clicked.connect(input_program)
+
+    # Abducible Input
+    @Slot()
+    def input_abducible():
+        abducible_body_expr = InfixExpression( window.abducible_body_line_edit.text(), atoms)
+        abducible_head_expr = InfixExpression(window.abducible_head_line_edit.text(), atoms)
+        abducible = Abducible(abducible_body_expr, abducible_head_expr)
+        abducibles.add(abducible)
+
+        window.abducible_body_line_edit.clear()
+        window.abducible_head_line_edit.clear()
+        window.output_text_edit.clear()
+        window.output_text_edit.appendPlainText("𝒫:\n" + str(program))
+        if len(abducibles) > 0:
+            window.output_text_edit.appendPlainText("𝒜:\n%s"%( abducibles ))
+        if len(observations) > 0:
+            window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
+
+    # Connect the Abducible button to the function
+    window.input_abducible_button.clicked.connect(input_abducible)
+
+    
+    # Observation Input
+    @Slot()
+    def input_observation():
+        observation = InfixExpression( window.observation_line_edit.text(), atoms)
+        if len(observation.atoms_here) == 1:
+            observations.add(observation)
+
+        window.observation_line_edit.clear()
+        window.output_text_edit.clear()
+        window.output_text_edit.appendPlainText("𝒫:\n" + str(program))
+        if len(abducibles) > 0:
+            window.output_text_edit.appendPlainText("𝒜:\n%s"%( abducibles ))
+        if len(observations) > 0:
+            window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
+
+    # Connect the Abducible button to the function
+    window.input_observation_button.clicked.connect(input_observation)
 
     # wcP Button
     @Slot()
@@ -97,7 +128,11 @@ if __name__ == "__main__":
         global wc_program
         wc_program = program.weakly_complete()
         window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText(str(wc_program))
+        window.output_text_edit.appendPlainText("𝑤𝑐𝒫:\n" + str(wc_program))
+        if len(abducibles) > 0:
+            window.output_text_edit.appendPlainText("𝒜:\n%s"%( abducibles ))
+        if len(observations) > 0:
+            window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
     # Connect the wcP button to the function
     window.wcP_button.clicked.connect(wcP)
 
@@ -106,11 +141,13 @@ if __name__ == "__main__":
     def clear_program():
         clauses.clear()
         atoms.clear()
+        abducibles.clear()
         window.output_text_edit.clear()
         interpretation_stack.clear()
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
 
+    # Semantic Phi Operator
     @Slot()
     def phi_plus():
         window.output_text_edit.clear()

@@ -9,13 +9,13 @@ def phi(program:Program, interpretation:Interpretation) -> Interpretation:
     to_true = set()
     # get immediate consequences
     for clause in program.clauses:
-        if len(clause.body.atoms_here) == 1:
+        if len(clause.body.atoms_here) == 1: # this is a clause. find consequence
             consequence_atom = clause.body.atoms_here.pop()
-            clause.body.atoms_here.add(consequence_atom) # pop then add. looks hacky
+            clause.body.atoms_here.add(consequence_atom)
 
             if clause.head.evaluate() == TruthConstant.TRUE:
                 to_true.add(consequence_atom)
-                                
+
                 if consequence_atom in candidates_for_false:
                     candidates_for_false[consequence_atom] = False
 
@@ -25,6 +25,8 @@ def phi(program:Program, interpretation:Interpretation) -> Interpretation:
             elif clause.head.evaluate() == TruthConstant.UNKNOWN:
                 if consequence_atom in candidates_for_false:
                     candidates_for_false[consequence_atom] = False
+        elif len(clause.body.atoms_here) == 0: # this is an integrity constraint 
+            raise Exception(f'Could not get immediate consequence for {clause}. There must be 1 atom in the body but found 0. Integrity constraints are not part of the program and should be declared separately.')
         else:
             raise Exception(f'Could not get immediate consequence for {clause}. There must be 1 atom in the body; but found {len(clause.body.atoms_here)}.')
 

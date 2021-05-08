@@ -155,7 +155,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>170</y>
+      <y>50</y>
       <width>371</width>
       <height>281</height>
      </rect>
@@ -171,7 +171,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>450</y>
+      <y>330</y>
       <width>371</width>
       <height>41</height>
      </rect>
@@ -188,12 +188,12 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="input_clause_button">
+   <widget class="QPushButton" name="input_abducible_button">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>110</y>
-      <width>371</width>
+      <y>450</y>
+      <width>211</width>
       <height>41</height>
      </rect>
     </property>
@@ -209,18 +209,18 @@
      </font>
     </property>
     <property name="text">
-     <string>Input Clause</string>
+     <string>Add Abducible</string>
     </property>
     <property name="flat">
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="rule_body_line_edit">
+   <widget class="QLineEdit" name="abducible_body_line_edit">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>50</y>
-      <width>161</width>
+      <y>390</y>
+      <width>121</width>
       <height>59</height>
      </rect>
     </property>
@@ -237,12 +237,12 @@
      </font>
     </property>
    </widget>
-   <widget class="QLineEdit" name="rule_head_line_edit">
+   <widget class="QLineEdit" name="abducible_head_line_edit">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>50</y>
-      <width>171</width>
+      <x>180</x>
+      <y>390</y>
+      <width>51</width>
       <height>59</height>
      </rect>
     </property>
@@ -262,8 +262,8 @@
    <widget class="QLabel" name="reverse_label_3">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>50</y>
+      <x>150</x>
+      <y>390</y>
       <width>21</width>
       <height>59</height>
      </rect>
@@ -278,6 +278,55 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="observation_line_edit">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>390</y>
+      <width>131</width>
+      <height>59</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="input_observation_button">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>450</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Add Observation</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -302,9 +351,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>rule_body_line_edit</sender>
+   <sender>abducible_body_line_edit</sender>
    <signal>returnPressed()</signal>
-   <receiver>rule_head_line_edit</receiver>
+   <receiver>abducible_head_line_edit</receiver>
    <slot>selectAll()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -318,9 +367,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>rule_head_line_edit</sender>
+   <sender>abducible_head_line_edit</sender>
    <signal>returnPressed()</signal>
-   <receiver>input_clause_button</receiver>
+   <receiver>input_abducible_button</receiver>
    <slot>animateClick()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -330,6 +379,22 @@
     <hint type="destinationlabel">
      <x>320</x>
      <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>observation_line_edit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>input_observation_button</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>325</x>
+     <y>445</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>496</y>
     </hint>
    </hints>
   </connection>
