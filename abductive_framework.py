@@ -1,8 +1,9 @@
+from truth_constant import TruthConstant
 from atom import Atom
 from phi import phi
 from interpretation import Interpretation
 from program import Program
-from clauses import WC_Rule
+from clauses import Rule, WC_Rule
 from infix.tokens import TokenType
 from infix.expression import InfixExpression
 
@@ -87,7 +88,7 @@ class Observation:
     def __hash__(self):
             return hash(self.infix_expression) + 2
 
-def explain_with_abduction(atoms: dict[str, Atom],  wc_program: Program, observations: set[Observation], fixed_point: Interpretation) -> set[Interpretation]:
+def explain_with_abduction(atoms: dict[str, Atom],  wc_program: Program, observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]) -> set[Interpretation]:
     result_interpretations = []
     fixed_point_clone = fixed_point.clone()
 
@@ -100,12 +101,6 @@ def explain_with_abduction(atoms: dict[str, Atom],  wc_program: Program, observa
             undefined.remove(body_atom)
         else:
             raise Exception(f"Expected the body to have 1 atom; found {len(clause.body.atoms_here)}")
-
-    # Get undefined atoms from fixed point expect the atoms from observations
-    # undefined = set(fixed_point_clone.unknowns)
-    # for obs in observations:
-    #     if obs.atom in undefined:
-    #         undefined.remove(obs.atom)
             
     # Generate the set of explanations
     explanations = []
@@ -133,35 +128,45 @@ def explain_with_abduction(atoms: dict[str, Atom],  wc_program: Program, observa
         for abducible in explanation: 
             prog.clauses.append(abducible)
 
-        abducted_interpretation = phi(prog, fixed_point_clone)
-        next_phi = phi(prog, abducted_interpretation)
-        while abducted_interpretation != next_phi:
-            abducted_interpretation = next_phi.clone()
+        abduced_interpretation = phi(prog, fixed_point_clone)
+        next_phi = phi(prog, abduced_interpretation)
+        while abduced_interpretation != next_phi:
+            abduced_interpretation = next_phi.clone()
             next_phi = phi(prog, next_phi)
 
         # for safety, make sure that the interpretation is a model
-        if not abducted_interpretation.isModel(wc_program):
-            raise Exception(f"Interpretation {str(abducted_interpretation)} is not a model")
+        # if not abduced_interpretation.isModel(wc_program):
+        #     raise Exception(f"Interpretation {str(abduced_interpretation)} is not a model")
 
-        # Check if the abducted interpretation explains the observations
+
+        # Check if abduced interpretation satisfies integrity constraints
+        integrity_constraint_check = True
+        for constraint in integrity_constraints:
+            if constraint.evaluate() != TruthConstant.TRUE:
+                integrity_constraint_check = False
+                break
+        if not integrity_constraint_check:
+            continue
+
+        # Check if the abduced interpretation explains the observations
         explains_all = True
         for o in observations:
             if o.is_negated:
-                if o.atom not in abducted_interpretation.falses:
+                if o.atom not in abduced_interpretation.falses:
                     explains_all = False
                     break
             elif not o.is_negated:
-                if o.atom not in abducted_interpretation.trues:
+                if o.atom not in abduced_interpretation.trues:
                     explains_all = False
                     break
 
         if explains_all:
-            result_interpretations.append(abducted_interpretation)
+            result_interpretations.append(abduced_interpretation)
             for interpretation in result_interpretations:
-                if abducted_interpretation.isSuperset(interpretation):
-                    result_interpretations.remove(abducted_interpretation)
+                if abduced_interpretation.isSuperset(interpretation):
+                    result_interpretations.remove(abduced_interpretation)
                     break
-                if abducted_interpretation.isSubset(interpretation):
+                if abduced_interpretation.isSubset(interpretation):
                     result_interpretations.remove(interpretation)
                     
         

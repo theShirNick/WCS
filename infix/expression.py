@@ -14,13 +14,7 @@ class InfixExpression:
         for token in self.get_lexer_tokens():
             if token.type == TokenType.ATOM:
                 self.atoms_here.add(token.value)
-
-        
-                
-
-
-
-        
+   
 
     def __repr__(self) -> str:
         return self.token_string

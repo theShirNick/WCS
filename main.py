@@ -1,6 +1,7 @@
 import sys
 import os
 from collections import deque
+from truth_constant import TruthConstant
 
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtGui import QFontDatabase
@@ -44,6 +45,8 @@ if __name__ == "__main__":
     # force style 
     window.output_text_edit.setProperty('class', 'mono_font')
     window.observation_line_edit.setProperty('class', 'mono_font')
+    window.constraint_body_line_edit.setProperty('class', 'mono_font')
+    window.constraint_head_line_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'background_active_input')
     window.clear_program_button.setProperty('class', 'danger')
     window.undo_button.setProperty('class', 'warning')
@@ -57,6 +60,8 @@ if __name__ == "__main__":
     program = Program(clauses)
     wc_program = Program([]) 
     interpretation_stack = deque()
+    integrity_constraints = set()
+    wcP_pressed = False
 
     # Program Input
     @Slot()
@@ -72,13 +77,13 @@ if __name__ == "__main__":
 
         window.input_program_text_edit.clear()
         window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText("𝒫:\n" + str(program))
-        if len(observations) > 0:
-            window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
+        window.output_text_edit.appendPlainText("𝓟:\n" + str(program))
+        if len (observations) > 0:
+            window.output_text_edit.appendPlainText("𝓞:\n%s"%( observations ))
+        if len (integrity_constraints) > 0:
+            window.output_text_edit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
     # Connect the Program button to the function
     window.input_program_button.clicked.connect(input_program)
-
-
     
     # Observation Input
     @Slot()
@@ -88,44 +93,67 @@ if __name__ == "__main__":
 
         window.observation_line_edit.clear()
         window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText("𝒫:\n" + str(program))
+        window.output_text_edit.appendPlainText("𝓟:\n" + str(program))
         if len (observations) > 0:
-            window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
-
+            window.output_text_edit.appendPlainText("𝓞:\n%s"%( observations ))
+        if len (integrity_constraints) > 0:
+            window.output_text_edit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
     # Connect the Observation button to the function
     window.input_observation_button.clicked.connect(input_observation)
+
+    # Integrity Constraint Input
+    @Slot()
+    def input_IC():
+        constraint_body_expr = InfixExpression(window.constraint_body_line_edit.text(), atoms)
+        constraint_head_expr = InfixExpression(window.constraint_head_line_edit.text(), atoms)
+        constraint = Rule(constraint_body_expr, constraint_head_expr)
+        integrity_constraints.add(constraint)
+
+        window.constraint_body_line_edit.clear()
+        window.constraint_head_line_edit.clear()
+        window.output_text_edit.clear()
+
+        window.output_text_edit.appendPlainText("𝓟:\n" + str(program))
+        if len (observations) > 0:
+            window.output_text_edit.appendPlainText("𝓞:\n%s"%( observations ))
+        if len (integrity_constraints) > 0:
+            window.output_text_edit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+
+    # Connect the Observation button to the function
+    window.input_constraint_button.clicked.connect(input_IC)
 
     # wcP Button
     @Slot()
     def wcP():
+        global wcP_pressed
+        wcP_pressed = True
         global wc_program
         wc_program = program.weakly_complete()
         window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText("𝑤𝑐𝒫:\n" + str(wc_program))
-        if len(observations) > 0:
-            window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
+        window.output_text_edit.appendPlainText("𝔀𝓬𝓟:\n" + str(wc_program))
+        if len (observations) > 0:
+            window.output_text_edit.appendPlainText("𝓞:\n%s"%( observations ))
+        if len (integrity_constraints) > 0:
+            window.output_text_edit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
 
     # Connect the wcP button to the function
     window.wcP_button.clicked.connect(wcP)
 
-    # X - explain with abduction Button
+    # 𝒳 - explain with abduction Button
     @Slot()
     def abduction():
         
         window.output_text_edit.clear()
         abduced_models = set()
         if len(interpretation_stack) > 0:
-            abduced_models = explain_with_abduction(atoms, wc_program, observations, interpretation_stack[-1])
+            abduced_models = explain_with_abduction(atoms, wc_program, observations, interpretation_stack[-1], integrity_constraints)
             if len(abduced_models) > 0:
-                # str_out = "Abduced models: "
-                # for model in abduced_models:
-                #     str_out += f" {str(model)}, "
-                # window.output_text_edit.appendPlainText(str_out[:-2])
-
                 credulous_result = credulous(abduced_models)
                 skeptical_result = skeptical(abduced_models)
                 window.output_text_edit.appendPlainText(credulous_result)
                 window.output_text_edit.appendPlainText(skeptical_result)
+                window.output_text_edit.appendPlainText(f'\nAbduced models:\n{abduced_models}')
+
 
             else:
                 window.output_text_edit.appendPlainText("Abduction yielded nothing")
@@ -141,9 +169,11 @@ if __name__ == "__main__":
         clauses.clear()
         atoms.clear()
         observations.clear()
-
-        window.output_text_edit.clear()
+        integrity_constraints.clear()
         interpretation_stack.clear()
+        window.output_text_edit.clear()
+        wcP_pressed = False
+        
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
 
@@ -151,7 +181,7 @@ if __name__ == "__main__":
     @Slot()
     def phi_plus():
         window.output_text_edit.clear()
-        if len(wc_program.clauses) == 0:
+        if len(wc_program.clauses) == 0 and  not wcP_pressed:
             window.output_text_edit.appendPlainText("Don't forget to weakly complete your program!")
             return
         else:
@@ -161,6 +191,15 @@ if __name__ == "__main__":
             next_phi = phi(wc_program, interpretation_stack[-1])
             if interpretation_stack[-1] == next_phi:
                 window.output_text_edit.appendPlainText(f"Fixed point found.\n")
+
+                integrity_constraint_check = True
+                for constraint in integrity_constraints:
+                    if constraint.evaluate() != TruthConstant.TRUE:
+                        integrity_constraint_check = False
+                        break
+                if not integrity_constraint_check:
+                    window.output_text_edit.appendPlainText(f"Integrity constraint not satisfied. Try abduction.\n")
+
                 unexplained = set()
                 for ob in observations:
                     if ob.atom in next_phi.unknowns:

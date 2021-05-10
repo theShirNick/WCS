@@ -33,6 +33,9 @@ class Rule(Clause):
         self.head = head
         self.body = body
     
+    def __repr__(self):
+        return f"{self.body} ← {self.head}"
+
     def __str__(self):
         return f"{self.body} ← {self.head}"
 
