@@ -15,6 +15,12 @@ class Program:
             s = s + str(clause)  +",\n" 
         return s[:-2]
     
+    def copy(self):
+        copied_clauses = []
+        for clause in self.clauses:
+            copied_clauses.append(clause)
+        return Program(copied_clauses)
+    
 
     def weakly_complete(self) -> 'Program':
         '''
@@ -33,6 +39,7 @@ class Program:
         for key in body_head:
             wc_program.clauses.append(WC_Rule(body_head[key][0], body_head[key][1]))     
         return wc_program
+
 
 
             

@@ -16,7 +16,7 @@ class Clause(ABC):
 
     def get_equv_clause(self):
         '''
-            Get a Weakly Completed instance of this Clause 
+        Get a Weakly Completed instance of this Clause 
         '''
 
         return self
@@ -51,7 +51,7 @@ class WC_Rule(Clause):
         '''
         body ↔ head
 
-        "if head then body" or "body if head"
+        "body iff head"
         '''
 
         self.head = head
@@ -59,7 +59,10 @@ class WC_Rule(Clause):
     
     def __str__(self):
         return f"{self.body} ↔ {self.head}"
+    
+    def __repr__(self):
+        return f"{self.body} ↔ {self.head}"
 
     def evaluate(self) -> TruthConstant:
 
-        return reverse(self.body.evaluate(), self.head.evaluate())
+        return equivalence(self.body.evaluate(), self.head.evaluate())

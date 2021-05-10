@@ -9,11 +9,13 @@ class InfixExpression:
     def __init__(self, expression: str, atoms: dict[str, Atom]) -> None:
         self.expression = expression
         self.atoms = atoms # reference set of atoms
-        self.token_string = str(self.__parse_lexer_tokens(self.__get_lexer_tokens()))
-        self.atoms_here = set()
-        for token in self.__get_lexer_tokens():
+        self.token_string = str(self.parse_lexer_tokens(self.get_lexer_tokens()))
+        self.atoms_here = set()   
+        for token in self.get_lexer_tokens():
             if token.type == TokenType.ATOM:
                 self.atoms_here.add(token.value)
+
+        
                 
 
 
@@ -23,17 +25,17 @@ class InfixExpression:
     def __repr__(self) -> str:
         return self.token_string
 
-    def __get_lexer_tokens(self) -> Iterator:
+    def get_lexer_tokens(self) -> Iterator:
         return Lexer(self.expression, self.atoms).generate_tokens()
 
-    def __parse_lexer_tokens(self, tokens:Iterator) -> Any:
+    def parse_lexer_tokens(self, tokens:Iterator) -> Any:
         return Parser(tokens).parse()
 
     def __interpret(self, tree) -> TruthConstant:
         return Interpreter().visit(tree)
     
     def evaluate(self) -> TruthConstant:
-        return self.__interpret(self.__parse_lexer_tokens(self.__get_lexer_tokens()))
+        return self.__interpret(self.parse_lexer_tokens(self.get_lexer_tokens()))
     
     def disjoin(self, expr:'InfixExpression') -> 'InfixExpression':
         '''

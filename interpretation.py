@@ -25,7 +25,7 @@ class Interpretation:
         if self.trues & self.falses != set() or self.falses & self.unknowns != set() or self.trues & self.unknowns != set():
             raise Exception("Invalid sets of interpetation. Sets must be mutually exclusive")
     
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         s = "〈{"
         for atom in self.trues:
             s = s + atom.name +", "
@@ -52,6 +52,22 @@ class Interpretation:
                 isModel = False
         return isModel
 
+    def isSubset(self, other:'Interpretation') -> bool:
+        if self == other:
+            return False
+        if self.falses.issubset(other.falses):
+            if self.trues.issubset(other.trues):
+                return True
+        return False
+    
+    def isSuperset(self, other:'Interpretation') -> bool:
+        if self == other:
+            return False
+        if self.falses.issuperset(other.falses):
+            if self.trues.issuperset(other.trues):
+                return True
+        return False
+
     def __reset_values(self):
         for atom in self.trues:
             atom.ground_value = TruthConstant.TRUE
@@ -70,3 +86,5 @@ class Interpretation:
             return True
         else:
             return False
+    
+    

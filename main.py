@@ -12,7 +12,7 @@ from qt_material import apply_stylesheet
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
-from abductive_framework import Abducible
+from abductive_framework import Observation, credulous, explain_with_abduction, skeptical
 from infix.expression import InfixExpression
 from phi import phi
 
@@ -43,10 +43,8 @@ if __name__ == "__main__":
 
     # force style 
     window.output_text_edit.setProperty('class', 'mono_font')
-    window.input_program_text_edit.setProperty('class', 'mono_font')
+    window.observation_line_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'background_active_input')
-    window.abducible_head_line_edit.setProperty('class', 'mono_font')
-    window.abducible_body_line_edit.setProperty('class', 'mono_font')
     window.clear_program_button.setProperty('class', 'danger')
     window.undo_button.setProperty('class', 'warning')
     window.phi_plus_button.setProperty('class', 'light_font')
@@ -57,8 +55,7 @@ if __name__ == "__main__":
     observations = set()
     clauses = []
     program = Program(clauses)
-    wc_program = Program([])
-    abducibles = set() 
+    wc_program = Program([]) 
     interpretation_stack = deque()
 
     # Program Input
@@ -76,50 +73,26 @@ if __name__ == "__main__":
         window.input_program_text_edit.clear()
         window.output_text_edit.clear()
         window.output_text_edit.appendPlainText("𝒫:\n" + str(program))
-        if len(abducibles) > 0:
-            window.output_text_edit.appendPlainText("𝒜:\n%s"%( abducibles ))
         if len(observations) > 0:
             window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
     # Connect the Program button to the function
     window.input_program_button.clicked.connect(input_program)
 
-    # Abducible Input
-    @Slot()
-    def input_abducible():
-        abducible_body_expr = InfixExpression( window.abducible_body_line_edit.text(), atoms)
-        abducible_head_expr = InfixExpression(window.abducible_head_line_edit.text(), atoms)
-        abducible = Abducible(abducible_body_expr, abducible_head_expr)
-        abducibles.add(abducible)
-
-        window.abducible_body_line_edit.clear()
-        window.abducible_head_line_edit.clear()
-        window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText("𝒫:\n" + str(program))
-        if len(abducibles) > 0:
-            window.output_text_edit.appendPlainText("𝒜:\n%s"%( abducibles ))
-        if len(observations) > 0:
-            window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
-
-    # Connect the Abducible button to the function
-    window.input_abducible_button.clicked.connect(input_abducible)
 
     
     # Observation Input
     @Slot()
     def input_observation():
-        observation = InfixExpression( window.observation_line_edit.text(), atoms)
-        if len(observation.atoms_here) == 1:
-            observations.add(observation)
+        observation_expr = InfixExpression(window.observation_line_edit.text(), atoms)
+        observations.add(Observation(observation_expr))
 
         window.observation_line_edit.clear()
         window.output_text_edit.clear()
         window.output_text_edit.appendPlainText("𝒫:\n" + str(program))
-        if len(abducibles) > 0:
-            window.output_text_edit.appendPlainText("𝒜:\n%s"%( abducibles ))
-        if len(observations) > 0:
+        if len (observations) > 0:
             window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
 
-    # Connect the Abducible button to the function
+    # Connect the Observation button to the function
     window.input_observation_button.clicked.connect(input_observation)
 
     # wcP Button
@@ -129,19 +102,46 @@ if __name__ == "__main__":
         wc_program = program.weakly_complete()
         window.output_text_edit.clear()
         window.output_text_edit.appendPlainText("𝑤𝑐𝒫:\n" + str(wc_program))
-        if len(abducibles) > 0:
-            window.output_text_edit.appendPlainText("𝒜:\n%s"%( abducibles ))
         if len(observations) > 0:
             window.output_text_edit.appendPlainText("𝒪:\n%s"%( observations ))
+
     # Connect the wcP button to the function
     window.wcP_button.clicked.connect(wcP)
+
+    # X - explain with abduction Button
+    @Slot()
+    def abduction():
+        
+        window.output_text_edit.clear()
+        abduced_models = set()
+        if len(interpretation_stack) > 0:
+            abduced_models = explain_with_abduction(atoms, wc_program, observations, interpretation_stack[-1])
+            if len(abduced_models) > 0:
+                # str_out = "Abduced models: "
+                # for model in abduced_models:
+                #     str_out += f" {str(model)}, "
+                # window.output_text_edit.appendPlainText(str_out[:-2])
+
+                credulous_result = credulous(abduced_models)
+                skeptical_result = skeptical(abduced_models)
+                window.output_text_edit.appendPlainText(credulous_result)
+                window.output_text_edit.appendPlainText(skeptical_result)
+
+            else:
+                window.output_text_edit.appendPlainText("Abduction yielded nothing")
+        else:
+            window.output_text_edit.appendPlainText("Be sure to find the fixed point first")
+
+    # Connect the X button to the function
+    window.abduction_button.clicked.connect(abduction)
 
     # Clear Program
     @Slot()
     def clear_program():
         clauses.clear()
         atoms.clear()
-        abducibles.clear()
+        observations.clear()
+
         window.output_text_edit.clear()
         interpretation_stack.clear()
     # Connect the Clear button to the function
@@ -160,7 +160,14 @@ if __name__ == "__main__":
             window.output_text_edit.appendPlainText(f"Φ iteration {len(interpretation_stack) -1} with\n{str(interpretation_stack[-1])}")
             next_phi = phi(wc_program, interpretation_stack[-1])
             if interpretation_stack[-1] == next_phi:
-                window.output_text_edit.appendPlainText(f"Fixed point found")
+                window.output_text_edit.appendPlainText(f"Fixed point found.\n")
+                unexplained = set()
+                for ob in observations:
+                    if ob.atom in next_phi.unknowns:
+                        unexplained.add(ob)
+                if len(unexplained) > 0:
+                    window.output_text_edit.appendPlainText("Observations %s"%( observations ) + " are unexplained. Abduction may help.")
+
             else:     
                 interpretation_stack.append(next_phi)
                 window.output_text_edit.appendPlainText(f"The consequence is {str(next_phi)}")   

@@ -7,6 +7,7 @@
   border-top-right-radius: 5px;
   border-width: 0 0 2px 0;
   background-color: #232629;
+  font-family: "Overpass Mono", "Lucida Console", monospace;
 }}
 .mono_font {{
     font-family: "Overpass Mono", "Lucida Console", monospace;
@@ -15,3 +16,14 @@
 .light_font {{
     font-weight: normal;
   }}
+.neg_obs_btn{{
+  font-size: 35pt;
+  padding: 2px;
+
+  border: 1px solid #8bc34a;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-width: 0 0 2px 0;
+}}
