@@ -1,7 +1,9 @@
 # WCS
 
 ## How to run
-Python 3.9.2 is required (make sure PATH has path to Python and Python/Scripts)
+Python 3.9.2 or newer is required (make sure PATH has path to Python and Python/Scripts)
+
+Install all dependencies with pip:
 
 `pip install - r requirements.txt`
 
