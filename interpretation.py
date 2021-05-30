@@ -82,6 +82,8 @@ class Interpretation:
         return Interpretation(self.trues.copy(), self.falses.copy(), self.unknowns.copy())
     
     def __eq__(self, other):
+        # if self == None or other == None:
+        #     return False
         if self.trues == other.trues and self.falses == other.falses and self.unknowns == other.unknowns:
             return True
         else:

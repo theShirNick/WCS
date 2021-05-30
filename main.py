@@ -4,7 +4,7 @@ from collections import deque
 from truth_constant import TruthConstant
 
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QFontDatabase
+from PySide6.QtGui import QFontDatabase, QFont
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QFile, QIODevice, Slot
 
@@ -42,16 +42,25 @@ if __name__ == "__main__":
     with open('ui/custom.css') as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
+    
     # force style 
-    window.output_text_edit.setProperty('class', 'mono_font')
+    window.PTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.tabWidget.setCurrentIndex(1)
+    window.wcPTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.tabWidget.setCurrentIndex(2)
+    window.PhiTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.tabWidget.setCurrentIndex(3)
+    window.XTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.tabWidget.setCurrentIndex(0)
+
     window.observation_line_edit.setProperty('class', 'mono_font')
     window.constraint_body_line_edit.setProperty('class', 'mono_font')
     window.constraint_head_line_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'background_active_input')
     window.clear_program_button.setProperty('class', 'danger')
-    window.undo_button.setProperty('class', 'warning')
-    window.phi_plus_button.setProperty('class', 'light_font')
-    window.wcP_button.setProperty('class', 'light_font')
+    # window.undo_button.setProperty('class', 'warning')
+    window.Phitab.setProperty('class', 'light_font')
+    
 
     # Important stuff starts here
     atoms = dict()
@@ -61,7 +70,7 @@ if __name__ == "__main__":
     wc_program = Program([]) 
     interpretation_stack = deque()
     integrity_constraints = set()
-    wcP_pressed = False
+    is_OR = False
 
     # Program Input
     @Slot()
@@ -74,14 +83,17 @@ if __name__ == "__main__":
             body, head = clause.split('←', 1)
             program.clauses.append(Rule(InfixExpression(body, atoms), InfixExpression(head, atoms)))
         
-
         window.input_program_text_edit.clear()
-        window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText("𝓟:\n" + str(program))
+        window.PTextEdit.clear()
+        window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
         if len (observations) > 0:
-            window.output_text_edit.appendPlainText("𝓞:\n%s"%( observations ))
+            window.PTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
         if len (integrity_constraints) > 0:
-            window.output_text_edit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+            window.PTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+
+        # Remake the other tabs
+        wcP_Phi_X()
+
     # Connect the Program button to the function
     window.input_program_button.clicked.connect(input_program)
     
@@ -92,12 +104,16 @@ if __name__ == "__main__":
         observations.add(Observation(observation_expr))
 
         window.observation_line_edit.clear()
-        window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText("𝓟:\n" + str(program))
+        window.PTextEdit.clear()
+        window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
         if len (observations) > 0:
-            window.output_text_edit.appendPlainText("𝓞:\n%s"%( observations ))
+            window.PTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
         if len (integrity_constraints) > 0:
-            window.output_text_edit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+            window.PTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+
+        # Remake the other tabs 
+        wcP_Phi_X()
+
     # Connect the Observation button to the function
     window.input_observation_button.clicked.connect(input_observation)
 
@@ -111,58 +127,127 @@ if __name__ == "__main__":
 
         window.constraint_body_line_edit.clear()
         window.constraint_head_line_edit.clear()
-        window.output_text_edit.clear()
+        window.PTextEdit.clear()
 
-        window.output_text_edit.appendPlainText("𝓟:\n" + str(program))
+        window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
         if len (observations) > 0:
-            window.output_text_edit.appendPlainText("𝓞:\n%s"%( observations ))
+            window.PTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
         if len (integrity_constraints) > 0:
-            window.output_text_edit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+            window.PTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+        # Remake the other tabs
+        wcP_Phi_X()
 
-    # Connect the Observation button to the function
+    # Connect the Integrity Constraint button to the function
     window.input_constraint_button.clicked.connect(input_IC)
 
-    # wcP Button
+    # Conjunction Input
     @Slot()
-    def wcP():
-        global wcP_pressed
-        wcP_pressed = True
+    def input_conjunction():
+        left_text = window.conjunction_line_edit_left.text()
+        right_text = window.conjunction_line_edit_right.text()
+
+        disjunction_of_negated = InfixExpression(f'~{left_text} and ~{right_text}', atoms)
+        constraint = Rule(InfixExpression("F", atoms), disjunction_of_negated)
+        integrity_constraints.add(constraint)
+        if not is_OR:
+            disjunction_for_exclusive = InfixExpression(f'{left_text} and {right_text}', atoms)
+            constraint = Rule(InfixExpression("F", atoms), disjunction_for_exclusive)
+            integrity_constraints.add(constraint)
+
+        window.conjunction_line_edit_left.clear()
+        window.conjunction_line_edit_right.clear()
+        window.PTextEdit.clear()
+
+        window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
+        if len (observations) > 0:
+            window.PTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
+        if len (integrity_constraints) > 0:
+            window.PTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+        # Remake the other tabs
+        wcP_Phi_X()
+
+    # Connect the Integrity Constraint button to the function
+    window.input_conjunction_button.clicked.connect(input_conjunction)
+
+    # Weakly Complete and construct text
+    def wcP(): 
         global wc_program
         wc_program = program.weakly_complete()
-        window.output_text_edit.clear()
-        window.output_text_edit.appendPlainText("𝔀𝓬𝓟:\n" + str(wc_program))
+        window.wcPTextEdit.clear()
+        window.wcPTextEdit.appendPlainText("𝔀𝓬𝓟:\n" + str(wc_program))
         if len (observations) > 0:
-            window.output_text_edit.appendPlainText("𝓞:\n%s"%( observations ))
+            window.wcPTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
         if len (integrity_constraints) > 0:
-            window.output_text_edit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+            window.wcPTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
 
-    # Connect the wcP button to the function
-    window.wcP_button.clicked.connect(wcP)
-
-    # 𝒳 - explain with abduction Button
-    @Slot()
-    def abduction():
+    # Semantic Phi Operator
+    def phi_fixed_point():
+        interpretation_stack.clear()
+        window.PhiTextEdit.clear()
+        if len(interpretation_stack) == 0:
+            interpretation_stack.append(Interpretation(set(), set(), set(atoms.values() )))
         
-        window.output_text_edit.clear()
+        stop = False
+        while stop == False:
+            window.PhiTextEdit.appendPlainText(f"Φ↑{len(interpretation_stack) -1}: {str(interpretation_stack[-1])}")
+            next_phi = phi(wc_program, interpretation_stack[-1])
+            if interpretation_stack[-1] == next_phi:
+                window.PhiTextEdit.appendPlainText(f"Fixed point found.\n")
+                stop = True
+
+                integrity_constraint_check = True
+                for constraint in integrity_constraints:
+                    if constraint.evaluate() != TruthConstant.TRUE:
+                        integrity_constraint_check = False
+                        break
+                if not integrity_constraint_check:
+                    window.PhiTextEdit.appendPlainText(f"Integrity constraint not satisfied. Try abduction.\n")
+
+                unexplained = set()
+                for ob in observations:
+                    if ob.atom in next_phi.unknowns:
+                        unexplained.add(ob)
+                if len(unexplained) > 0:
+                    window.PhiTextEdit.appendPlainText("Observations %s"%( observations ) + " are unexplained. Abduction may help.")
+
+            else:     
+                interpretation_stack.append(next_phi) 
+
+    # 𝒳 - explain with abduction
+    def abduction():  
+        window.XTextEdit.clear()
         abduced_models = set()
         if len(interpretation_stack) > 0:
             abduced_models = explain_with_abduction(atoms, wc_program, observations, interpretation_stack[-1], integrity_constraints)
             if len(abduced_models) > 0:
-                credulous_result = credulous(abduced_models)
                 skeptical_result = skeptical(abduced_models)
-                window.output_text_edit.appendPlainText(credulous_result)
-                window.output_text_edit.appendPlainText(skeptical_result)
-                window.output_text_edit.appendPlainText(f'\nAbduced models:\n{abduced_models}')
-
-
+                window.XTextEdit.appendPlainText(skeptical_result)
+                window.XTextEdit.appendPlainText(f'\nAbduced models:')
+                for abd_model in abduced_models:
+                    window.XTextEdit.appendPlainText(str(abd_model))
             else:
-                window.output_text_edit.appendPlainText("Abduction yielded nothing")
+                window.XTextEdit.appendPlainText("Abduction yielded nothing")
         else:
-            window.output_text_edit.appendPlainText("Be sure to find the fixed point first")
+            window.XTextEdit.appendPlainText("ERROR: Interpretation stack empty. Did Phi run correctly?")
 
-    # Connect the X button to the function
-    window.abduction_button.clicked.connect(abduction)
+     # Exclusive conjunction button
+    @Slot()
+    def XOR_switch():
+        global is_OR
+        is__OR = window.exclusive_button.isChecked()
+        if is__OR:
+            window.exclusive_button.setText("OR")
+        else:
+            window.exclusive_button.setText("XOR")  
+    # Connect the XOR switch to the function  
+    window.exclusive_button.clicked.connect(XOR_switch)
 
+    # Call this after input changes
+    def wcP_Phi_X():
+        wcP()
+        phi_fixed_point()
+        abduction()
+        
     # Clear Program
     @Slot()
     def clear_program():
@@ -171,49 +256,14 @@ if __name__ == "__main__":
         observations.clear()
         integrity_constraints.clear()
         interpretation_stack.clear()
-        window.output_text_edit.clear()
-        wcP_pressed = False
+        window.PTextEdit.clear()
+        window.wcPTextEdit.clear()
+        window.PhiTextEdit.clear()
+        window.XTextEdit.clear()
         
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
 
-    # Semantic Phi Operator
-    @Slot()
-    def phi_plus():
-        window.output_text_edit.clear()
-        if len(wc_program.clauses) == 0 and  not wcP_pressed:
-            window.output_text_edit.appendPlainText("Don't forget to weakly complete your program!")
-            return
-        else:
-            if len(interpretation_stack) == 0:
-                interpretation_stack.append(Interpretation(set(), set(), set(atoms.values() )))
-            window.output_text_edit.appendPlainText(f"Φ iteration {len(interpretation_stack) -1} with\n{str(interpretation_stack[-1])}")
-            next_phi = phi(wc_program, interpretation_stack[-1])
-            if interpretation_stack[-1] == next_phi:
-                window.output_text_edit.appendPlainText(f"Fixed point found.\n")
-
-                integrity_constraint_check = True
-                for constraint in integrity_constraints:
-                    if constraint.evaluate() != TruthConstant.TRUE:
-                        integrity_constraint_check = False
-                        break
-                if not integrity_constraint_check:
-                    window.output_text_edit.appendPlainText(f"Integrity constraint not satisfied. Try abduction.\n")
-
-                unexplained = set()
-                for ob in observations:
-                    if ob.atom in next_phi.unknowns:
-                        unexplained.add(ob)
-                if len(unexplained) > 0:
-                    window.output_text_edit.appendPlainText("Observations %s"%( observations ) + " are unexplained. Abduction may help.")
-
-            else:     
-                interpretation_stack.append(next_phi)
-                window.output_text_edit.appendPlainText(f"The consequence is {str(next_phi)}")   
-    # Connect the Φ++ button to the function
-    window.phi_plus_button.clicked.connect(phi_plus)
-
-    
     # run GUI
     window.show()
     sys.exit(app.exec_())
