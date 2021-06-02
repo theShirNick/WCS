@@ -23,7 +23,7 @@ class Clause(ABC):
 
 class Rule(Clause):
 
-    def __init__(self, body: InfixExpression, head: InfixExpression):
+    def __init__(self, body: InfixExpression, head: InfixExpression, non_necessary_antecedent: bool = False, factual_conditional: bool = False):
         '''
         body ← head
 
@@ -32,25 +32,34 @@ class Rule(Clause):
 
         self.head = head
         self.body = body
+        self.non_nec = non_necessary_antecedent
+        self.factual = factual_conditional
     
     def __repr__(self):
-        return f"{self.body} ← {self.head}"
+        if self.non_nec == False and self.factual == False:
+            return f"{self.body} ← {self.head}"
+        elif self.non_nec == True and self.factual == True:
+            return f"ⁿⁿ{self.body} ← ᶠ{self.head}"
+        elif self.non_nec == True and self.factual == False:
+            return f"ⁿⁿ{self.body} ← {self.head}"
+        elif self.non_nec == False and self.factual == True:
+            return f"{self.body} ← ᶠ{self.head}"
 
     def __str__(self):
-        return f"{self.body} ← {self.head}"
+        return self.__repr__()
 
     def evaluate(self) -> TruthConstant:
 
         return reverse(self.body.evaluate(), self.head.evaluate())
     
     def get_equv_clause(self):
-        return WC_Rule(self.body, self.head)
+        return WC_Rule(self.body, self.head, self.non_nec, self.factual)
 
 ### Weakly Completed Clauses
 
 class WC_Rule(Clause):
 
-    def __init__(self, body: InfixExpression, head: InfixExpression):
+    def __init__(self, body: InfixExpression, head: InfixExpression, non_necessary_antecedent: bool = False, factual_conditional: bool = False):
         '''
         body ↔ head
 
@@ -59,12 +68,21 @@ class WC_Rule(Clause):
 
         self.head = head
         self.body = body
+        self.non_nec = non_necessary_antecedent
+        self.factual = factual_conditional
     
     def __str__(self):
-        return f"{self.body} ↔ {self.head}"
+        return self.__repr__()
     
     def __repr__(self):
-        return f"{self.body} ↔ {self.head}"
+        if self.non_nec == False and self.factual == False:
+            return f"{self.body} ↔ {self.head}"
+        elif self.non_nec == True and self.factual == True:
+            return f"ⁿⁿ{self.body} ↔ ᶠ{self.head}"
+        elif self.non_nec == True and self.factual == False:
+            return f"ⁿⁿ{self.body} ↔ {self.head}"
+        elif self.non_nec == False and self.factual == True:
+            return f"{self.body} ↔ ᶠ{self.head}"
 
     def evaluate(self) -> TruthConstant:
 

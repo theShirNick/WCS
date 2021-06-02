@@ -9,6 +9,7 @@ DISJUNSTION = '|∨'
 CONJUNCTION = '∧&^' 
 NEGATION    = '¬~!'
 TRUTHCONST  = {TruthConstant.TRUE.value, TruthConstant.FALSE.value, TruthConstant.UNKNOWN.value }
+CONDITIONAL_CLASSIFIER = '*'
 
 class Lexer:
     def __init__(self, text: str, atoms: dict[Atom]) -> None:
@@ -25,6 +26,8 @@ class Lexer:
     def generate_tokens(self):
         while self.current_char != None:
             if self.current_char in WHITESPACE:
+                self.advance()
+            elif self.current_char in CONDITIONAL_CLASSIFIER:
                 self.advance()
             elif self.current_char in TRUTHCONST:
                 yield self.__generate_truth_const()
@@ -73,7 +76,10 @@ class Lexer:
 
         
         if str not in self.atoms:
-            self.atoms[str] = Atom(str)
+            if len(str) >= 3 and str[:3] == "ab_":
+                    self.atoms[str] = Atom(str, is_abnormality= True)
+            else:
+                self.atoms[str] = Atom(str)
         return Token(TokenType.ATOM, self.atoms[str])
 
     def __generate_truth_const(self) -> Token:

@@ -87,12 +87,11 @@ class Observation:
 
     def __hash__(self):
             return hash(self.infix_expression) + 2
+def get_undefined_atoms(atoms: dict[str, Atom],  wc_program: Program):
+    '''
+        Get undefined atoms as those that do not occur in the body of any clause
+    '''
 
-def explain_with_abduction(atoms: dict[str, Atom],  wc_program: Program, observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]) -> set[Interpretation]:
-    result_interpretations = []
-    fixed_point_clone = fixed_point.clone()
-
-    # Get undefined atoms as those that do not occur in the body of any clause
     undefined = set(atoms.values())
     for clause in wc_program.clauses:
         if len(clause.body.atoms_here) == 1:
@@ -101,28 +100,49 @@ def explain_with_abduction(atoms: dict[str, Atom],  wc_program: Program, observa
             undefined.remove(body_atom)
         else:
             raise Exception(f"Expected the body to have 1 atom; found {len(clause.body.atoms_here)}")
+    return undefined
             
+def get_set_of_abducibles(atoms: dict[str, Atom],  wc_program: Program):
+    
+    undefined = get_undefined_atoms(atoms, wc_program)
     # Generate the set of explanations
+
+    # Classification of conditionals alters the set of abducibles
+    classification_enforced = set()
+    for clause in wc_program.clauses:
+        if clause.non_nec:
+            classification_enforced.add(WC_Rule(clause.body, InfixExpression('T', atoms)))
+        if clause.factual:
+            for atom in clause.head.atoms_here:
+                if atom.is_abnormality:
+                    classification_enforced.add(WC_Rule(InfixExpression(f"{atom.name}", atoms), InfixExpression('T', atoms)))
+    
     explanations = []
-    for u_atom in undefined:
+    for u_atom in undefined: # for each undefined atom there can be two explanations: it's either true or false
         af = AbducibleFactory(u_atom, atoms)
         assumption = af.get_wc_assumption()
         fact = af.get_wc_fact()
+
+
         for explanation in explanations:
             if fact in explanation or assumption in explanation:
-                pass
+                pass # we don't need contradictory explanations
             else:
                 new_explanation_fact = explanation.copy()
                 new_explanation_fact.add(fact)
                 new_explanation_assumption = explanation.copy()
                 new_explanation_assumption.add(assumption)
-                explanations.append(new_explanation_fact)
+                explanations.append(new_explanation_fact) # append existing explanation
                 explanations.append(new_explanation_assumption)      
-        explanations.append({assumption})
-        explanations.append({fact})
-        
-    
-    # run phi with abducible:
+        explanations.append({assumption}) # make a new explanation with just this assumption
+        explanations.append({fact}) # make a new explanation with just this fact
+        if len(classification_enforced) > 0:
+            explanations.append(classification_enforced)
+    return explanations # extend the set by classification additions
+
+def phi_with_abduction(explanations: list, wc_program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
+    result_interpretations = []
+    fixed_point_clone = fixed_point.clone()
     for explanation in explanations:
         prog = wc_program.copy()
         for abducible in explanation: 
@@ -133,11 +153,6 @@ def explain_with_abduction(atoms: dict[str, Atom],  wc_program: Program, observa
         while abduced_interpretation != next_phi:
             abduced_interpretation = next_phi.clone()
             next_phi = phi(prog, next_phi)
-
-        # for safety, make sure that the interpretation is a model
-        # if not abduced_interpretation.isModel(wc_program):
-        #     raise Exception(f"Interpretation {str(abduced_interpretation)} is not a model")
-
 
         # Check if abduced interpretation satisfies integrity constraints
         integrity_constraint_check = True
@@ -168,36 +183,36 @@ def explain_with_abduction(atoms: dict[str, Atom],  wc_program: Program, observa
                     break
                 if abduced_interpretation.isSubset(interpretation):
                     result_interpretations.remove(interpretation)
-                    
-        
     return  result_interpretations
 
-def credulous(interpretations:list[Interpretation]) :
-    trues = set()
-    falses = set()
-    for interpretation in interpretations:
-        trues = trues.union(interpretation.trues)
-        falses = falses.union(interpretation.falses)
-    trues_str = ''
-    for true_atom in trues:
-        trues_str += f"{true_atom}, "
-    if len(trues) > 0:
-        trues_str = trues_str[:-2]
 
-    falses_str = ''
-    for false_atom in falses:
-        falses_str += f"¬{false_atom}, "
-    if len(falses) > 0:
-        falses_str = falses_str[:-2]
+# def credulous(interpretations:list[Interpretation]) :
+#     trues = set()
+#     falses = set()
+#     for interpretation in interpretations:
+#         trues = trues.union(interpretation.trues)
+#         falses = falses.union(interpretation.falses)
+#     trues_str = ''
+#     for true_atom in trues:
+#         trues_str += f"{true_atom}, "
+#     if len(trues) > 0:
+#         trues_str = trues_str[:-2]
 
-    return f"Credulously follows:\n{trues_str} {falses_str}"
+#     falses_str = ''
+#     for false_atom in falses:
+#         falses_str += f"¬{false_atom}, "
+#     if len(falses) > 0:
+#         falses_str = falses_str[:-2]
 
-def skeptical(interpretations:list[Interpretation]) :
+#     return f"Credulously follows:\n{trues_str} {falses_str}"
+
+def skeptical(atoms: dict[str, Atom],  wc_program: Program, interpretations:list[Interpretation]) :
+    undefined = get_undefined_atoms(atoms, wc_program)
     trues = interpretations[0].trues.copy()
     falses = interpretations[0].falses.copy()
     for interpretation in interpretations:
-        trues = trues.intersection(interpretation.trues)
-        falses = falses.intersection(interpretation.falses)
+        trues = trues.intersection(interpretation.trues).intersection(undefined)
+        falses = falses.intersection(interpretation.falses).intersection(undefined)
     trues_str = ''
     for true_atom in trues:
         trues_str += f"{true_atom}, "
@@ -209,5 +224,12 @@ def skeptical(interpretations:list[Interpretation]) :
         falses_str += f"¬{false_atom}, "
     if len(falses) > 0:
         falses_str = falses_str[:-2]
-    return f"Skeptically follows:\n{trues_str} {falses_str}"
+    return_str = 'Skeptically follows:\n'
+    if len(trues) > 0:
+        return_str = return_str + f"{trues_str}, "
+    if len(falses) > 0:
+        return_str = return_str + f"{falses_str} "
+    if len(trues) == 0 and len(falses) == 0:
+        return_str = return_str + f"nothing"
+    return return_str
 

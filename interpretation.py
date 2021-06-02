@@ -28,14 +28,14 @@ class Interpretation:
     def __repr__(self) -> str:
         s = "〈{"
         for atom in self.trues:
-            s = s + atom.name +", "
+            s = s + atom.__str__()+", "
         if self.trues != set(): # if not empty
             s = s[:-2] # delete the last comma
         else:
             s = s + "∅"
         s = s + "}, {"
         for atom in self.falses:
-            s = s + atom.name +", "
+            s = s + atom.__str__()+", "
         if self.falses != set(): # if not empty
             s = s[:-2] # delete the last comma 
         else:

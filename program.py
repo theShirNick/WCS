@@ -12,7 +12,7 @@ class Program:
     def __str__(self) -> str:
         s = ""
         for clause in self.clauses:
-            s = s + str(clause)  +",\n" 
+            s = s + str(clause)  +";\n" 
         return s[:-2]
     
     def copy(self):
@@ -33,11 +33,12 @@ class Program:
 
         for clause in self.clauses:
                 if str(clause.body) not in body_head:
-                    body_head[str(clause.body)] = [clause.body, clause.head]
+                    body_head[str(clause.body)] = [clause.body, clause.head, clause.non_nec, clause.factual]
                 else:
-                    body_head[str(clause.body)] = [clause.body, body_head[str(clause.body)][1].disjoin(clause.head)]
+                    # TODO what should I do if classifications don't match? (e.g nn True + False)
+                    body_head[str(clause.body)] = [clause.body, body_head[str(clause.body)][1].disjoin(clause.head), clause.non_nec, clause.factual]
         for key in body_head:
-            wc_program.clauses.append(WC_Rule(body_head[key][0], body_head[key][1]))     
+            wc_program.clauses.append(WC_Rule(body_head[key][0], body_head[key][1], body_head[key][2], body_head[key][3] ))     
         return wc_program
 
 
