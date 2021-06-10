@@ -23,51 +23,51 @@ class Clause(ABC):
 
 class Rule(Clause):
 
-    def __init__(self, body: InfixExpression, head: InfixExpression, non_necessary_antecedent: bool = False, factual_conditional: bool = False):
+    def __init__(self, left_head: InfixExpression, right_body: InfixExpression, non_necessary_antecedent: bool = False, factual_conditional: bool = False):
         '''
-        body ← head
+        head ← body
 
-        "if head then body" or "body if head"
+        "if body then head" or "head if body"
         '''
 
-        self.head = head
-        self.body = body
+        self.right_body = right_body
+        self.left_head = left_head
         self.non_nec = non_necessary_antecedent
         self.factual = factual_conditional
     
     def __repr__(self):
         if self.non_nec == False and self.factual == False:
-            return f"{self.body} ← {self.head}"
+            return f"{self.left_head} ← {self.right_body}"
         elif self.non_nec == True and self.factual == True:
-            return f"ⁿⁿ{self.body} ← ᶠ{self.head}"
+            return f"ⁿⁿ{self.left_head} ← ᶠ{self.right_body}"
         elif self.non_nec == True and self.factual == False:
-            return f"ⁿⁿ{self.body} ← {self.head}"
+            return f"ⁿⁿ{self.left_head} ← {self.right_body}"
         elif self.non_nec == False and self.factual == True:
-            return f"{self.body} ← ᶠ{self.head}"
+            return f"{self.left_head} ← ᶠ{self.right_body}"
 
     def __str__(self):
         return self.__repr__()
 
     def evaluate(self) -> TruthConstant:
 
-        return reverse(self.body.evaluate(), self.head.evaluate())
+        return reverse(self.left_head.evaluate(), self.right_body.evaluate())
     
     def get_equv_clause(self):
-        return WC_Rule(self.body, self.head, self.non_nec, self.factual)
+        return WC_Rule(self.left_head, self.right_body, self.non_nec, self.factual)
 
 ### Weakly Completed Clauses
 
 class WC_Rule(Clause):
 
-    def __init__(self, body: InfixExpression, head: InfixExpression, non_necessary_antecedent: bool = False, factual_conditional: bool = False):
+    def __init__(self, left_head: InfixExpression, right_body: InfixExpression, non_necessary_antecedent: bool = False, factual_conditional: bool = False):
         '''
-        body ↔ head
+        head ↔ body
 
-        "body iff head"
+        "head iff body"
         '''
 
-        self.head = head
-        self.body = body
+        self.right_body = right_body
+        self.left_head = left_head
         self.non_nec = non_necessary_antecedent
         self.factual = factual_conditional
     
@@ -76,14 +76,14 @@ class WC_Rule(Clause):
     
     def __repr__(self):
         if self.non_nec == False and self.factual == False:
-            return f"{self.body} ↔ {self.head}"
+            return f"{self.left_head} ↔ {self.right_body}"
         elif self.non_nec == True and self.factual == True:
-            return f"ⁿⁿ{self.body} ↔ ᶠ{self.head}"
+            return f"ⁿⁿ{self.left_head} ↔ ᶠ{self.right_body}"
         elif self.non_nec == True and self.factual == False:
-            return f"ⁿⁿ{self.body} ↔ {self.head}"
+            return f"ⁿⁿ{self.left_head} ↔ {self.right_body}"
         elif self.non_nec == False and self.factual == True:
-            return f"{self.body} ↔ ᶠ{self.head}"
+            return f"{self.left_head} ↔ ᶠ{self.right_body}"
 
     def evaluate(self) -> TruthConstant:
 
-        return equivalence(self.body.evaluate(), self.head.evaluate())
+        return equivalence(self.left_head.evaluate(), self.right_body.evaluate())

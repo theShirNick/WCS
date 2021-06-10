@@ -29,16 +29,16 @@ class Program:
         Disjoin the heads of clauses with equal bodies
         '''
         wc_program = Program([])
-        body_head = dict()
+        head_body = dict()
 
         for clause in self.clauses:
-                if str(clause.body) not in body_head:
-                    body_head[str(clause.body)] = [clause.body, clause.head, clause.non_nec, clause.factual]
+                if str(clause.left_head) not in head_body:
+                    head_body[str(clause.left_head)] = [clause.left_head, clause.right_body, clause.non_nec, clause.factual]
                 else:
                     # TODO what should I do if classifications don't match? (e.g nn True + False)
-                    body_head[str(clause.body)] = [clause.body, body_head[str(clause.body)][1].disjoin(clause.head), clause.non_nec, clause.factual]
-        for key in body_head:
-            wc_program.clauses.append(WC_Rule(body_head[key][0], body_head[key][1], body_head[key][2], body_head[key][3] ))     
+                    head_body[str(clause.left_head)] = [clause.left_head, head_body[str(clause.left_head)][1].disjoin(clause.right_body), clause.non_nec, clause.factual]
+        for key in head_body:
+            wc_program.clauses.append(WC_Rule(head_body[key][0], head_body[key][1], head_body[key][2], head_body[key][3] ))     
         return wc_program
 
 

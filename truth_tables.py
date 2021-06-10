@@ -67,26 +67,26 @@ def implication(head_value: TruthConstant, body_value: TruthConstant) -> TruthCo
     else:
         raise Exception(f"Could not perform implication: {head_value} → {body_value}")
 
-def reverse(body_value: TruthConstant, head_value: TruthConstant) -> TruthConstant:
+def reverse(left_head_value: TruthConstant, right_body_value: TruthConstant) -> TruthConstant:
     '''
     Reverse of implication (←) operation for Łukasiewicz three-valued logic
 
-    body ← head
+    head ← body
 
-    "body if head"
+    "head if body"
     '''
 
     # Find resulting value
-    if head_value == TruthConstant.FALSE or body_value == TruthConstant.TRUE:
+    if right_body_value == TruthConstant.FALSE or left_head_value == TruthConstant.TRUE:
         return TruthConstant.TRUE
-    elif head_value == TruthConstant.UNKNOWN and body_value == TruthConstant.UNKNOWN:
+    elif right_body_value == TruthConstant.UNKNOWN and left_head_value == TruthConstant.UNKNOWN:
         return TruthConstant.TRUE
-    elif head_value == TruthConstant.UNKNOWN or body_value == TruthConstant.UNKNOWN:
+    elif right_body_value == TruthConstant.UNKNOWN or left_head_value == TruthConstant.UNKNOWN:
         return TruthConstant.UNKNOWN
-    elif head_value == TruthConstant.TRUE and body_value == TruthConstant.FALSE:
+    elif right_body_value == TruthConstant.TRUE and left_head_value == TruthConstant.FALSE:
         return TruthConstant.FALSE
     else:
-        raise Exception(f"Could not perform  reverse implication: {body_value} ← {head_value}")
+        raise Exception(f"Could not perform  reverse implication: {left_head_value} ← {right_body_value}")
 
 def equivalence(truth_val1: TruthConstant, truth_val2: TruthConstant) -> TruthConstant:
     '''

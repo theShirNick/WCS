@@ -36,14 +36,14 @@ class AbducibleFactory:
 
     def get_wc_fact(self) -> WC_Rule:
         '''
-        Get Weak Completion Clause atom ← ⊤/⊥ 
+        Get Weak Completion Clause from 'atom ← ⊤' 
         '''
 
         return WC_Rule(InfixExpression(str(self.atom), self.atom_dict), InfixExpression('T', self.atom_dict))
 
     def get_wc_assumption(self) -> WC_Rule:
         '''
-        Get Weak Completion Clause atom ← ⊥ 
+        Get Weak Completion Clause from 'atom ← ⊥' 
         '''
 
         return WC_Rule(InfixExpression(str(self.atom), self.atom_dict), InfixExpression('F', self.atom_dict))
@@ -89,17 +89,17 @@ class Observation:
             return hash(self.infix_expression) + 2
 def get_undefined_atoms(atoms: dict[str, Atom],  wc_program: Program):
     '''
-        Get undefined atoms as those that do not occur in the body of any clause
+        Get undefined atoms as those that do not occur in the head of any clause
     '''
 
     undefined = set(atoms.values())
     for clause in wc_program.clauses:
-        if len(clause.body.atoms_here) == 1:
-            body_atom = clause.body.atoms_here.pop()
-            clause.body.atoms_here.add(body_atom)
-            undefined.remove(body_atom)
+        if len(clause.left_head.atoms_here) == 1:
+            head_atom = clause.left_head.atoms_here.pop()
+            clause.left_head.atoms_here.add(head_atom)
+            undefined.remove(head_atom)
         else:
-            raise Exception(f"Expected the body to have 1 atom; found {len(clause.body.atoms_here)}")
+            raise Exception(f"Expected the head to have 1 atom; found {len(clause.left_head.atoms_here)}")
     return undefined
             
 def get_set_of_abducibles(atoms: dict[str, Atom],  wc_program: Program):
@@ -111,9 +111,9 @@ def get_set_of_abducibles(atoms: dict[str, Atom],  wc_program: Program):
     classification_enforced = set()
     for clause in wc_program.clauses:
         if clause.non_nec:
-            classification_enforced.add(WC_Rule(clause.body, InfixExpression('T', atoms)))
+            classification_enforced.add(WC_Rule(clause.left_head, InfixExpression('T', atoms)))
         if clause.factual:
-            for atom in clause.head.atoms_here:
+            for atom in clause.right_body.atoms_here:
                 if atom.is_abnormality:
                     classification_enforced.add(WC_Rule(InfixExpression(f"{atom.name}", atoms), InfixExpression('T', atoms)))
     
@@ -137,8 +137,8 @@ def get_set_of_abducibles(atoms: dict[str, Atom],  wc_program: Program):
         explanations.append({assumption}) # make a new explanation with just this assumption
         explanations.append({fact}) # make a new explanation with just this fact
         if len(classification_enforced) > 0:
-            explanations.append(classification_enforced)
-    return explanations # extend the set by classification additions
+            explanations.append(classification_enforced) # extend the set by classification additions
+    return explanations 
 
 def phi_with_abduction(explanations: list, wc_program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
     result_interpretations = []
@@ -230,6 +230,6 @@ def skeptical(atoms: dict[str, Atom],  wc_program: Program, interpretations:list
     if len(falses) > 0:
         return_str = return_str + f"{falses_str} "
     if len(trues) == 0 and len(falses) == 0:
-        return_str = return_str + f"nothing"
+        return_str = return_str + f"nothing new"
     return return_str
 

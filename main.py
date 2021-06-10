@@ -5,7 +5,7 @@ from truth_constant import TruthConstant
 
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtGui import QFontDatabase, QFont
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import QFile, QIODevice, Slot
 
 from qt_material import apply_stylesheet
@@ -13,10 +13,10 @@ from qt_material import apply_stylesheet
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
-# from abductive_framework import Observation, credulous, explain_with_abduction, skeptical
 from abductive_framework import Observation, get_set_of_abducibles, phi_with_abduction, skeptical
 from infix.expression import InfixExpression
 from phi import phi
+from examples import Example
 
 
 if __name__ == "__main__":
@@ -44,7 +44,8 @@ if __name__ == "__main__":
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
     
-    # force style 
+    # force style
+    window.statusbar.hide()
     window.PTextEdit.setFont(QFont("Overpass Mono", 14))
     window.tabWidget.setCurrentIndex(1)
     window.wcPTextEdit.setFont(QFont("Overpass Mono", 14))
@@ -57,14 +58,13 @@ if __name__ == "__main__":
     window.tabWidget.setCurrentIndex(0)
 
     window.observation_line_edit.setProperty('class', 'mono_font')
-    window.constraint_body_line_edit.setProperty('class', 'mono_font')
-    window.constraint_head_line_edit.setProperty('class', 'mono_font')
+    window.constraint_left_head_line_edit.setProperty('class', 'mono_font')
+    window.constraint_right_body_line_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'background_active_input')
     window.clear_program_button.setProperty('class', 'danger')
-    # window.undo_button.setProperty('class', 'warning')
     window.Phitab.setProperty('class', 'light_font')
     
-    placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"body if head\"\nAbnormality predictes must begin with \"ab_\"\nPut an asterisk (*) in the body to make it a non-necessary antecedent.\nPut an asterisk (*) in the head to make it a factual conditional."
+    placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"head if body\"\nAbnormality predictes must begin with \"ab_\"\nPut an asterisk (*) in the head to make it a non-necessary antecedent.\nPut an asterisk (*) in the body to make it a factual conditional."
     window.input_program_text_edit.setPlaceholderText(placeholder_text)
     # Important stuff starts here
     atoms = dict()
@@ -81,6 +81,7 @@ if __name__ == "__main__":
     @Slot()
     def input_program():
         program_text = window.input_program_text_edit.toPlainText().replace(':-', '←').replace('-:', '←').replace(' if ', '←')
+
         if len(program_text) == 0:
             return
         if program_text[-1] == ';':
@@ -88,14 +89,14 @@ if __name__ == "__main__":
         split_clauses = program_text.split(';')
 
         for clause in split_clauses:
-            body, head = clause.split('←', 1)
+            left_head, right_body = clause.split('←', 1)
             non_nec = False
             factual = False
-            if '*' in body:
+            if '*' in left_head:
                 non_nec = True
-            if '*' in head:
+            if '*' in right_body:
                 factual = True
-            program.clauses.append(Rule(InfixExpression(body, atoms), InfixExpression(head, atoms), non_nec, factual))
+            program.clauses.append(Rule(InfixExpression(left_head, atoms), InfixExpression(right_body, atoms), non_nec, factual))
         
         window.input_program_text_edit.setPlaceholderText("")
         window.input_program_text_edit.clear()
@@ -135,13 +136,13 @@ if __name__ == "__main__":
     # Integrity Constraint Input
     @Slot()
     def input_IC():
-        constraint_body_expr = InfixExpression(window.constraint_body_line_edit.text(), atoms)
-        constraint_head_expr = InfixExpression(window.constraint_head_line_edit.text(), atoms)
-        constraint = Rule(constraint_body_expr, constraint_head_expr)
+        constraint_right_body_expr = InfixExpression(window.constraint_right_body_line_edit.text(), atoms)
+        constraint_left_head_expr = InfixExpression(window.constraint_left_head_line_edit.text(), atoms)
+        constraint = Rule(constraint_left_head_expr, constraint_right_body_expr)
         integrity_constraints.add(constraint)
 
-        window.constraint_body_line_edit.clear()
-        window.constraint_head_line_edit.clear()
+        window.constraint_right_body_line_edit.clear()
+        window.constraint_left_head_line_edit.clear()
         window.PTextEdit.clear()
 
         window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
@@ -155,11 +156,11 @@ if __name__ == "__main__":
     # Connect the Integrity Constraint button to the function
     window.input_constraint_button.clicked.connect(input_IC)
 
-    # Conjunction Input
+    # disjunction Input
     @Slot()
-    def input_conjunction():
-        left_text = window.conjunction_line_edit_left.text()
-        right_text = window.conjunction_line_edit_right.text()
+    def input_disjunction():
+        left_text = window.disjunction_line_edit_left.text()
+        right_text = window.disjunction_line_edit_right.text()
 
         disjunction_of_negated = InfixExpression(f'~{left_text} and ~{right_text}', atoms)
         constraint = Rule(InfixExpression("F", atoms), disjunction_of_negated)
@@ -169,8 +170,8 @@ if __name__ == "__main__":
             constraint = Rule(InfixExpression("F", atoms), disjunction_for_exclusive)
             integrity_constraints.add(constraint)
 
-        window.conjunction_line_edit_left.clear()
-        window.conjunction_line_edit_right.clear()
+        window.disjunction_line_edit_left.clear()
+        window.disjunction_line_edit_right.clear()
         window.PTextEdit.clear()
 
         window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
@@ -182,7 +183,7 @@ if __name__ == "__main__":
         wcP_Phi_X()
 
     # Connect the Integrity Constraint button to the function
-    window.input_conjunction_button.clicked.connect(input_conjunction)
+    window.input_disjunction_button.clicked.connect(input_disjunction)
 
     # Weakly Complete and construct text
     def wcP(): 
@@ -255,16 +256,16 @@ if __name__ == "__main__":
                 for abd_model in abduced_models:
                     window.XTextEdit.appendPlainText(str(abd_model))
             else:
-                window.XTextEdit.appendPlainText(f"Abduction yielded nothing.\nThe answer is still {str(interpretation_stack[-1])}")
+                window.XTextEdit.appendPlainText(f"Abduction is not needed, when all atoms are defined.\nThe answer is still {str(interpretation_stack[-1])}")
         else:
             window.XTextEdit.appendPlainText("ERROR: Interpretation stack empty. Did Phi run correctly?")
 
-     # Exclusive conjunction button
+     # Exclusive disjunction button
     @Slot()
     def XOR_switch():
         global is_OR
-        is__OR = window.exclusive_button.isChecked()
-        if is__OR:
+        is_OR = window.exclusive_button.isChecked()
+        if is_OR:
             window.exclusive_button.setText("OR")
         else:
             window.exclusive_button.setText("XOR")  
@@ -293,10 +294,247 @@ if __name__ == "__main__":
         window.PhiTextEdit.clear()
         window.XTextEdit.clear()
         window.ATextEdit.clear()
+        global is_OR
+        if is_OR:
+            window.exclusive_button.nextCheckState()
+            is_OR = False
+            XOR_switch()
         
        
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
+
+
+    # Run Example
+    @Slot()
+    def _1_AA():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._1_AA_PROGRAM.value)
+        input_program()
+    window.action1_AA.triggered.connect(_1_AA)
+
+    @Slot()
+    def _2_AA_ALT():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._2_AA_ALT_PROGRAM.value)
+        input_program()
+    window.action2_AA_ALT.triggered.connect(_2_AA_ALT)
+
+    @Slot()
+    def _3_AA_ADD():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._3_AA_ADD_PROGRAM.value)
+        input_program()
+    window.action3_AA_ADD.triggered.connect(_3_AA_ADD)
+
+    @Slot()
+    def _4_DA():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._4_DA_PROGRAM.value)
+        input_program()
+    window.action4_DA.triggered.connect(_4_DA)
+
+    @Slot()
+    def _5_DA_ALT():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._5_DA_ALT_PROGRAM.value)
+        input_program()
+    window.action5_DA_ALT.triggered.connect(_5_DA_ALT)
+
+    @Slot()
+    def _6_DA_ADD():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._6_DA_ADD_PROGRAM.value)
+        input_program()
+    window.action6_DA_ADD.triggered.connect(_6_DA_ADD)
+
+    @Slot()
+    def _7_AC():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._7_AC_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example._7_AC_OBSERVATION.value)
+        input_observation()
+    window.action7_AC.triggered.connect(_7_AC)
+
+    @Slot()
+    def _8_AC_ALT():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._8_AC_ALT_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example._8_AC_ALT_OBSERVATION.value)
+        input_observation()
+    window.action8_AC_ALT.triggered.connect(_8_AC_ALT)
+
+    @Slot()
+    def _9_AC_ADD():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._9_AC_ADD_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example._9_AC_ADD_OBSERVATION.value)
+        input_observation()
+    window.action9_AC_ADD.triggered.connect(_9_AC_ADD)
+
+    @Slot()
+    def _10_DC():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._10_DC_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example._10_DC_OBSERVATION.value)
+        input_observation()
+    window.action10_DC.triggered.connect(_10_DC)
+
+    @Slot()
+    def _11_DC_ALT():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._11_DC_ALT_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example._11_DC_ALT_OBSERVATION.value)
+        input_observation()
+    window.action11_DC_ALT.triggered.connect(_11_DC_ALT)
+
+    @Slot()
+    def _12_DC_ADD():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example._12_DC_ADD_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example._12_DC_ADD_OBSERVATION.value)
+        input_observation()
+    window.action12_DC_ADD.triggered.connect(_12_DC_ADD)
+
+    @Slot()
+    def DIS_1():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.DIS_1_PROGRAM.value)
+        input_program()
+        window.disjunction_line_edit_left.clear()
+        window.disjunction_line_edit_right.clear()
+        window.disjunction_line_edit_left.setText(Example.DIS_1_L_DISJUNCTION.value)
+        window.disjunction_line_edit_right.setText(Example.DIS_1_R_DISJUNCTION.value)
+        if not Example.DIS_1_EXCLUSIVE.value:
+            window.exclusive_button.nextCheckState()
+            global is_OR
+            is_OR = True
+            XOR_switch()
+        input_disjunction()
+    window.actionExample_1.triggered.connect(DIS_1)
+
+    @Slot()
+    def DIS_2():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.DIS_2_PROGRAM.value)
+        input_program()
+        window.disjunction_line_edit_left.clear()
+        window.disjunction_line_edit_right.clear()
+        window.disjunction_line_edit_left.setText(Example.DIS_2_L_DISJUNCTION.value)
+        window.disjunction_line_edit_right.setText(Example.DIS_2_R_DISJUNCTION.value)
+        if not Example.DIS_2_EXCLUSIVE.value:
+            window.exclusive_button.nextCheckState()
+            global is_OR
+            is_OR = True
+            XOR_switch()
+        input_disjunction()
+    window.actionExample_2.triggered.connect(DIS_2)
+
+    @Slot()
+    def DIS_3():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.DIS_3_PROGRAM.value)
+        input_program()
+        window.disjunction_line_edit_left.clear()
+        window.disjunction_line_edit_right.clear()
+        window.disjunction_line_edit_left.setText(Example.DIS_3_L_DISJUNCTION.value)
+        window.disjunction_line_edit_right.setText(Example.DIS_3_R_DISJUNCTION.value)
+        if not Example.DIS_3_EXCLUSIVE.value:
+            window.exclusive_button.nextCheckState()
+            global is_OR
+            is_OR = True
+            XOR_switch()
+        input_disjunction()
+    window.actionExample_3.triggered.connect(DIS_3)
+
+    @Slot()
+    def DIS_4():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.DIS_4_PROGRAM.value)
+        input_program()
+        window.disjunction_line_edit_left.clear()
+        window.disjunction_line_edit_right.clear()
+        window.disjunction_line_edit_left.setText(Example.DIS_4_L_DISJUNCTION.value)
+        window.disjunction_line_edit_right.setText(Example.DIS_4_R_DISJUNCTION.value)
+        if not Example.DIS_4_EXCLUSIVE.value:
+            window.exclusive_button.nextCheckState()
+            global is_OR
+            is_OR = True
+            XOR_switch()
+        input_disjunction()
+    window.actionExample_4.triggered.connect(DIS_4)
+
+    @Slot()
+    def DIS_5():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.DIS_5_PROGRAM.value)
+        input_program()
+        window.disjunction_line_edit_left.clear()
+        window.disjunction_line_edit_right.clear()
+        window.disjunction_line_edit_left.setText(Example.DIS_5_L_DISJUNCTION.value)
+        window.disjunction_line_edit_right.setText(Example.DIS_5_R_DISJUNCTION.value)
+        if not Example.DIS_5_EXCLUSIVE.value:
+            window.exclusive_button.nextCheckState()
+            global is_OR
+            is_OR = True
+            XOR_switch()
+        input_disjunction()
+    window.actionExample_5.triggered.connect(DIS_5)
+
+    @Slot()
+    def DIS_6():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.DIS_6_PROGRAM.value)
+        input_program()
+        window.disjunction_line_edit_left.clear()
+        window.disjunction_line_edit_right.clear()
+        window.disjunction_line_edit_left.setText(Example.DIS_6_L_DISJUNCTION.value)
+        window.disjunction_line_edit_right.setText(Example.DIS_6_R_DISJUNCTION.value)
+        if not Example.DIS_6_EXCLUSIVE.value:
+            window.exclusive_button.nextCheckState()
+            global is_OR
+            is_OR = True
+            XOR_switch()
+        input_disjunction()
+    window.actionExample_6.triggered.connect(DIS_6)
+
+    @Slot()
+    def CLASS_3():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.CLASS_3_PROGRAM.value)
+        input_program()
+    window.action3_AC_non_necessary.triggered.connect(CLASS_3)
 
     # run GUI
     window.show()
