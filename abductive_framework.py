@@ -7,46 +7,6 @@ from clauses import Rule, WC_Rule
 from infix.tokens import TokenType
 from infix.expression import InfixExpression
 
-class AbducibleFactory:
-    '''
-    An abducible is a fact A ← ⊤ or A ← ⊥ for an undefined A 
-    '''
-
-    def __init__(self, atom: Atom, atom_dict: dict[str, Atom]):
-        '''
-        atom ← ⊤/⊥
-
-        An abducible is a fact A ← ⊤ or A ← ⊥ for an undefined A 
-        '''
-
-        self.atom = atom
-        self.atom_dict = atom_dict
-    
-    def __repr__(self):
-        return f"{str(self.atom)} ← ⊤/⊥"
-
-    def __eq__(self, other):
-        if self.atom == other.atom:
-            return True
-        else:
-            return False
-    
-    def __hash__(self):
-        return hash(self.atom + 1)
-
-    def get_wc_fact(self) -> WC_Rule:
-        '''
-        Get Weak Completion Clause from 'atom ← ⊤' 
-        '''
-
-        return WC_Rule(InfixExpression(str(self.atom), self.atom_dict), InfixExpression('T', self.atom_dict))
-
-    def get_wc_assumption(self) -> WC_Rule:
-        '''
-        Get Weak Completion Clause from 'atom ← ⊥' 
-        '''
-
-        return WC_Rule(InfixExpression(str(self.atom), self.atom_dict), InfixExpression('F', self.atom_dict))
 
 class Observation:
     '''
@@ -104,7 +64,7 @@ def get_undefined_atoms(atoms: dict[str, Atom],  program: Program):
             raise Exception(f"Could not get undefined atoms. Expected the head to have 1 atom; found {len(clause.left_head.atoms_here)}")
     return undefined
 
-def new_get_set_of_abducibles(atoms: dict[str, Atom],  program: Program):
+def get_set_of_abducibles(atoms: dict[str, Atom],  program: Program):
     abducibles = list() # returtn this
     undefined = get_undefined_atoms(atoms, program)
     for atom in undefined:
@@ -125,7 +85,7 @@ def new_get_set_of_abducibles(atoms: dict[str, Atom],  program: Program):
                     abducibles.append(extra_abducible)
     return abducibles
 
-def new_generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[Rule]:
+def generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[Rule]:
     ''' 
     A explanation is a subset of the set of abducibles. 
     
@@ -148,7 +108,7 @@ def new_generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[Rule]:
         explanations.append([abducible]) # add a new explanation that is just this abducible
     return explanations
 
-def new_phi_with_abduction(explanations: list, program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
+def phi_with_abduction(explanations: list, program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
     result_interpretations = [] # the interpretation you get after running Phi with the added explanation
     fixed_point_clone = fixed_point.clone()
     for explanation in explanations:
@@ -194,88 +154,6 @@ def new_phi_with_abduction(explanations: list, program: Program,  observations: 
 
     return  result_interpretations 
     
-
-
-def get_set_of_abducibles(atoms: dict[str, Atom],  wc_program: Program):
-    undefined = get_undefined_atoms(atoms, wc_program)
-    # Generate the set of explanations
-
-    # Classification of conditionals alters the set of abducibles
-    classification_enforced = set()
-    for clause in wc_program.clauses:
-        if clause.non_nec:
-            classification_enforced.add(WC_Rule(clause.left_head, InfixExpression('T', atoms)))
-        if clause.factual:
-            for atom in clause.right_body.atoms_here:
-                if atom.is_abnormality:
-                    classification_enforced.add(WC_Rule(InfixExpression(f"{atom.name}", atoms), InfixExpression('T', atoms)))
-    
-    explanations = []
-    for u_atom in undefined: # for each undefined atom there can be two explanations: it's either true or false
-        af = AbducibleFactory(u_atom, atoms)
-        assumption = af.get_wc_assumption()
-        fact = af.get_wc_fact()
-
-        for explanation in explanations:
-            if fact in explanation or assumption in explanation:
-                pass # we don't need contradictory explanations
-            else:
-                new_explanation_fact = explanation.copy()
-                new_explanation_fact.add(fact)
-                new_explanation_assumption = explanation.copy()
-                new_explanation_assumption.add(assumption)
-                explanations.append(new_explanation_fact) # append existing explanation
-                explanations.append(new_explanation_assumption)      
-        explanations.append({assumption}) # make a new explanation with just this assumption
-        explanations.append({fact}) # make a new explanation with just this fact
-        if len(classification_enforced) > 0:
-            explanations.append(classification_enforced) # extend the set by classification additions
-    return explanations 
-
-def phi_with_abduction(explanations: list, wc_program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
-    result_interpretations = []
-    fixed_point_clone = fixed_point.clone()
-    for explanation in explanations:
-        prog = wc_program.copy()
-        for abducible in explanation: 
-            prog.clauses.append(abducible)
-
-        abduced_interpretation = phi(prog, fixed_point_clone)
-        next_phi = phi(prog, abduced_interpretation)
-        while abduced_interpretation != next_phi:
-            abduced_interpretation = next_phi.clone()
-            next_phi = phi(prog, next_phi)
-
-        # Check if abduced interpretation satisfies integrity constraints
-        integrity_constraint_check = True
-        for constraint in integrity_constraints:
-            if constraint.evaluate() != TruthConstant.TRUE:
-                integrity_constraint_check = False
-                break
-        if not integrity_constraint_check:
-            continue
-
-        # Check if the abduced interpretation explains the observations
-        explains_all = True
-        for o in observations:
-            if o.is_negated:
-                if o.atom not in abduced_interpretation.falses:
-                    explains_all = False
-                    break
-            elif not o.is_negated:
-                if o.atom not in abduced_interpretation.trues:
-                    explains_all = False
-                    break
-
-        if explains_all:
-            result_interpretations.append(abduced_interpretation)
-            for interpretation in result_interpretations:
-                if abduced_interpretation.isSuperset(interpretation):
-                    result_interpretations.remove(abduced_interpretation)
-                    break
-                if abduced_interpretation.isSubset(interpretation):
-                    result_interpretations.remove(interpretation)
-    return  result_interpretations
 
 
 def skeptical(atoms: dict[str, Atom],  wc_program: Program, interpretations:list[Interpretation]) :
