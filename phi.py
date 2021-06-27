@@ -2,14 +2,14 @@ from program import Program
 from interpretation import Interpretation
 from truth_constant import TruthConstant
 
-def phi(program:Program, interpretation:Interpretation) -> Interpretation:
+def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
 
     new_interpretation = interpretation.clone()
     candidates_for_false = dict()
     to_true = set()
     # get immediate consequences
-    for clause in program.clauses:
-        if len(clause.left_head.atoms_here) == 1: # this is a clause. find consequence
+    for clause in wc_program.clauses:
+        if len(clause.left_head.atoms_here) == 1: # then this is a valid clause. find consequence
             consequence_atom = clause.left_head.atoms_here.pop()
             clause.left_head.atoms_here.add(consequence_atom)
 

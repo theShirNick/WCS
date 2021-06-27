@@ -26,3 +26,4 @@ class TestClauses(unittest.TestCase):
         R1 = getRandomAtom()
         R2 = getRandomAtom()
         self.assertEqual(str(Rule(R1,R2)), f"{R1.name} ← {R2.name}")
+        

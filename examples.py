@@ -56,7 +56,12 @@ class Example(Enum):
     DIS_6_R_DISJUNCTION = 'r'
     DIS_6_EXCLUSIVE = True
 
-    CLASS_3_PROGRAM = '*C if A and not ab_A;\nab_A if F;A if T'
+    CLASS_3_PROGRAM = '*C if A and not ab_A;\nab_A if F'
+    CLASS_3_OBSERVATION = 'C'
+
+    CLASS_4_PROGRAM = 'C if * A and not ab_A;\nab_A if F'
+    CLASS_4_OBSERVATION = 'not C'
+
 
 
 

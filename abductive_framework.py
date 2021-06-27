@@ -87,23 +87,116 @@ class Observation:
 
     def __hash__(self):
             return hash(self.infix_expression) + 2
-def get_undefined_atoms(atoms: dict[str, Atom],  wc_program: Program):
+
+def get_undefined_atoms(atoms: dict[str, Atom],  program: Program):
     '''
         Get undefined atoms as those that do not occur in the head of any clause
     '''
 
-    undefined = set(atoms.values())
-    for clause in wc_program.clauses:
-        if len(clause.left_head.atoms_here) == 1:
+    undefined = set(atoms.values()) # consider all atoms
+    for clause in program.clauses:
+        if len(clause.left_head.atoms_here) == 1: # if an atom is in the head of a clause...
             head_atom = clause.left_head.atoms_here.pop()
             clause.left_head.atoms_here.add(head_atom)
-            undefined.remove(head_atom)
+            if head_atom in undefined:
+                undefined.remove(head_atom) # ...it is defined
         else:
-            raise Exception(f"Expected the head to have 1 atom; found {len(clause.left_head.atoms_here)}")
+            raise Exception(f"Could not get undefined atoms. Expected the head to have 1 atom; found {len(clause.left_head.atoms_here)}")
     return undefined
-            
-def get_set_of_abducibles(atoms: dict[str, Atom],  wc_program: Program):
+
+def new_get_set_of_abducibles(atoms: dict[str, Atom],  program: Program):
+    abducibles = list() # returtn this
+    undefined = get_undefined_atoms(atoms, program)
+    for atom in undefined:
+        fact = Rule(InfixExpression(atom.name, atoms), InfixExpression('T', atoms))
+        assumption = Rule(InfixExpression(atom.name, atoms), InfixExpression('F', atoms))
+        abducibles.append(fact)
+        abducibles.append(assumption)
     
+    for clause in program.clauses:
+        if clause.non_nec == True:
+            extra_abducible = Rule(clause.left_head, InfixExpression('T', atoms))
+            abducibles.append(extra_abducible)
+        
+        if clause.factual == True:
+            for atom in clause.right_body.atoms_here:
+                if atom.is_abnormality:
+                    extra_abducible = Rule(InfixExpression(f"{atom.name}", atoms), InfixExpression('T', atoms))
+                    abducibles.append(extra_abducible)
+    return abducibles
+
+def new_generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[Rule]:
+    ''' 
+    A explanation is a subset of the set of abducibles. 
+    
+    An explanation atom ← ⊥; atom ← T is condradictory
+
+    Generate a list of non-contradictory explanations       
+    '''
+    explanations = []
+    for abducible in abducibles:
+        for explanation in explanations:
+            contradictory = False
+            for clause in explanation:
+                if abducible.left_head == clause.left_head:
+                    contradictory = True # we don't need contradictory explanations
+            
+            if not contradictory:
+                extended_explanation = explanation.copy()
+                extended_explanation.append(abducible)
+                explanations.append(extended_explanation) # add a new explanation that is a copy of an existing explanation + this abducible
+        explanations.append([abducible]) # add a new explanation that is just this abducible
+    return explanations
+
+def new_phi_with_abduction(explanations: list, program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
+    result_interpretations = [] # the interpretation you get after running Phi with the added explanation
+    fixed_point_clone = fixed_point.clone()
+    for explanation in explanations:
+        prog = Program(program.clauses + explanation).weakly_complete()
+    
+        abduced_interpretation = phi(prog, fixed_point_clone)
+        next_phi = phi(prog, abduced_interpretation)
+        while abduced_interpretation != next_phi:
+            abduced_interpretation = next_phi.clone()
+            next_phi = phi(prog, next_phi)
+        
+        # Check if abduced interpretation satisfies integrity constraints
+        integrity_constraint_check_passed = True
+        for constraint in integrity_constraints:
+            if constraint.evaluate() != TruthConstant.TRUE:
+                integrity_constraint_check_passed = False
+                break
+        if not integrity_constraint_check_passed:
+            continue # this explanation is not correct. Try the next explanation
+
+        # Check if the abduced interpretation explains the observations
+        explains_all = True
+        for o in observations:
+            if o.is_negated:
+                if o.atom not in abduced_interpretation.falses:
+                    explains_all = False
+                    break
+            elif not o.is_negated:
+                if o.atom not in abduced_interpretation.trues:
+                    explains_all = False
+                    break
+        if not explains_all:
+            continue # this explanation is not correct. Try the next explanation
+
+        # Make sure all abduced interpretation are minimal
+        result_interpretations.append(abduced_interpretation)
+        for interpretation in result_interpretations:
+            if abduced_interpretation.isSuperset(interpretation):
+                result_interpretations.remove(abduced_interpretation)
+                break
+            if abduced_interpretation.isSubset(interpretation):
+                result_interpretations.remove(interpretation)
+
+    return  result_interpretations 
+    
+
+
+def get_set_of_abducibles(atoms: dict[str, Atom],  wc_program: Program):
     undefined = get_undefined_atoms(atoms, wc_program)
     # Generate the set of explanations
 
@@ -122,7 +215,6 @@ def get_set_of_abducibles(atoms: dict[str, Atom],  wc_program: Program):
         af = AbducibleFactory(u_atom, atoms)
         assumption = af.get_wc_assumption()
         fact = af.get_wc_fact()
-
 
         for explanation in explanations:
             if fact in explanation or assumption in explanation:
@@ -185,26 +277,6 @@ def phi_with_abduction(explanations: list, wc_program: Program,  observations: s
                     result_interpretations.remove(interpretation)
     return  result_interpretations
 
-
-# def credulous(interpretations:list[Interpretation]) :
-#     trues = set()
-#     falses = set()
-#     for interpretation in interpretations:
-#         trues = trues.union(interpretation.trues)
-#         falses = falses.union(interpretation.falses)
-#     trues_str = ''
-#     for true_atom in trues:
-#         trues_str += f"{true_atom}, "
-#     if len(trues) > 0:
-#         trues_str = trues_str[:-2]
-
-#     falses_str = ''
-#     for false_atom in falses:
-#         falses_str += f"¬{false_atom}, "
-#     if len(falses) > 0:
-#         falses_str = falses_str[:-2]
-
-#     return f"Credulously follows:\n{trues_str} {falses_str}"
 
 def skeptical(atoms: dict[str, Atom],  wc_program: Program, interpretations:list[Interpretation]) :
     undefined = get_undefined_atoms(atoms, wc_program)

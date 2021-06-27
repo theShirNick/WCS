@@ -13,7 +13,7 @@ from qt_material import apply_stylesheet
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
-from abductive_framework import Observation, get_set_of_abducibles, phi_with_abduction, skeptical
+from abductive_framework import Observation, get_set_of_abducibles, new_generate_explanations, new_get_set_of_abducibles, phi_with_abduction, new_phi_with_abduction, skeptical
 from infix.expression import InfixExpression
 from phi import phi
 from examples import Example
@@ -73,8 +73,11 @@ if __name__ == "__main__":
     program = Program(clauses)
     wc_program = Program([]) 
     set_of_abducibles = list()
+    new_set_of_abducibles = list()
     interpretation_stack = deque()
     integrity_constraints = set()
+    explanations = list()
+    
     is_OR = False
 
     # Program Input
@@ -102,11 +105,7 @@ if __name__ == "__main__":
         window.input_program_text_edit.clear()
         window.PTextEdit.clear()
         window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
-        if len (observations) > 0:
-            window.PTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
-        if len (integrity_constraints) > 0:
-            window.PTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
-
+        window.PTextEdit.appendPlainText(get_after_P())
         # Remake the other tabs
         wcP_Phi_X()
 
@@ -122,11 +121,7 @@ if __name__ == "__main__":
         window.observation_line_edit.clear()
         window.PTextEdit.clear()
         window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
-        if len (observations) > 0:
-            window.PTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
-        if len (integrity_constraints) > 0:
-            window.PTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
-
+        window.PTextEdit.appendPlainText(get_after_P())
         # Remake the other tabs 
         wcP_Phi_X()
 
@@ -146,10 +141,7 @@ if __name__ == "__main__":
         window.PTextEdit.clear()
 
         window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
-        if len (observations) > 0:
-            window.PTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
-        if len (integrity_constraints) > 0:
-            window.PTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+        window.PTextEdit.appendPlainText(get_after_P())
         # Remake the other tabs
         wcP_Phi_X()
 
@@ -175,10 +167,7 @@ if __name__ == "__main__":
         window.PTextEdit.clear()
 
         window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
-        if len (observations) > 0:
-            window.PTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
-        if len (integrity_constraints) > 0:
-            window.PTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
+        window.PTextEdit.appendPlainText(get_after_P())
         # Remake the other tabs
         wcP_Phi_X()
 
@@ -191,11 +180,7 @@ if __name__ == "__main__":
         wc_program = program.weakly_complete()
         window.wcPTextEdit.clear()
         window.wcPTextEdit.appendPlainText("𝔀𝓬𝓟:\n" + str(wc_program))
-        if len (observations) > 0:
-            window.wcPTextEdit.appendPlainText("𝓞:\n%s"%( observations ))
-        if len (integrity_constraints) > 0:
-            window.wcPTextEdit.appendPlainText("𝓘𝓒:\n%s"%( integrity_constraints ))
-
+        window.wcPTextEdit.appendPlainText(get_after_P())
     # Semantic Phi Operator
     def phi_fixed_point():
         interpretation_stack.clear()
@@ -231,14 +216,20 @@ if __name__ == "__main__":
 
     # 𝒜 - set of abducibles
     def get_A():  
-        global set_of_abducibles
-        set_of_abducibles = get_set_of_abducibles(atoms, wc_program)
+        # global set_of_abducibles
+        # set_of_abducibles = get_set_of_abducibles(atoms, wc_program)
+        global new_set_of_abducibles
+        new_set_of_abducibles = new_get_set_of_abducibles(atoms, program)
         window.ATextEdit.clear()
-        if len(set_of_abducibles) == 0:
+        if len(new_set_of_abducibles) == 0:
             window.ATextEdit.appendPlainText('All atoms are defined')
         else:
             window.ATextEdit.appendPlainText(f'𝒜:')
-            for explanation in set_of_abducibles:
+            # for explanation in set_of_abducibles:
+            #     window.ATextEdit.appendPlainText(f'{str(explanation)},')
+            global explanations
+            explanations = new_generate_explanations(new_set_of_abducibles, atoms)
+            for explanation in explanations:
                 window.ATextEdit.appendPlainText(f'{str(explanation)},')
         
     # 𝒳 - explain with abduction
@@ -248,7 +239,7 @@ if __name__ == "__main__":
         if len(interpretation_stack) > 0:
             # abduced_models = explain_with_abduction(atoms, wc_program, observations, interpretation_stack[-1], integrity_constraints)
             
-            abduced_models = phi_with_abduction(set_of_abducibles, wc_program, observations, interpretation_stack[-1], integrity_constraints)
+            abduced_models = new_phi_with_abduction(explanations, program, observations, interpretation_stack[-1], integrity_constraints)
             if len(abduced_models) > 0:
                 skeptical_result = skeptical(atoms,wc_program, abduced_models)
                 window.XTextEdit.appendPlainText(skeptical_result)
@@ -256,7 +247,7 @@ if __name__ == "__main__":
                 for abd_model in abduced_models:
                     window.XTextEdit.appendPlainText(str(abd_model))
             else:
-                window.XTextEdit.appendPlainText(f"Abduction is not needed, when all atoms are defined.\nThe answer is still {str(interpretation_stack[-1])}")
+                window.XTextEdit.appendPlainText(f"No new minimal models found.\nThe answer is still {str(interpretation_stack[-1])}")
         else:
             window.XTextEdit.appendPlainText("ERROR: Interpretation stack empty. Did Phi run correctly?")
 
@@ -288,6 +279,7 @@ if __name__ == "__main__":
         observations.clear()
         integrity_constraints.clear()
         set_of_abducibles.clear()
+        new_set_of_abducibles.clear()
         interpretation_stack.clear()
         window.PTextEdit.clear()
         window.wcPTextEdit.clear()
@@ -303,6 +295,23 @@ if __name__ == "__main__":
        
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
+
+    def get_after_P():
+        after_P_str = ""
+        if len (observations) > 0:
+            after_P_str =  after_P_str + ("𝓞:\n%s"%( observations )) + '\n'
+
+        if len (integrity_constraints) > 0:
+            after_P_str =  after_P_str + ("𝓘𝓒:\n%s"%( integrity_constraints )) +'\n'
+
+        new_set_of_abducibles = new_get_set_of_abducibles(atoms, program)
+        if len(new_set_of_abducibles) > 0:
+            abducibles_str = "𝒜:\n"
+            for abducible in new_set_of_abducibles: 
+                abducibles_str = abducibles_str + str(abducible) + "\n"
+            after_P_str =  after_P_str + abducibles_str
+        
+        return after_P_str
 
 
     # Run Example
@@ -534,8 +543,23 @@ if __name__ == "__main__":
         window.input_program_text_edit.clear()
         window.input_program_text_edit.setPlainText(Example.CLASS_3_PROGRAM.value)
         input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example.CLASS_3_OBSERVATION.value)
+        input_observation()
     window.action3_AC_non_necessary.triggered.connect(CLASS_3)
 
+    @Slot()
+    def CLASS_4():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.CLASS_4_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example.CLASS_4_OBSERVATION.value)
+        input_observation()
+    window.action4_DC_factual.triggered.connect(CLASS_4)
+
+    
     # run GUI
     window.show()
     sys.exit(app.exec_())

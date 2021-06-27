@@ -607,6 +607,7 @@
      <string>Classification of Conditionals</string>
     </property>
     <addaction name="action3_AC_non_necessary"/>
+    <addaction name="action4_DC_factual"/>
    </widget>
    <addaction name="menuSuppression_Task"/>
    <addaction name="menuDisjunctions"/>
@@ -706,6 +707,11 @@
   <action name="action3_AC_non_necessary">
    <property name="text">
     <string>3. AC non-necessary</string>
+   </property>
+  </action>
+  <action name="action4_DC_factual">
+   <property name="text">
+    <string>4. DC factual</string>
    </property>
   </action>
  </widget>
