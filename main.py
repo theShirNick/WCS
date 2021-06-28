@@ -568,6 +568,22 @@ if __name__ == "__main__":
     window.actionExample_6.triggered.connect(DIS_6)
 
     @Slot()
+    def CLASS_1():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.CLASS_1_PROGRAM.value)
+        input_program()
+    window.action1_AA_both.triggered.connect(CLASS_1)
+
+    @Slot()
+    def CLASS_2():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.CLASS_2_PROGRAM.value)
+        input_program()
+    window.action2_DA_both.triggered.connect(CLASS_2)
+
+    @Slot()
     def CLASS_3():
         clear_program()
         window.input_program_text_edit.clear()

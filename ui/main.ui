@@ -525,6 +525,8 @@
     <property name="title">
      <string>Classification of Conditionals</string>
     </property>
+    <addaction name="action1_AA_both"/>
+    <addaction name="action2_DA_both"/>
     <addaction name="action3_AC_non_necessary"/>
     <addaction name="action4_DC_factual"/>
    </widget>
@@ -631,6 +633,16 @@
   <action name="action4_DC_factual">
    <property name="text">
     <string>4. DC factual</string>
+   </property>
+  </action>
+  <action name="action1_AA_both">
+   <property name="text">
+    <string>1. AA both</string>
+   </property>
+  </action>
+  <action name="action2_DA_both">
+   <property name="text">
+    <string>2. DA both</string>
    </property>
   </action>
  </widget>

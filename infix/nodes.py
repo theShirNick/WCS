@@ -30,7 +30,17 @@ class DisjunctionNode:
     node_b: any
 
     def __repr__(self) -> str:
-        return f"({self.node_a}) ∨ ({self.node_b})"
+        str = ''
+        if type(self.node_a) in [AtomNode, TruthConstNode]:
+            str = f"{self.node_a} ∨ "
+        else:
+            str = f"({self.node_a}) ∨ "
+
+        if type(self.node_b) in [AtomNode, TruthConstNode]:
+            str = str + f"{self.node_b}"
+        else:
+            str = str + f"({self.node_b})"
+        return str
 
 @dataclass
 class NegationNode:
