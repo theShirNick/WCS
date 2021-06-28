@@ -22,7 +22,7 @@ class ConjunctionNode:
     node_b: any
 
     def __repr__(self) -> str:
-        return f"({self.node_a} ∧ {self.node_b})"
+        return f"{self.node_a} ∧ {self.node_b}"
 
 @dataclass
 class DisjunctionNode:
@@ -30,11 +30,11 @@ class DisjunctionNode:
     node_b: any
 
     def __repr__(self) -> str:
-        return f"({self.node_a} ∨ {self.node_b})"
+        return f"({self.node_a}) ∨ ({self.node_b})"
 
 @dataclass
 class NegationNode:
     node: any
 
     def __repr__(self) -> str:
-        return f"(¬{self.node})"
+        return f"¬{self.node}"
