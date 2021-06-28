@@ -324,17 +324,27 @@ if __name__ == "__main__":
     window.clear_program_button.clicked.connect(clear_program)
 
     def get_after_P():
+        '''
+            Construct and output text containing observations, integrity constraints, and abducibles
+        '''
+
         after_P_str = ""
         if len (observations) > 0:
-            after_P_str =  after_P_str + ("𝓞:\n%s"%( observations )) + '\n'
+            observations_str = "---\n\n𝓞:\n"
+            for observation in observations:
+                observations_str = observations_str + str(observation) + '\n'
+            after_P_str =  after_P_str + observations_str + '\n'
 
         if len (integrity_constraints) > 0:
-            after_P_str =  after_P_str + ("𝓘𝓒:\n%s"%( integrity_constraints )) +'\n'
+            IC_string = "---\n𝓘𝓒:\n"
+            for IC in integrity_constraints:
+                IC_string = IC_string + str(IC) + '\n'
+            after_P_str =  after_P_str + IC_string + '\n'
 
         global set_of_abducibles
         set_of_abducibles = get_set_of_abducibles(atoms, program)
         if len(set_of_abducibles) > 0:
-            abducibles_str = "𝒜:\n"
+            abducibles_str = "---\n𝒜:\n"
             for abducible in set_of_abducibles: 
                 abducibles_str = abducibles_str + str(abducible) + "\n"
             after_P_str =  after_P_str + abducibles_str

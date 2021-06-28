@@ -19,7 +19,7 @@ class InfixExpression:
 
     def bold_abnormalities(self) -> str:
         '''
-            Analogous to node_string, except here, abnormality node tokens are replaced with dummy clones whose names have markdown boldness
+            Analogous to node_string ( __repr__ ), except here, abnormality node tokens are replaced with dummy clones whose names have markdown boldness
         '''
 
         mod_tokens = list(self.get_lexer_tokens())
