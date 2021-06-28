@@ -50,7 +50,7 @@
      </font>
     </property>
     <property name="toolTip">
-     <string>Clear Program</string>
+     <string/>
     </property>
     <property name="text">
      <string>Start over</string>
@@ -292,7 +292,7 @@
      <attribute name="toolTip">
       <string>Program</string>
      </attribute>
-     <widget class="QPlainTextEdit" name="PTextEdit">
+     <widget class="QTextEdit" name="PTextEdit">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -300,18 +300,6 @@
         <width>511</width>
         <height>425</height>
        </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>14</pointsize>
-       </font>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -331,7 +319,7 @@
      <attribute name="toolTip">
       <string>Weak Completion of the Program</string>
      </attribute>
-     <widget class="QPlainTextEdit" name="wcPTextEdit">
+     <widget class="QTextEdit" name="wcPTextEdit">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -339,18 +327,6 @@
         <width>511</width>
         <height>425</height>
        </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>14</pointsize>
-       </font>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -370,7 +346,7 @@
      <attribute name="toolTip">
       <string>Semantic Operator. Find the fixed point. Find the least model.</string>
      </attribute>
-     <widget class="QPlainTextEdit" name="PhiTextEdit">
+     <widget class="QTextEdit" name="PhiTextEdit">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -378,18 +354,6 @@
         <width>511</width>
         <height>425</height>
        </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>14</pointsize>
-       </font>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -403,7 +367,7 @@
      <attribute name="toolTip">
       <string>Abduction: set of explanations</string>
      </attribute>
-     <widget class="QPlainTextEdit" name="ATextEdit">
+     <widget class="QTextEdit" name="ATextEdit">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -411,18 +375,6 @@
         <width>511</width>
         <height>425</height>
        </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>14</pointsize>
-       </font>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -442,7 +394,7 @@
      <attribute name="toolTip">
       <string>Abduction: reason skeptically</string>
      </attribute>
-     <widget class="QPlainTextEdit" name="XTextEdit">
+     <widget class="QTextEdit" name="XTextEdit">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -450,18 +402,6 @@
         <width>511</width>
         <height>425</height>
        </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>14</pointsize>
-       </font>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -725,10 +665,6 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>input_constraint_button</tabstop>
   <tabstop>input_observation_button</tabstop>
-  <tabstop>PTextEdit</tabstop>
-  <tabstop>wcPTextEdit</tabstop>
-  <tabstop>PhiTextEdit</tabstop>
-  <tabstop>XTextEdit</tabstop>
   <tabstop>input_program_button</tabstop>
   <tabstop>input_disjunction_button</tabstop>
   <tabstop>clear_program_button</tabstop>

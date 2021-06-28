@@ -35,7 +35,7 @@ class Observation:
 
 
     def __repr__(self):
-            return self.infix_expression.token_string
+            return self.infix_expression.node_string
 
 
     def __eq__(self, other):
@@ -65,24 +65,24 @@ def get_undefined_atoms(atoms: dict[str, Atom],  program: Program):
     return undefined
 
 def get_set_of_abducibles(atoms: dict[str, Atom],  program: Program):
-    abducibles = list() # returtn this
+    abducibles = set() # returtn this
     undefined = get_undefined_atoms(atoms, program)
     for atom in undefined:
         fact = Rule(InfixExpression(atom.name, atoms), InfixExpression('T', atoms))
         assumption = Rule(InfixExpression(atom.name, atoms), InfixExpression('F', atoms))
-        abducibles.append(fact)
-        abducibles.append(assumption)
+        abducibles.add(fact)
+        abducibles.add(assumption)
     
     for clause in program.clauses:
         if clause.non_nec == True:
             extra_abducible = Rule(clause.left_head, InfixExpression('T', atoms))
-            abducibles.append(extra_abducible)
+            abducibles.add(extra_abducible)
         
         if clause.factual == True:
             for atom in clause.right_body.atoms_here:
                 if atom.is_abnormality:
                     extra_abducible = Rule(InfixExpression(f"{atom.name}", atoms), InfixExpression('T', atoms))
-                    abducibles.append(extra_abducible)
+                    abducibles.add(extra_abducible)
     return abducibles
 
 def generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[Rule]:

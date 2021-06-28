@@ -11,7 +11,7 @@ class Atom:
 
     def __str__(self):
         if self.is_abnormality:
-            return self.name.replace('ab_', 'ᵃᵇ')
+            return self.name.replace('ab_', '*ab*')
         else:
             return self.name
     def __repr__(self):

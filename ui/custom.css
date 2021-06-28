@@ -9,6 +9,30 @@
   background-color: #232629;
   font-family: "Overpass Mono", "Lucida Console", monospace;
 }}
+
+.output_text_edit{{
+  border: 10px solid #8bc34a;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-width: 0 0 2px 0;
+
+}}
+
+QTextEdit {{
+  padding: 8px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 5px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+  color: white;
+}}
+
 .mono_font {{
     font-family: "Overpass Mono", "Lucida Console", monospace;
   }}

@@ -47,14 +47,23 @@ if __name__ == "__main__":
     # force style
     window.statusbar.hide()
     window.PTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.PTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(1)
+
     window.wcPTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.wcPTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(2)
+
     window.PhiTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.PhiTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(3)
+
     window.ATextEdit.setFont(QFont("Overpass Mono", 14))
+    window.ATextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(4)
+
     window.XTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.XTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(0)
 
     window.observation_line_edit.setProperty('class', 'mono_font')
@@ -102,9 +111,11 @@ if __name__ == "__main__":
         
         window.input_program_text_edit.setPlaceholderText("")
         window.input_program_text_edit.clear()
+
         window.PTextEdit.clear()
-        window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
-        window.PTextEdit.appendPlainText(get_after_P())
+        window.PTextEdit.append("𝓟:\n" + str(program))
+        window.PTextEdit.append(get_after_P())
+        window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
         # Remake the other tabs
         wcP_Phi_X()
 
@@ -118,9 +129,11 @@ if __name__ == "__main__":
         observations.add(Observation(observation_expr))
 
         window.observation_line_edit.clear()
+
         window.PTextEdit.clear()
-        window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
-        window.PTextEdit.appendPlainText(get_after_P())
+        window.PTextEdit.append("𝓟:\n" + str(program))
+        window.PTextEdit.append(get_after_P())
+        window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
         # Remake the other tabs 
         wcP_Phi_X()
 
@@ -137,10 +150,11 @@ if __name__ == "__main__":
 
         window.constraint_right_body_line_edit.clear()
         window.constraint_left_head_line_edit.clear()
-        window.PTextEdit.clear()
 
-        window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
-        window.PTextEdit.appendPlainText(get_after_P())
+        window.PTextEdit.clear()
+        window.PTextEdit.append("𝓟:\n" + str(program))
+        window.PTextEdit.append(get_after_P())
+        window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
         # Remake the other tabs
         wcP_Phi_X()
 
@@ -163,10 +177,11 @@ if __name__ == "__main__":
 
         window.disjunction_line_edit_left.clear()
         window.disjunction_line_edit_right.clear()
-        window.PTextEdit.clear()
 
-        window.PTextEdit.appendPlainText("𝓟:\n" + str(program))
-        window.PTextEdit.appendPlainText(get_after_P())
+        window.PTextEdit.clear()
+        window.PTextEdit.append("𝓟:\n" + str(program))
+        window.PTextEdit.append(get_after_P())
+        window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
         # Remake the other tabs
         wcP_Phi_X()
 
@@ -177,9 +192,11 @@ if __name__ == "__main__":
     def wcP(): 
         global wc_program
         wc_program = program.weakly_complete()
+
         window.wcPTextEdit.clear()
-        window.wcPTextEdit.appendPlainText("𝔀𝓬𝓟:\n" + str(wc_program))
-        window.wcPTextEdit.appendPlainText(get_after_P())
+        window.wcPTextEdit.append("𝔀𝓬𝓟:\n" + str(wc_program))
+        window.wcPTextEdit.append(get_after_P())
+        window.wcPTextEdit.setMarkdown(window.wcPTextEdit.toMarkdown())
     # Semantic Phi Operator
     def phi_fixed_point():
         interpretation_stack.clear()
@@ -189,10 +206,10 @@ if __name__ == "__main__":
         
         stop = False
         while stop == False:
-            window.PhiTextEdit.appendPlainText(f"Φ↑{len(interpretation_stack) -1}: {str(interpretation_stack[-1])}")
+            window.PhiTextEdit.append(f"Φ↑{len(interpretation_stack) -1}: {str(interpretation_stack[-1])}")
             next_phi = phi(wc_program, interpretation_stack[-1])
             if interpretation_stack[-1] == next_phi:
-                window.PhiTextEdit.appendPlainText(f"Fixed point found.\n")
+                window.PhiTextEdit.append(f"Fixed point found.\n")
                 stop = True
 
                 integrity_constraint_check = True
@@ -201,17 +218,18 @@ if __name__ == "__main__":
                         integrity_constraint_check = False
                         break
                 if not integrity_constraint_check:
-                    window.PhiTextEdit.appendPlainText(f"Integrity constraint not satisfied. Try abduction.\n")
+                    window.PhiTextEdit.append(f"Integrity constraint not satisfied. Try abduction.\n")
 
                 unexplained = set()
                 for ob in observations:
                     if ob.atom in next_phi.unknowns:
                         unexplained.add(ob)
                 if len(unexplained) > 0:
-                    window.PhiTextEdit.appendPlainText("Observations %s"%( observations ) + " are unexplained. Abduction may help.")
+                    window.PhiTextEdit.append("Observations %s"%( observations ) + " are unexplained. Abduction may help.")
 
             else:     
                 interpretation_stack.append(next_phi) 
+            window.PhiTextEdit.setMarkdown(window.PhiTextEdit.toMarkdown())
 
     # 𝒜 - set of abducibles
     def get_A():  
@@ -220,20 +238,25 @@ if __name__ == "__main__":
         global set_of_abducibles
         set_of_abducibles = get_set_of_abducibles(atoms, program)
         window.ATextEdit.clear()
+
         if len(set_of_abducibles) == 0:
-            window.ATextEdit.appendPlainText('All atoms are defined')
+            window.ATextEdit.append('All atoms are defined')
+
         else:
-            window.ATextEdit.appendPlainText(f'𝒜:')
+            window.ATextEdit.append(f'𝒜:')
+
             # for explanation in set_of_abducibles:
             #     window.ATextEdit.appendPlainText(f'{str(explanation)},')
             global explanations
             explanations = generate_explanations(set_of_abducibles, atoms)
             for explanation in explanations:
-                window.ATextEdit.appendPlainText(f'{str(explanation)},')
+                window.ATextEdit.append(f'{str(explanation)},')
+        window.ATextEdit.setMarkdown(window.ATextEdit.toMarkdown())
         
     # 𝒳 - explain with abduction
     def abduction():  
         window.XTextEdit.clear()
+
         abduced_models = set()
         if len(interpretation_stack) > 0:
             # abduced_models = explain_with_abduction(atoms, wc_program, observations, interpretation_stack[-1], integrity_constraints)
@@ -241,14 +264,20 @@ if __name__ == "__main__":
             abduced_models = phi_with_abduction(explanations, program, observations, interpretation_stack[-1], integrity_constraints)
             if len(abduced_models) > 0:
                 skeptical_result = skeptical(atoms,wc_program, abduced_models)
-                window.XTextEdit.appendPlainText(skeptical_result)
-                window.XTextEdit.appendPlainText(f'\nAbduced models:')
+                window.XTextEdit.append(skeptical_result)
+                window.XTextEdit.append(f'\nAbduced models:')
+
                 for abd_model in abduced_models:
-                    window.XTextEdit.appendPlainText(str(abd_model))
+                    window.XTextEdit.append(str(abd_model))
+
             else:
-                window.XTextEdit.appendPlainText(f"No new minimal models found.\nThe answer is still {str(interpretation_stack[-1])}")
+                window.XTextEdit.append(f"No new minimal models found.\nThe answer is still {str(interpretation_stack[-1])}")
+
         else:
-            window.XTextEdit.appendPlainText("ERROR: Interpretation stack empty. Did Phi run correctly?")
+            window.XTextEdit.append("ERROR: Interpretation stack empty. Did Phi run correctly?")
+
+        window.XTextEdit.setMarkdown(window.XTextEdit.toMarkdown())
+
 
      # Exclusive disjunction button
     @Slot()
