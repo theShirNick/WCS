@@ -19,7 +19,7 @@ class Example(Enum):
     _8_AC_ALT_OBSERVATION = 'l'
     _9_AC_ADD_PROGRAM = 'l if e and not ab_e;\nl if o and not ab_o;\nab_e if not o;\nab_o if not e'
     _9_AC_ADD_OBSERVATION = 'l'
-    _10_DC_PROGRAM = 'l if e and not ab_e;\nl if o and not ab_o;\nab_e if F'
+    _10_DC_PROGRAM = 'l if e and not ab_e;\nab_e if F'
     _10_DC_OBSERVATION = 'not l'
     _11_DC_ALT_PROGRAM = 'l if e and not ab_e;\nl if t and not ab_t;\nab_e if F;\nab_t if F'
     _11_DC_ALT_OBSERVATION = 'not l'

@@ -271,7 +271,7 @@
      <string/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -347,27 +347,6 @@
       <string>Semantic Operator. Find the fixed point. Find the least model.</string>
      </attribute>
      <widget class="QTextEdit" name="PhiTextEdit">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>425</height>
-       </rect>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="abduciblesTab">
-     <attribute name="title">
-      <string>𝒜</string>
-     </attribute>
-     <attribute name="toolTip">
-      <string>Abduction: set of explanations</string>
-     </attribute>
-     <widget class="QTextEdit" name="ATextEdit">
       <property name="geometry">
        <rect>
         <x>0</x>

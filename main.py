@@ -58,10 +58,6 @@ if __name__ == "__main__":
     window.PhiTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(3)
 
-    window.ATextEdit.setFont(QFont("Overpass Mono", 14))
-    window.ATextEdit.setProperty('class', 'output_text_edit')
-    window.tabWidget.setCurrentIndex(4)
-
     window.XTextEdit.setFont(QFont("Overpass Mono", 14))
     window.XTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(0)
@@ -225,56 +221,52 @@ if __name__ == "__main__":
                     if ob.atom in next_phi.unknowns:
                         unexplained.add(ob)
                 if len(unexplained) > 0:
-                    window.PhiTextEdit.append("Observations %s"%( observations ) + " are unexplained. Abduction may help.")
+                    obs_str = ''
+                    for obs in observations:
+                        obs_str = obs_str + str(obs) + ', '
+                    if len(unexplained) == 1:
+                        window.PhiTextEdit.append(f"Observation {obs_str[:-2]} is unexplained. Abduction may help.")
+                    else:
+                        window.PhiTextEdit.append(f"Observations {obs_str[:-2]} are unexplained. Abduction may help.")
 
             else:     
                 interpretation_stack.append(next_phi) 
             window.PhiTextEdit.setMarkdown(window.PhiTextEdit.toMarkdown())
-
-    # 𝒜 - set of abducibles
-    def get_A():  
-        # global set_of_abducibles
-        # set_of_abducibles = get_set_of_abducibles(atoms, wc_program)
-        global set_of_abducibles
-        set_of_abducibles = get_set_of_abducibles(atoms, program)
-        window.ATextEdit.clear()
-
-        if len(set_of_abducibles) == 0:
-            window.ATextEdit.append('All atoms are defined')
-
-        else:
-            window.ATextEdit.append(f'𝒜:')
-
-            # for explanation in set_of_abducibles:
-            #     window.ATextEdit.appendPlainText(f'{str(explanation)},')
-            global explanations
-            explanations = generate_explanations(set_of_abducibles, atoms)
-            for explanation in explanations:
-                window.ATextEdit.append(f'{str(explanation)},')
-        window.ATextEdit.setMarkdown(window.ATextEdit.toMarkdown())
         
     # 𝒳 - explain with abduction
     def abduction():  
         window.XTextEdit.clear()
-
-        abduced_models = set()
-        if len(interpretation_stack) > 0:
-            # abduced_models = explain_with_abduction(atoms, wc_program, observations, interpretation_stack[-1], integrity_constraints)
-            
-            abduced_models = phi_with_abduction(explanations, program, observations, interpretation_stack[-1], integrity_constraints)
-            if len(abduced_models) > 0:
-                skeptical_result = skeptical(atoms,wc_program, abduced_models)
-                window.XTextEdit.append(skeptical_result)
-                window.XTextEdit.append(f'\nAbduced models:')
-
-                for abd_model in abduced_models:
-                    window.XTextEdit.append(str(abd_model))
-
+        if len(set_of_abducibles) == 0:
+            old_s = ''
+            old_trues_only = set()
+            old_falses_only = set()
+            if len(interpretation_stack) > 1:
+                old_trues_only = interpretation_stack[-1].trues.copy()
+                old_falses_only = interpretation_stack[-1].falses.copy()
+                for a in old_trues_only:
+                    old_s = old_s + f"{str(a)}, "
+                if len(old_trues_only) > 0 and len(old_falses_only) == 0:
+                    old_s = old_s[:-2]
+                for a in old_falses_only:
+                    old_s = old_s + f"¬{str(a)}, "
+                if len(old_falses_only) > 0:
+                    old_s = old_s[:-2]
+                window.XTextEdit.append(f"Skeptically, nothing new follows. We already know:\n{old_s}")
+            elif len(interpretation_stack) == 1:
+                window.XTextEdit.append(f"Empty fixed point, emplty set of abducibles. Nothing follows.")
             else:
-                window.XTextEdit.append(f"No new minimal models found.\nThe answer is still {str(interpretation_stack[-1])}")
+                window.XTextEdit.append("ERROR: Interpretation stack empty. Did Phi run correctly?")
 
         else:
-            window.XTextEdit.append("ERROR: Interpretation stack empty. Did Phi run correctly?")
+            explanations_interpretations = phi_with_abduction(explanations, program, observations, interpretation_stack[-1], integrity_constraints)
+            if len(explanations_interpretations) > 0:
+                abduced_interpretations = list()
+                for expl, interpr in explanations_interpretations:
+                    window.XTextEdit.append(f"𝒳 {expl}\nyields minimal model\n{interpr}\n---")
+                    abduced_interpretations.append(interpr)
+
+                skeptical_result = skeptical(atoms, program, abduced_interpretations)
+                window.XTextEdit.append(skeptical_result)
 
         window.XTextEdit.setMarkdown(window.XTextEdit.toMarkdown())
 
@@ -295,7 +287,6 @@ if __name__ == "__main__":
     def wcP_Phi_X():
         wcP()
         phi_fixed_point()
-        get_A()
         abduction()
         
     # Clear Program
@@ -312,7 +303,6 @@ if __name__ == "__main__":
         window.wcPTextEdit.clear()
         window.PhiTextEdit.clear()
         window.XTextEdit.clear()
-        window.ATextEdit.clear()
         global is_OR
         if is_OR:
             window.exclusive_button.nextCheckState()
@@ -343,6 +333,8 @@ if __name__ == "__main__":
 
         global set_of_abducibles
         set_of_abducibles = get_set_of_abducibles(atoms, program)
+        global explanations
+        explanations = generate_explanations(set_of_abducibles, atoms)
         if len(set_of_abducibles) > 0:
             abducibles_str = "---\n𝒜:\n"
             for abducible in set_of_abducibles: 

@@ -50,7 +50,7 @@ class Observation:
 
 def get_undefined_atoms(atoms: dict[str, Atom],  program: Program):
     '''
-        Get undefined atoms as those that do not occur in the head of any clause
+        Get atoms that do not occur in the head of any clause
     '''
 
     undefined = set(atoms.values()) # consider all atoms
@@ -85,7 +85,7 @@ def get_set_of_abducibles(atoms: dict[str, Atom],  program: Program):
                     abducibles.add(extra_abducible)
     return abducibles
 
-def generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[Rule]:
+def generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[set[Rule]]:
     ''' 
     A explanation is a subset of the set of abducibles. 
     
@@ -103,17 +103,33 @@ def generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[Rule]:
             
             if not contradictory:
                 extended_explanation = explanation.copy()
-                extended_explanation.append(abducible)
+                extended_explanation.add(abducible)
                 explanations.append(extended_explanation) # add a new explanation that is a copy of an existing explanation + this abducible
-        explanations.append([abducible]) # add a new explanation that is just this abducible
+        explanations.append({abducible}) # add a new explanation that is just this abducible
+    explanations.sort(key=len)
     return explanations
 
-def phi_with_abduction(explanations: list, program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
-    result_interpretations = [] # the interpretation you get after running Phi with the added explanation
+def phi_with_abduction(explanations: list[set[Rule]], program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
+    '''
+        Continue the semantic operator from the least fixed point by adding each explanation. Discard everything but minimal models.  
+    '''
+
     fixed_point_clone = fixed_point.clone()
+    explanation_interpretation = list() # of tuples, containing a valid explanation and the correcponding model
     for explanation in explanations:
-        prog = Program(program.clauses + explanation).weakly_complete()
-    
+
+        redundant = False
+        for existing_explanation, interpretation in explanation_interpretation:
+            if explanation.issuperset(existing_explanation):
+                redundant = True # a smaller valid explanation exists
+                break
+        if redundant:
+            continue # this explanation is redundant. No need to go on with it
+
+        # We are here only if the explanation is minimal. Let's see if it actually explains everything
+        #
+        # Find the new least fixed point, now that we added the explanation to our program
+        prog = Program(program.clauses + list(explanation)).weakly_complete()
         abduced_interpretation = phi(prog, fixed_point_clone)
         next_phi = phi(prog, abduced_interpretation)
         while abduced_interpretation != next_phi:
@@ -143,43 +159,60 @@ def phi_with_abduction(explanations: list, program: Program,  observations: set[
         if not explains_all:
             continue # this explanation is not correct. Try the next explanation
 
-        # Make sure all abduced interpretation are minimal
-        result_interpretations.append(abduced_interpretation)
-        for interpretation in result_interpretations:
-            if abduced_interpretation.isSuperset(interpretation):
-                result_interpretations.remove(abduced_interpretation)
-                break
-            if abduced_interpretation.isSubset(interpretation):
-                result_interpretations.remove(interpretation)
-
-    return  result_interpretations 
+        # We are here only if the explanation is valid and minimal. Add it!
+        explanation_interpretation.append((explanation, abduced_interpretation))
+           
+    return  explanation_interpretation 
     
 
 
-def skeptical(atoms: dict[str, Atom],  wc_program: Program, interpretations:list[Interpretation]) :
-    undefined = get_undefined_atoms(atoms, wc_program)
-    trues = interpretations[0].trues.copy()
-    falses = interpretations[0].falses.copy()
-    for interpretation in interpretations:
-        trues = trues.intersection(interpretation.trues).intersection(undefined)
-        falses = falses.intersection(interpretation.falses).intersection(undefined)
-    trues_str = ''
-    for true_atom in trues:
-        trues_str += f"{true_atom}, "
-    if len(trues) > 0:
-        trues_str = trues_str[:-2]
+def skeptical(atoms: dict[str, Atom],  program: Program, abduced_interpretations:list[Interpretation]) :
+    undefined = get_undefined_atoms(atoms, program)
+    all_skeptical_trues = set()
+    all_skeptical_falses = set()
+    if len(abduced_interpretations) > 0:
+        all_skeptical_trues = abduced_interpretations[0].trues.copy()
+        all_skeptical_falses = abduced_interpretations[0].falses.copy()
 
-    falses_str = ''
-    for false_atom in falses:
-        falses_str += f"¬{false_atom}, "
-    if len(falses) > 0:
-        falses_str = falses_str[:-2]
-    return_str = 'Skeptically follows:\n'
-    if len(trues) > 0:
-        return_str = return_str + f"{trues_str}, "
-    if len(falses) > 0:
-        return_str = return_str + f"{falses_str} "
-    if len(trues) == 0 and len(falses) == 0:
-        return_str = return_str + f"nothing new"
+    for interpretation in abduced_interpretations:
+        all_skeptical_trues = all_skeptical_trues.intersection(interpretation.trues)
+        all_skeptical_falses = all_skeptical_falses.intersection(interpretation.falses)
+
+    new_trues_only = all_skeptical_trues.intersection(undefined)
+    new_falses_only = all_skeptical_falses.intersection(undefined)
+
+    old_trues_only = all_skeptical_trues.difference(new_trues_only)
+    old_falses_only = all_skeptical_falses.difference(new_falses_only)    
+
+    return_str = 'Skeptically, '
+
+    # format the representation of old true and false atoms
+    old_s = ''
+    for a in old_trues_only:
+        old_s = old_s + f"{str(a)}, "
+    if len(old_trues_only) > 0 and len(old_falses_only) == 0:
+        old_s = old_s[:-2]
+    for a in old_falses_only:
+        old_s = old_s + f"¬{str(a)}, "
+    if len(old_falses_only) > 0:
+        old_s = old_s[:-2]
+
+    # format the representation of new true and false atoms
+    new_s = ''
+    for a in new_trues_only:
+        new_s = new_s + f"{str(a)}, "
+    if len(new_trues_only) > 0 and len(new_falses_only) == 0:
+        new_s = new_s[:-2]
+    for a in new_falses_only:
+        new_s = new_s + f"¬{str(a)}, "
+    if len(new_falses_only) > 0:
+        new_s = new_s[:-2]
+    
+    if len(new_trues_only) == 0 and len(new_falses_only) == 0:
+        return_str = return_str + f"nothing new follows. We already know:\n{old_s}"
+    else:
+        return_str = return_str + f"it follows:\n{new_s}\n in addition to what we already know:\n{old_s}"
+    
+
     return return_str
 
