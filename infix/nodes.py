@@ -47,4 +47,7 @@ class NegationNode:
     node: any
 
     def __repr__(self) -> str:
-        return f"¬{self.node}"
+        if type(self.node) in [AtomNode, TruthConstNode]:
+            return f"¬{self.node}"
+        else:
+            return f"¬({self.node})"
