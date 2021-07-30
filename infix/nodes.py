@@ -7,7 +7,7 @@ class AtomNode:
     atom: Atom
 
     def __repr__(self) -> str:
-        return f"{self.atom}"
+        return self.atom.string        
 
 @dataclass
 class TruthConstNode:

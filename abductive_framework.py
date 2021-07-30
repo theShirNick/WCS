@@ -10,86 +10,82 @@ from infix.expression import InfixExpression
 
 class Observation:
     '''
-    An observation is an atom or its negation that is not entailed from Phi and should be explained by abduction
+    An observation is a ground term or its negation that is not entailed from Phi and should be explained by abduction
     '''
 
     def __init__(self, infix_expression:InfixExpression):
         '''
-        An observation is an atom or its negation that is not entailed from Phi and should be explained by abduction
+        An observation is a ground term or its negation that is not entailed from Phi and should be explained by abduction
         '''
-        if len(infix_expression.atoms_here) == 1:
-            self.infix_expression = infix_expression
-        self.atom = infix_expression.atoms_here.pop()
-        infix_expression.atoms_here.add(self.atom)
-
+     
         self.is_negated = False
         count_negs = 0
+        token_list = []
         for token in infix_expression.get_lexer_tokens():
             if token.type == TokenType.NEGATION:
                 count_negs = count_negs + 1
-            else:
-                break
+            elif token.type in [TokenType.ATOM, TokenType.TBD, TokenType.CONST, TokenType.PREDICATE, TokenType.PRED_LPAREN, TokenType.PRED_RPAREN]:
+                token_list.append(token)
         if count_negs % 2 == 1:
             self.is_negated = True
+        self.ground_term = str(infix_expression.parse_lexer_tokens(token_list))
         
-
-
     def __repr__(self):
-            return self.infix_expression.node_string
-
+        s = ''
+        if self.is_negated:
+            s = '¬'
+        return s+ self.ground_term
 
     def __eq__(self, other):
-        if self.infix_expression == other.infix_expression:
+        if self.ground_term == other.ground_term and self.is_negated == other.is_negated:
             return True
         else:
             return False
 
-
     def __hash__(self):
-            return hash(self.infix_expression) + 2
+            return hash(self.ground_term) + hash(self.is_negated)
 
-def get_undefined_atoms(atoms: dict[str, Atom],  program: Program):
+def get_undefined_terms(ground_terms:dict[str, TruthConstant],  program: Program):
     '''
-        Get atoms that do not occur in the head of any clause
+        Get terms that do not occur in the head of any clause
     '''
 
-    undefined = set(atoms.values()) # consider all atoms
+    undefined = set(ground_terms.keys()) # consider all terms
     for clause in program.clauses:
-        if len(clause.left_head.atoms_here) == 1: # if an atom is in the head of a clause...
-            head_atom = clause.left_head.atoms_here.pop()
-            clause.left_head.atoms_here.add(head_atom)
-            if head_atom in undefined:
-                undefined.remove(head_atom) # ...it is defined
-        else:
-            raise Exception(f"Could not get undefined atoms. Expected the head to have 1 atom; found {len(clause.left_head.atoms_here)}")
+            head_term = str(clause.left_head)
+            if head_term not in ground_terms: # if this is a term... 
+                raise Exception("Head of clause is not a ground term")
+            if head_term in undefined:
+                undefined.remove(head_term) # ... then it is defined         
     return undefined
 
-def get_set_of_abducibles(atoms: dict[str, Atom],  program: Program):
-    abducibles = set() # returtn this
-    undefined = get_undefined_atoms(atoms, program)
-    for atom in undefined:
-        fact = Rule(InfixExpression(atom.name, atoms), InfixExpression('T', atoms))
-        assumption = Rule(InfixExpression(atom.name, atoms), InfixExpression('F', atoms))
+def get_set_of_abducibles(ground_terms:dict[str, TruthConstant], program: Program):
+    abducibles = set() # return this
+    undefined = get_undefined_terms(ground_terms, program)
+    for term in undefined:
+        fact = Rule(InfixExpression(term, ground_terms), InfixExpression('T', ground_terms))
+        assumption = Rule(InfixExpression(term, ground_terms), InfixExpression('F', ground_terms))
         abducibles.add(fact)
         abducibles.add(assumption)
     
     for clause in program.clauses:
         if clause.non_nec == True:
-            extra_abducible = Rule(clause.left_head, InfixExpression('T', atoms))
+            extra_abducible = Rule(clause.left_head, InfixExpression('T', ground_terms))
             abducibles.add(extra_abducible)
         
         if clause.factual == True:
-            for atom in clause.right_body.atoms_here:
-                if atom.is_abnormality:
-                    extra_abducible = Rule(InfixExpression(f"{atom.name}", atoms), InfixExpression('T', atoms))
-                    abducibles.add(extra_abducible)
+            for ground_term in ground_terms:
+                if '*ab*' in ground_term:
+                    if ground_term in str(clause.right_body):
+                        extra_abducible = Rule(InfixExpression(ground_term, ground_terms), InfixExpression('T', ground_terms))
+                        abducibles.add(extra_abducible)
     return abducibles
 
-def generate_explanations(abducibles, atoms: dict[str, Atom]) ->list[set[Rule]]:
+def generate_explanations(abducibles) ->list[set[Rule]]:
     ''' 
     A explanation is a subset of the set of abducibles. 
     
-    An explanation atom ← ⊥; atom ← T is condradictory
+    An explanation a ← ⊥; a ← T is condradictory
 
     Generate a list of non-contradictory explanations       
     '''
@@ -149,11 +145,11 @@ def phi_with_abduction(explanations: list[set[Rule]], program: Program,  observa
         explains_all = True
         for o in observations:
             if o.is_negated:
-                if o.atom not in abduced_interpretation.falses:
+                if o.ground_term not in abduced_interpretation.falses:
                     explains_all = False
                     break
             elif not o.is_negated:
-                if o.atom not in abduced_interpretation.trues:
+                if o.ground_term not in abduced_interpretation.trues:
                     explains_all = False
                     break
         if not explains_all:
@@ -166,8 +162,8 @@ def phi_with_abduction(explanations: list[set[Rule]], program: Program,  observa
     
 
 
-def skeptical(atoms: dict[str, Atom],  program: Program, abduced_interpretations:list[Interpretation]) :
-    undefined = get_undefined_atoms(atoms, program)
+def skeptical(ground_terms:dict[str, TruthConstant],  program: Program, abduced_interpretations:list[Interpretation]) :
+    undefined = get_undefined_terms(ground_terms, program)
     all_skeptical_trues = set()
     all_skeptical_falses = set()
     if len(abduced_interpretations) > 0:
@@ -186,7 +182,7 @@ def skeptical(atoms: dict[str, Atom],  program: Program, abduced_interpretations
 
     return_str = 'Skeptically, '
 
-    # format the representation of old true and false atoms
+    # format the representation of old true and false terms
     old_s = ''
     for a in old_trues_only:
         old_s = old_s + f"{str(a)}, "
@@ -196,8 +192,10 @@ def skeptical(atoms: dict[str, Atom],  program: Program, abduced_interpretations
         old_s = old_s + f"¬{str(a)}, "
     if len(old_falses_only) > 0:
         old_s = old_s[:-2]
+    if len(old_falses_only) == 0 and len(old_trues_only) == 0:
+        old_s = "∅"
 
-    # format the representation of new true and false atoms
+    # format the representation of new true and false terms
     new_s = ''
     for a in new_trues_only:
         new_s = new_s + f"{str(a)}, "

@@ -7,35 +7,35 @@ class Interpretation:
     An interpretation is three sets of atoms: mapped to ⊤, ⊥, and U, accordingly   
     '''
 
-    def __init__(self, trues: set[Atom], falses: set[Atom], unknowns: set[Atom]):
-
+    def __init__(self, ground_terms:dict[str, TruthConstant], trues:set[str], falses:set[str], unknowns:set[str]):
+        self.ground_terms = ground_terms
         self.trues = trues
         self.falses = falses
         self.unknowns = unknowns
 
-        for atom in trues:
-            atom.ground_value = TruthConstant.TRUE
+        for true_term in trues:
+            ground_terms[true_term] = TruthConstant.TRUE
 
-        for atom in falses:
-            atom.ground_value = TruthConstant.FALSE
+        for false_term in falses:
+            ground_terms[false_term] = TruthConstant.FALSE
 
-        for atom in unknowns:
-            atom.ground_value = TruthConstant.UNKNOWN
+        for unknown_term in unknowns:
+            self.ground_terms[unknown_term] = TruthConstant.UNKNOWN
 
         if self.trues & self.falses != set() or self.falses & self.unknowns != set() or self.trues & self.unknowns != set():
             raise Exception("Invalid sets of interpetation. Sets must be mutually exclusive")
     
     def __repr__(self) -> str:
         s = "〈{"
-        for atom in self.trues:
-            s = s + atom.__str__()+","
+        for true_term in self.trues:
+            s = s + true_term +","
         if self.trues != set(): # if not empty
             s = s[:-1] # delete the last comma
         else:
             s = s + "∅"
         s = s + "}, {"
-        for atom in self.falses:
-            s = s + atom.__str__()+","
+        for false_term in self.falses:
+            s = s + false_term+","
         if self.falses != set(): # if not empty
             s = s[:-1] # delete the last comma 
         else:
@@ -69,17 +69,17 @@ class Interpretation:
         return False
 
     def __reset_values(self):
-        for atom in self.trues:
-            atom.ground_value = TruthConstant.TRUE
+        for true_term in self.trues:
+            self.ground_terms[true_term] = TruthConstant.TRUE
 
-        for atom in self.falses:
-            atom.ground_value = TruthConstant.FALSE
+        for false_term in self.falses:
+            self.ground_terms[false_term] = TruthConstant.FALSE
 
-        for atom in self.unknowns:
-            atom.ground_value = TruthConstant.UNKNOWN
+        for unknown_term in self.unknowns:
+            self.ground_terms[unknown_term] = TruthConstant.UNKNOWN
     
     def clone(self) -> 'Interpretation':
-        return Interpretation(self.trues.copy(), self.falses.copy(), self.unknowns.copy())
+        return Interpretation(self.ground_terms, self.trues.copy(), self.falses.copy(), self.unknowns.copy())
     
     def __eq__(self, other):
         # if self == None or other == None:

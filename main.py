@@ -69,10 +69,10 @@ if __name__ == "__main__":
     window.clear_program_button.setProperty('class', 'danger')
     window.Phitab.setProperty('class', 'light_font')
     
-    placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"head if body\"\nAbnormality predictes must begin with \"ab_\"\nPut an asterisk (*) in the head to make it a non-necessary antecedent.\nPut an asterisk (*) in the body to make it a factual conditional."
+    placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"head if body\"\nAn asterisk (*) in the head makes it a clause with a non-necessary antecedent.\nAn asterisk (*) in the body to makes it a factual conditional."
     window.input_program_text_edit.setPlaceholderText(placeholder_text)
     # Important stuff starts here
-    atoms = dict()
+    ground_terms:dict[str, TruthConstant] = dict()
     observations = set()
     clauses = []
     program = Program(clauses)
@@ -103,7 +103,7 @@ if __name__ == "__main__":
                 non_nec = True
             if '*' in right_body:
                 factual = True
-            program.clauses.append(Rule(InfixExpression(left_head, atoms), InfixExpression(right_body, atoms), non_nec, factual))
+            program.clauses.append(Rule(InfixExpression(left_head, ground_terms), InfixExpression(right_body, ground_terms), non_nec, factual))
         
         window.input_program_text_edit.setPlaceholderText("")
         window.input_program_text_edit.clear()
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     # Observation Input
     @Slot()
     def input_observation():
-        observation_expr = InfixExpression(window.observation_line_edit.text(), atoms)
+        observation_expr = InfixExpression(window.observation_line_edit.text(), ground_terms)
         observations.add(Observation(observation_expr))
 
         window.observation_line_edit.clear()
@@ -139,8 +139,8 @@ if __name__ == "__main__":
     # Integrity Constraint Input
     @Slot()
     def input_IC():
-        constraint_right_body_expr = InfixExpression(window.constraint_right_body_line_edit.text(), atoms)
-        constraint_left_head_expr = InfixExpression(window.constraint_left_head_line_edit.text(), atoms)
+        constraint_right_body_expr = InfixExpression(window.constraint_right_body_line_edit.text(), ground_terms)
+        constraint_left_head_expr = InfixExpression(window.constraint_left_head_line_edit.text(), ground_terms)
         constraint = Rule(constraint_left_head_expr, constraint_right_body_expr)
         integrity_constraints.add(constraint)
 
@@ -163,12 +163,12 @@ if __name__ == "__main__":
         left_text = window.disjunction_line_edit_left.text()
         right_text = window.disjunction_line_edit_right.text()
 
-        disjunction_of_negated = InfixExpression(f'~{left_text} and ~{right_text}', atoms)
-        constraint = Rule(InfixExpression("F", atoms), disjunction_of_negated)
+        disjunction_of_negated = InfixExpression(f'~{left_text} and ~{right_text}', ground_terms)
+        constraint = Rule(InfixExpression("F", ground_terms), disjunction_of_negated)
         integrity_constraints.add(constraint)
         if not is_OR:
-            disjunction_for_exclusive = InfixExpression(f'{left_text} and {right_text}', atoms)
-            constraint = Rule(InfixExpression("F", atoms), disjunction_for_exclusive)
+            disjunction_for_exclusive = InfixExpression(f'{left_text} and {right_text}', ground_terms)
+            constraint = Rule(InfixExpression("F", ground_terms), disjunction_for_exclusive)
             integrity_constraints.add(constraint)
 
         window.disjunction_line_edit_left.clear()
@@ -198,7 +198,7 @@ if __name__ == "__main__":
         interpretation_stack.clear()
         window.PhiTextEdit.clear()
         if len(interpretation_stack) == 0:
-            interpretation_stack.append(Interpretation(set(), set(), set(atoms.values() )))
+            interpretation_stack.append(Interpretation(ground_terms, set(), set(), set(ground_terms.keys() )))
         
         stop = False
         while stop == False:
@@ -218,7 +218,7 @@ if __name__ == "__main__":
 
                 unexplained = set()
                 for ob in observations:
-                    if ob.atom in next_phi.unknowns:
+                    if ob.ground_term in next_phi.unknowns:
                         unexplained.add(ob)
                 if len(unexplained) > 0:
                     obs_str = ''
@@ -265,7 +265,7 @@ if __name__ == "__main__":
                     window.XTextEdit.append(f"𝒳 {expl}\nyields minimal model\n{interpr}\n---")
                     abduced_interpretations.append(interpr)
 
-                skeptical_result = skeptical(atoms, program, abduced_interpretations)
+                skeptical_result = skeptical(ground_terms, program, abduced_interpretations)
                 window.XTextEdit.append(skeptical_result)
 
         window.XTextEdit.setMarkdown(window.XTextEdit.toMarkdown())
@@ -294,7 +294,7 @@ if __name__ == "__main__":
     def clear_program():
         window.input_program_text_edit.setPlaceholderText(placeholder_text)
         clauses.clear()
-        atoms.clear()
+        ground_terms.clear()
         observations.clear()
         integrity_constraints.clear()
         set_of_abducibles.clear()
@@ -332,9 +332,9 @@ if __name__ == "__main__":
             after_P_str =  after_P_str + IC_string + '\n'
 
         global set_of_abducibles
-        set_of_abducibles = get_set_of_abducibles(atoms, program)
+        set_of_abducibles = get_set_of_abducibles(ground_terms, program)
         global explanations
-        explanations = generate_explanations(set_of_abducibles, atoms)
+        explanations = generate_explanations(set_of_abducibles)
         if len(set_of_abducibles) > 0:
             abducibles_str = "---\n𝒜:\n"
             for abducible in set_of_abducibles: 

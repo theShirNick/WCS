@@ -4,22 +4,25 @@ class Atom:
     A named ground atom
     '''
 
-    def __init__(self, name: str, ground_value: TruthConstant = TruthConstant.UNKNOWN, is_abnormality = False):
-        self.ground_value = ground_value
-        self.name = name
-        self.is_abnormality = is_abnormality
+    def __init__(self, predicate: str, arguments:list, is_ground:bool):
+        self.predicate = predicate
+        self.arguments = arguments
+        self.is_ground = is_ground
+        self.string = ''
+        if len(self.arguments) > 1:
+            args = ''
+            for arg in self.arguments:
+                args = args + arg +','
+            self.string = f'*{self.predicate}*({args[:-1]})'
+        elif self.predicate != None:
+            self.string =  f'*{self.predicate}*{self.arguments[0]}'
+        else:
+            self.string = self.arguments[0]
 
     def __str__(self):
-        if self.is_abnormality:
-            return self.name.replace('ab_', '*ab*')
-        else:
-            return self.name
+       return self.string
     def __repr__(self):
-        repr_str = ''
-        if self.is_abnormality == True:
-            repr_str = repr_str + 'ᵃᵇ'
-        repr_str = repr_str + self.name + "_" + self.ground_value.value
-        return repr_str
+        return self.string
 
     # def __str__(self):
     #     return self.name + " ⊨ " + self.ground_value.value
