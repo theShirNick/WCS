@@ -4,17 +4,15 @@ from truth_constant import TruthConstant
 from infix.parser_ import Parser
 from infix.lexer import Lexer
 from typing import Any, Iterator
+from infix.tokens import Token, TokenType
 from atom import Atom
 class InfixExpression:
     def __init__(self, expression: str, ground_terms: dict[str, TruthConstant]):
         self.expression = expression
         self.ground_terms = ground_terms
         self.node_string = str(self.parse_lexer_tokens(self.get_lexer_tokens())) # string representation of the expression
-        # self.atoms_here = set()  
-
-        # for token in self.get_lexer_tokens():
-        #     if token.type == TokenType.ATOM:
-        #         self.atoms_here.add(token.value)
+        
+        
 
     # def bold_abnormalities(self) -> str:
     #     '''
@@ -28,6 +26,32 @@ class InfixExpression:
     #             mod_tokens[i] = Token(TokenType.ATOM, Atom(f"**{token.value.name}**", token.value.ground_value, True))
     #     return str(self.parse_lexer_tokens(mod_tokens))
 
+    def replace_var(self, original:str, replacement:str) -> str:
+        str = ''
+        for token in self.get_lexer_tokens():
+            if token.type == TokenType.VAR and token.value == original:
+                str = str + replacement
+            elif token.type == TokenType.COMMA:
+                str = str + ','
+            elif token.type == TokenType.CONJUNCTION:
+                str = str + '∧'
+            elif token.type == TokenType.DISJUNCTION:
+                str = str + '∨'
+            elif token.type == TokenType.NEGATION:
+                str = str + '~'
+            elif token.type in [TokenType.ORDER_LPAREN, TokenType.PRED_LPAREN] :
+                str = str + '('
+            elif token.type in [TokenType.ORDER_RPAREN, TokenType.PRED_RPAREN] :
+                str = str + ')'
+            elif token.type in [TokenType.PREDICATE, TokenType.ATOM, TokenType.CONST, TokenType.TRUTHCONST]:
+                str = str + f' {token.value} '  
+        return str   
+
+    def is_ground(self) -> bool:
+        for token in self.get_lexer_tokens():
+            if token.type == TokenType.VAR:
+                return False
+        return True
     def __repr__(self) -> str:
         return self.node_string
 

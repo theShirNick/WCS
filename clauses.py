@@ -43,14 +43,6 @@ class Rule(Clause):
         right = str(self.right_body)
         if self.factual:
             right = self.right_body.bold_abnormalities()
-        # if self.non_nec == False and self.factual == False:
-        #     return f"{self.left_head} ← {self.right_body}"
-        # elif self.non_nec == True and self.factual == True:
-        #     return f"ⁿⁿ{self.left_head} ← ᶠ{self.right_body}"
-        # elif self.non_nec == True and self.factual == False:
-        #     return f"ⁿⁿ{self.left_head} ← {self.right_body}"
-        # elif self.non_nec == False and self.factual == True:
-        #     return f"{self.left_head} ← ᶠ{self.right_body}"
 
         return f"{left} ← {right}"
 
@@ -71,6 +63,9 @@ class Rule(Clause):
     
     def get_equv_clause(self):
         return WC_Rule(self.left_head, self.right_body, self.non_nec, self.factual)
+    
+    def is_ground(self) -> bool:
+        return self.left_head.is_ground() and self.right_body.is_ground()
 
 ### Weakly Completed Clauses
 

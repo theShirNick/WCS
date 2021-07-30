@@ -76,6 +76,7 @@ if __name__ == "__main__":
     observations = set()
     clauses = []
     program = Program(clauses)
+    ground_program:Program = Program([])
     wc_program = Program([]) 
     set_of_abducibles = list()
     interpretation_stack = deque()
@@ -104,12 +105,15 @@ if __name__ == "__main__":
             if '*' in right_body:
                 factual = True
             program.clauses.append(Rule(InfixExpression(left_head, ground_terms), InfixExpression(right_body, ground_terms), non_nec, factual))
-        
+        global ground_program
+        ground_program = program.ground()
         window.input_program_text_edit.setPlaceholderText("")
         window.input_program_text_edit.clear()
 
         window.PTextEdit.clear()
         window.PTextEdit.append("𝓟:\n" + str(program))
+        if ground_program != program:
+            window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
         window.PTextEdit.append(get_after_P())
         window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
         # Remake the other tabs
@@ -128,6 +132,8 @@ if __name__ == "__main__":
 
         window.PTextEdit.clear()
         window.PTextEdit.append("𝓟:\n" + str(program))
+        if ground_program != program:
+            window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
         window.PTextEdit.append(get_after_P())
         window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
         # Remake the other tabs 
@@ -149,6 +155,8 @@ if __name__ == "__main__":
 
         window.PTextEdit.clear()
         window.PTextEdit.append("𝓟:\n" + str(program))
+        if ground_program != program:
+            window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
         window.PTextEdit.append(get_after_P())
         window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
         # Remake the other tabs
@@ -176,6 +184,8 @@ if __name__ == "__main__":
 
         window.PTextEdit.clear()
         window.PTextEdit.append("𝓟:\n" + str(program))
+        if ground_program != program:
+            window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
         window.PTextEdit.append(get_after_P())
         window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
         # Remake the other tabs
@@ -187,7 +197,7 @@ if __name__ == "__main__":
     # Weakly Complete and construct text
     def wcP(): 
         global wc_program
-        wc_program = program.weakly_complete()
+        wc_program = ground_program.weakly_complete()
 
         window.wcPTextEdit.clear()
         window.wcPTextEdit.append("𝔀𝓬𝓟:\n" + str(wc_program))
@@ -258,14 +268,14 @@ if __name__ == "__main__":
                 window.XTextEdit.append("ERROR: Interpretation stack empty. Did Phi run correctly?")
 
         else:
-            explanations_interpretations = phi_with_abduction(explanations, program, observations, interpretation_stack[-1], integrity_constraints)
+            explanations_interpretations = phi_with_abduction(explanations, ground_program, observations, interpretation_stack[-1], integrity_constraints)
             if len(explanations_interpretations) > 0:
                 abduced_interpretations = list()
                 for expl, interpr in explanations_interpretations:
                     window.XTextEdit.append(f"𝒳 {expl}\nyields minimal model\n{interpr}\n---")
                     abduced_interpretations.append(interpr)
 
-                skeptical_result = skeptical(ground_terms, program, abduced_interpretations)
+                skeptical_result = skeptical(ground_terms, ground_program, abduced_interpretations)
                 window.XTextEdit.append(skeptical_result)
 
         window.XTextEdit.setMarkdown(window.XTextEdit.toMarkdown())
@@ -294,6 +304,8 @@ if __name__ == "__main__":
     def clear_program():
         window.input_program_text_edit.setPlaceholderText(placeholder_text)
         clauses.clear()
+        global ground_program
+        ground_program = Program([])
         ground_terms.clear()
         observations.clear()
         integrity_constraints.clear()
@@ -332,7 +344,7 @@ if __name__ == "__main__":
             after_P_str =  after_P_str + IC_string + '\n'
 
         global set_of_abducibles
-        set_of_abducibles = get_set_of_abducibles(ground_terms, program)
+        set_of_abducibles = get_set_of_abducibles(ground_terms, ground_program)
         global explanations
         explanations = generate_explanations(set_of_abducibles)
         if len(set_of_abducibles) > 0:

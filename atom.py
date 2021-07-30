@@ -15,7 +15,7 @@ class Atom:
                 args = args + arg +','
             self.string = f'*{self.predicate}*({args[:-1]})'
         elif self.predicate != None:
-            self.string =  f'*{self.predicate}*{self.arguments[0]}'
+            self.string =  f'*{self.predicate}* {self.arguments[0]}'
         else:
             self.string = self.arguments[0]
 
