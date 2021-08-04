@@ -56,16 +56,28 @@ class Example(Enum):
     DIS_6_R_DISJUNCTION = 'r'
     DIS_6_EXCLUSIVE = True
 
-    CLASS_1_PROGRAM = '*C if *A and not ab A;\nab A if F;\nA if T'
+    CLASS_1_PROGRAM = '*c if *a and not ab a;\nab a if F;\na if T'
 
-    CLASS_2_PROGRAM = '*C if *A and not ab A;\nab A if F;\nA if F'
+    CLASS_2_PROGRAM = '*c if *a and not ab a;\nab a if F;\na if F'
 
-    CLASS_3_PROGRAM = '*C if A and not ab A;\nab A if F'
-    CLASS_3_OBSERVATION = 'C'
+    CLASS_3_PROGRAM = '*c if a and not ab a;\nab a if F'
+    CLASS_3_OBSERVATION = 'c'
 
-    CLASS_4_PROGRAM = 'C if * A and not ab A;\nab A if F'
-    CLASS_4_OBSERVATION = 'not C'
+    CLASS_4_PROGRAM = 'c if * a and not ab a;\nab a if F'
+    CLASS_4_OBSERVATION = 'not c'
 
+    DATALOG_1_PROGRAM = '''fly X if bird X and not ab_fly X;\n
+                            ab_fly X if kiwi X;\n
+                            ab_fly X if penguin X;\n
+                            bird tweety if T;\n
+                            bird jerry if T'''
+    DATALOG_1_OBSERVATION = 'fly jerry'
+
+    DATALOG_2_PROGRAM = '''fly X if bird X and not ab_fly X;\n
+                            ab_fly X if F;\n
+                            bird tweety if T;\n
+                            bird jerry if T'''
+    DATALOG_2_OBSERVATION = 'not fly jerry'
 
 
 

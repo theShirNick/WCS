@@ -530,9 +530,17 @@
     <addaction name="action3_AC_non_necessary"/>
     <addaction name="action4_DC_factual"/>
    </widget>
+   <widget class="QMenu" name="menuDatalog">
+    <property name="title">
+     <string>Datalog</string>
+    </property>
+    <addaction name="action1_Birds_Explicit"/>
+    <addaction name="action2_Birds_Implicit"/>
+   </widget>
    <addaction name="menuSuppression_Task"/>
    <addaction name="menuDisjunctions"/>
    <addaction name="menuClassification_of_Conditionals"/>
+   <addaction name="menuDatalog"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action1_AA">
@@ -643,6 +651,16 @@
   <action name="action2_DA_both">
    <property name="text">
     <string>2. DA both</string>
+   </property>
+  </action>
+  <action name="action1_Birds_Explicit">
+   <property name="text">
+    <string>1. Birds Explicit</string>
+   </property>
+  </action>
+  <action name="action2_Birds_Implicit">
+   <property name="text">
+    <string>2. Birds Implicit</string>
    </property>
   </action>
  </widget>

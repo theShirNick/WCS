@@ -617,6 +617,28 @@ if __name__ == "__main__":
         input_observation()
     window.action4_DC_factual.triggered.connect(CLASS_4)
 
+    @Slot()
+    def DATALOG_1():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.DATALOG_1_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example.DATALOG_1_OBSERVATION.value)
+        input_observation()
+    window.action1_Birds_Explicit.triggered.connect(DATALOG_1)
+
+    @Slot()
+    def DATALOG_2():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.DATALOG_2_PROGRAM.value)
+        input_program()
+        window.observation_line_edit.clear()
+        window.observation_line_edit.setText(Example.DATALOG_2_OBSERVATION.value)
+        input_observation()
+    window.action2_Birds_Implicit.triggered.connect(DATALOG_2)
+
     
     # run GUI
     window.show()

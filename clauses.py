@@ -39,10 +39,12 @@ class Rule(Clause):
     def __repr__(self):
         left = str(self.left_head)
         if self.non_nec:
-            left = f"**{self.left_head}**"
+            # left = f"**{self.left_head}**"
+            pass
         right = str(self.right_body)
         if self.factual:
-            right = self.right_body.bold_abnormalities()
+            # right = self.right_body.bold_abnormalities()
+            pass
 
         return f"{left} ← {right}"
 
