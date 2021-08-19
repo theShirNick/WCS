@@ -18,11 +18,13 @@ from infix.expression import InfixExpression
 from phi import phi
 from examples import Example
 
+from pathlib import Path
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    ui_file_name = "ui/main.ui"
+    ui_file_name = str(Path("ui/main.ui"))
     ui_file = QFile(ui_file_name)
     if not ui_file.open(QIODevice.ReadOnly):
         print(f"Cannot open {ui_file_name}: {ui_file.errorString()}")
@@ -35,16 +37,17 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     # setup stylesheet
-    QFontDatabase.addApplicationFont('ui/OverpassMono-Regular.ttf')
+    # QFontDatabase.addApplicationFont('ui/OverpassMono-Regular.ttf')
+    QFontDatabase.addApplicationFont(str(Path('ui/OverpassMono-Regular.ttf')))
     
 
-    font_id_reg = QFontDatabase.addApplicationFont('ui/Roboto-Regular.ttf')
+    font_id_reg = QFontDatabase.addApplicationFont(str(Path('ui/Roboto-Regular.ttf')))
     print(f"\n\nfont id: {font_id_reg}\n\n")
     apply_stylesheet(app, theme='dark_lightgreen.xml')
 
     # load custom style additions
     stylesheet = app.styleSheet()
-    with open('ui/custom.css') as file:
+    with open(str(Path('ui/custom.css'))) as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
     
