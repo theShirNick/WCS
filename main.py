@@ -109,6 +109,11 @@ All clauses must be of the form \"head if body\".
 Add an asterisk to the head to make a non-necessary antecedent.
 Add an asterisk to the head to make a factual conditional.
 Abnormality predicates must begin with \"ab\".
+
+The 𝒫 tab shows you input program, the ground program, observations, integrity constraints, and abducibles.
+The 𝑤𝑐𝒫 tab shows the weak completion of the ground program.
+The Φ tab iterates the semantic operator until a fixed point is found.
+The 𝒳 tab performs abduction to find explanations beyond the fixed point. 
 '''
     window.help_textEdit.setText(help_text)
     # Important stuff starts here
@@ -131,7 +136,7 @@ Abnormality predicates must begin with \"ab\".
     def input_program():
         try:
             window.tabWidget.setCurrentIndex(0)
-            window.tabWidget.setTabVisible(4, False)
+            # window.tabWidget.setTabVisible(4, False)
 
             program_text = window.input_program_text_edit.toPlainText().replace(':-', '←').replace('-:', '←').replace(' if ', '←')
 
@@ -181,7 +186,7 @@ Abnormality predicates must begin with \"ab\".
     def input_observation():
         try:
             window.tabWidget.setCurrentIndex(0)
-            window.tabWidget.setTabVisible(4, False)
+            # window.tabWidget.setTabVisible(4, False)
 
             observation_expr = InfixExpression(window.observation_line_edit.text(), ground_terms)
             observations.add(Observation(observation_expr))
@@ -209,7 +214,7 @@ Abnormality predicates must begin with \"ab\".
     def input_IC():
         try:
             window.tabWidget.setCurrentIndex(0)
-            window.tabWidget.setTabVisible(4, False)
+            # window.tabWidget.setTabVisible(4, False)
 
             constraint_right_body_expr = InfixExpression(window.constraint_right_body_line_edit.text(), ground_terms)
             constraint_left_head_expr = InfixExpression(window.constraint_left_head_line_edit.text(), ground_terms)
@@ -241,7 +246,7 @@ Abnormality predicates must begin with \"ab\".
         try:
                 
             window.tabWidget.setCurrentIndex(0)
-            window.tabWidget.setTabVisible(4, False)
+            # window.tabWidget.setTabVisible(4, False)
 
             left_text = window.disjunction_line_edit_left.text()
             right_text = window.disjunction_line_edit_right.text()
