@@ -34,7 +34,7 @@ QTextEdit {{
 }}
 
 .mono_font {{
-    font-family: "Overpass Mono", "Monaco", "Lucida Console", monospace;
+    font-family: "Overpass Mono", "Monaco", "Lucida Console", 'mono';
   }}
 
 .chk_btn{{
