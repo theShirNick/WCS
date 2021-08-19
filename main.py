@@ -36,11 +36,11 @@ if __name__ == "__main__":
 
     # setup stylesheet
     font_id_mono = QFontDatabase.addApplicationFont('ui\OverpassMono-Regular.ttf')
-    font_family_mono = QFontDatabase.applicationFontFamilies(font_id_mono)[0]
+    # font_family_mono = QFontDatabase.applicationFontFamilies(font_id_mono)[0]
 
     font_id_reg = QFontDatabase.addApplicationFont('ui\Roboto-Regular.ttf')
-    font_family_reg = QFontDatabase.applicationFontFamilies(font_id_reg)[0]
-    app.setFont(QFont(font_family_reg)) 
+    # font_family_reg = QFontDatabase.applicationFontFamilies(font_id_reg)[0]
+    # app.setFont(QFont(font_family_reg)) 
     apply_stylesheet(app, theme='dark_lightgreen.xml')
 
     # load custom style additions
