@@ -24,7 +24,7 @@ from pathlib import Path
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    ui_file_name = str(Path("ui/main.ui"))
+    ui_file_name = os.path.dirname(__file__) + "/ui/main.ui"
     ui_file = QFile(ui_file_name)
     if not ui_file.open(QIODevice.ReadOnly):
         print(f"Cannot open {ui_file_name}: {ui_file.errorString()}")
@@ -38,10 +38,10 @@ if __name__ == "__main__":
 
     # setup stylesheet
     # QFontDatabase.addApplicationFont('ui/OverpassMono-Regular.ttf')
-    QFontDatabase.addApplicationFont(str(Path('ui/OverpassMono-Regular.ttf')))
+    QFontDatabase.addApplicationFont(os.path.dirname(__file__) + '/ui/OverpassMono-Regular.ttf')
     
 
-    font_id_reg = QFontDatabase.addApplicationFont(str(Path('ui/Roboto-Regular.ttf')))
+    font_id_reg = QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Roboto-Regular.ttf")
     print(f"\n\nfont id: {font_id_reg}\n\n")
     apply_stylesheet(app, theme='dark_lightgreen.xml')
 
