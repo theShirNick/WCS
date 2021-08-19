@@ -75,7 +75,7 @@
      </font>
     </property>
     <property name="placeholderText">
-     <string>Enter clauses separated by a semicolon (;) All clauses must be of the form &quot;body if head&quot;.  Put an asterisk (*) in front of the body to make it a non-necessary antecedent. Put an asterisk (*) in front of the head to make it a factual conditional. </string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="input_program_button">
@@ -271,7 +271,7 @@
      <string/>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -381,6 +381,76 @@
         <width>511</width>
         <height>425</height>
        </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="help_tab">
+     <attribute name="title">
+      <string>Help</string>
+     </attribute>
+     <widget class="QTextEdit" name="help_textEdit">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Courier New</family>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="open_PDF_button">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>380</y>
+        <width>511</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Open PDF manual</string>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="error_tab">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="title">
+      <string>error</string>
+     </attribute>
+     <widget class="QTextEdit" name="error_textEdit">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>471</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Courier New</family>
+        <pointsize>14</pointsize>
+       </font>
       </property>
       <property name="readOnly">
        <bool>true</bool>

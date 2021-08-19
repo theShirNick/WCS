@@ -8,7 +8,7 @@ class Parser:
         self.advance()
 
     def raise_error(self):
-        raise Exception("Invalid syntax. Could not perform parsing of tokens")
+        raise Exception(f"Invalid syntax. Could not perform parsing of tokens.\nThe following token caused the error: {self.current_token}")
 
     def advance(self):
         try:

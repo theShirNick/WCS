@@ -5,7 +5,7 @@ from truth_constant import TruthConstant
 
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtGui import QFontDatabase, QFont
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QDialog
 from PySide6.QtCore import QFile, QIODevice, Slot
 
 from qt_material import apply_stylesheet
@@ -46,31 +46,59 @@ if __name__ == "__main__":
     
     # force style
     window.statusbar.hide()
-    window.PTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.PTextEdit.setFont(QFont("Overpass Mono", 12))
     window.PTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(1)
 
-    window.wcPTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.wcPTextEdit.setFont(QFont("Overpass Mono", 12))
     window.wcPTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(2)
 
-    window.PhiTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.PhiTextEdit.setFont(QFont("Overpass Mono", 12))
     window.PhiTextEdit.setProperty('class', 'output_text_edit')
     window.tabWidget.setCurrentIndex(3)
 
-    window.XTextEdit.setFont(QFont("Overpass Mono", 14))
+    window.XTextEdit.setFont(QFont("Overpass Mono", 12))
     window.XTextEdit.setProperty('class', 'output_text_edit')
-    window.tabWidget.setCurrentIndex(0)
+    window.tabWidget.setCurrentIndex(4)
+
+    window.help_textEdit.setFont(QFont("Overpass Mono", 12))
+    window.help_textEdit.setProperty('class', 'output_text_edit')
+    window.tabWidget.setCurrentIndex(5)
+
+    window.error_textEdit.setFont(QFont("Overpass Mono", 12))
+    window.error_textEdit.setProperty('class', 'output_text_edit')
+    window.tabWidget.setCurrentIndex(4)
+
+
+    # error tab
+    window.tabWidget.setTabVisible(5, False)
+    
+
 
     window.observation_line_edit.setProperty('class', 'mono_font')
     window.constraint_left_head_line_edit.setProperty('class', 'mono_font')
     window.constraint_right_body_line_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'background_active_input')
     window.clear_program_button.setProperty('class', 'danger')
-    window.Phitab.setProperty('class', 'light_font')
     
-    placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"head if body\"\nAn asterisk (*) in the head makes it a clause with a non-necessary antecedent.\nAn asterisk (*) in the body to makes it a factual conditional."
-    window.input_program_text_edit.setPlaceholderText(placeholder_text)
+    # placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"head if body\"\nAn asterisk (*) in the head makes it a clause with a non-necessary antecedent.\nAn asterisk (*) in the body to makes it a factual conditional."
+    # window.input_program_text_edit.setPlaceholderText(placeholder_text)
+    help_text = '''Example of a valid program input:
+
+    fly X if bird X ∧ not ab_fly X;
+    ab_fly X if F;
+    bird tweety if T;
+    bird jerry if ⊤;
+
+Only datalog programs are supported.
+Enter clauses separated by a semicolon.
+All clauses must be of the form \"head if body\".
+Add an asterisk to the head to make a non-necessary antecedent.
+Add an asterisk to the head to make a factual conditional.
+Abnormality predicates must begin with \"ab\".
+'''
+    window.help_textEdit.setText(help_text)
     # Important stuff starts here
     ground_terms:dict[str, TruthConstant] = dict()
     observations = set()
@@ -85,39 +113,53 @@ if __name__ == "__main__":
     
     is_OR = False
 
+    
     # Program Input
     @Slot()
     def input_program():
-        program_text = window.input_program_text_edit.toPlainText().replace(':-', '←').replace('-:', '←').replace(' if ', '←')
+        try:
+            window.tabWidget.setCurrentIndex(0)
+            window.tabWidget.setTabVisible(4, False)
 
-        if len(program_text) == 0:
-            return
-        if program_text[-1] == ';':
-            program_text = program_text[:-1]
-        split_clauses = program_text.split(';')
+            program_text = window.input_program_text_edit.toPlainText().replace(':-', '←').replace('-:', '←').replace(' if ', '←')
 
-        for clause in split_clauses:
-            left_head, right_body = clause.split('←', 1)
-            non_nec = False
-            factual = False
-            if '*' in left_head:
-                non_nec = True
-            if '*' in right_body:
-                factual = True
-            program.clauses.append(Rule(InfixExpression(left_head, ground_terms), InfixExpression(right_body, ground_terms), non_nec, factual))
-        global ground_program
-        ground_program = program.ground()
-        window.input_program_text_edit.setPlaceholderText("")
-        window.input_program_text_edit.clear()
+            if len(program_text) == 0:
+                return
+            if program_text[-1] == ';':
+                program_text = program_text[:-1]
+            split_clauses = program_text.split(';')
 
-        window.PTextEdit.clear()
-        window.PTextEdit.append("𝓟:\n" + str(program))
-        if ground_program != program:
-            window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
-        window.PTextEdit.append(get_after_P())
-        window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
-        # Remake the other tabs
-        wcP_Phi_X()
+            for clause in split_clauses:
+                try:
+                    left_head, right_body = clause.split('←', 1)
+                except:
+                    if len(str(clause)) == 0:
+                        raise Exception(f"Empty clause found. Do you have an extra semicolon somwhere?")
+                    raise Exception(f"All clauses must be of the form \"head if body\".\nThis clause is wrong:\n{clause} ")
+                non_nec = False
+                factual = False
+                if '*' in left_head:
+                    non_nec = True
+                if '*' in right_body:
+                    factual = True
+                program.clauses.append(Rule(InfixExpression(left_head, ground_terms), InfixExpression(right_body, ground_terms), non_nec, factual))
+            global ground_program
+            ground_program = program.ground()
+            window.input_program_text_edit.setPlaceholderText("")
+            window.input_program_text_edit.clear()
+
+            window.PTextEdit.clear()
+            window.PTextEdit.append("𝓟:\n" + str(program))
+            if ground_program != program:
+                window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
+            window.PTextEdit.append(get_after_P())
+            window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
+            # Remake the other tabs
+            wcP_Phi_X()
+        
+        except Exception as e:
+            show_error(e)
+            raise(e)
 
     # Connect the Program button to the function
     window.input_program_button.clicked.connect(input_program)
@@ -125,19 +167,27 @@ if __name__ == "__main__":
     # Observation Input
     @Slot()
     def input_observation():
-        observation_expr = InfixExpression(window.observation_line_edit.text(), ground_terms)
-        observations.add(Observation(observation_expr))
+        try:
+            window.tabWidget.setCurrentIndex(0)
+            window.tabWidget.setTabVisible(4, False)
 
-        window.observation_line_edit.clear()
+            observation_expr = InfixExpression(window.observation_line_edit.text(), ground_terms)
+            observations.add(Observation(observation_expr))
 
-        window.PTextEdit.clear()
-        window.PTextEdit.append("𝓟:\n" + str(program))
-        if ground_program != program:
-            window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
-        window.PTextEdit.append(get_after_P())
-        window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
-        # Remake the other tabs 
-        wcP_Phi_X()
+            window.observation_line_edit.clear()
+
+            window.PTextEdit.clear()
+            window.PTextEdit.append("𝓟:\n" + str(program))
+            if ground_program != program:
+                window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
+            window.PTextEdit.append(get_after_P())
+            window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
+            # Remake the other tabs 
+            wcP_Phi_X()
+                
+        except Exception as e:
+            show_error(e)
+            raise(e)
 
     # Connect the Observation button to the function
     window.input_observation_button.clicked.connect(input_observation)
@@ -145,22 +195,30 @@ if __name__ == "__main__":
     # Integrity Constraint Input
     @Slot()
     def input_IC():
-        constraint_right_body_expr = InfixExpression(window.constraint_right_body_line_edit.text(), ground_terms)
-        constraint_left_head_expr = InfixExpression(window.constraint_left_head_line_edit.text(), ground_terms)
-        constraint = Rule(constraint_left_head_expr, constraint_right_body_expr)
-        integrity_constraints.add(constraint)
+        try:
+            window.tabWidget.setCurrentIndex(0)
+            window.tabWidget.setTabVisible(4, False)
 
-        window.constraint_right_body_line_edit.clear()
-        window.constraint_left_head_line_edit.clear()
+            constraint_right_body_expr = InfixExpression(window.constraint_right_body_line_edit.text(), ground_terms)
+            constraint_left_head_expr = InfixExpression(window.constraint_left_head_line_edit.text(), ground_terms)
+            constraint = Rule(constraint_left_head_expr, constraint_right_body_expr)
+            integrity_constraints.add(constraint)
 
-        window.PTextEdit.clear()
-        window.PTextEdit.append("𝓟:\n" + str(program))
-        if ground_program != program:
-            window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
-        window.PTextEdit.append(get_after_P())
-        window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
-        # Remake the other tabs
-        wcP_Phi_X()
+            window.constraint_right_body_line_edit.clear()
+            window.constraint_left_head_line_edit.clear()
+
+            window.PTextEdit.clear()
+            window.PTextEdit.append("𝓟:\n" + str(program))
+            if ground_program != program:
+                window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
+            window.PTextEdit.append(get_after_P())
+            window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
+            # Remake the other tabs
+            wcP_Phi_X()
+                
+        except Exception as e:
+            show_error(e)
+            raise(e)
 
     # Connect the Integrity Constraint button to the function
     window.input_constraint_button.clicked.connect(input_IC)
@@ -168,28 +226,37 @@ if __name__ == "__main__":
     # disjunction Input
     @Slot()
     def input_disjunction():
-        left_text = window.disjunction_line_edit_left.text()
-        right_text = window.disjunction_line_edit_right.text()
+        try:
+                
+            window.tabWidget.setCurrentIndex(0)
+            window.tabWidget.setTabVisible(4, False)
 
-        disjunction_of_negated = InfixExpression(f'~{left_text} and ~{right_text}', ground_terms)
-        constraint = Rule(InfixExpression("F", ground_terms), disjunction_of_negated)
-        integrity_constraints.add(constraint)
-        if not is_OR:
-            disjunction_for_exclusive = InfixExpression(f'{left_text} and {right_text}', ground_terms)
-            constraint = Rule(InfixExpression("F", ground_terms), disjunction_for_exclusive)
+            left_text = window.disjunction_line_edit_left.text()
+            right_text = window.disjunction_line_edit_right.text()
+
+            disjunction_of_negated = InfixExpression(f'~{left_text} and ~{right_text}', ground_terms)
+            constraint = Rule(InfixExpression("F", ground_terms), disjunction_of_negated)
             integrity_constraints.add(constraint)
+            if not is_OR:
+                disjunction_for_exclusive = InfixExpression(f'{left_text} and {right_text}', ground_terms)
+                constraint = Rule(InfixExpression("F", ground_terms), disjunction_for_exclusive)
+                integrity_constraints.add(constraint)
 
-        window.disjunction_line_edit_left.clear()
-        window.disjunction_line_edit_right.clear()
+            window.disjunction_line_edit_left.clear()
+            window.disjunction_line_edit_right.clear()
 
-        window.PTextEdit.clear()
-        window.PTextEdit.append("𝓟:\n" + str(program))
-        if ground_program != program:
-            window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
-        window.PTextEdit.append(get_after_P())
-        window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
-        # Remake the other tabs
-        wcP_Phi_X()
+            window.PTextEdit.clear()
+            window.PTextEdit.append("𝓟:\n" + str(program))
+            if ground_program != program:
+                window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
+            window.PTextEdit.append(get_after_P())
+            window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
+            # Remake the other tabs
+            wcP_Phi_X()
+                    
+        except Exception as e:
+            show_error(e)
+            raise(e)
 
     # Connect the Integrity Constraint button to the function
     window.input_disjunction_button.clicked.connect(input_disjunction)
@@ -281,7 +348,7 @@ if __name__ == "__main__":
         window.XTextEdit.setMarkdown(window.XTextEdit.toMarkdown())
 
 
-     # Exclusive disjunction button
+    # Exclusive disjunction button
     @Slot()
     def XOR_switch():
         global is_OR
@@ -302,7 +369,9 @@ if __name__ == "__main__":
     # Clear Program
     @Slot()
     def clear_program():
-        window.input_program_text_edit.setPlaceholderText(placeholder_text)
+        window.tabWidget.setTabVisible(4, True)
+        window.tabWidget.setCurrentIndex(4)
+        window.tabWidget.setTabVisible(5, False)
         clauses.clear()
         global ground_program
         ground_program = Program([])
@@ -315,13 +384,14 @@ if __name__ == "__main__":
         window.wcPTextEdit.clear()
         window.PhiTextEdit.clear()
         window.XTextEdit.clear()
+        window.input_program_text_edit.clear()
         global is_OR
         if is_OR:
             window.exclusive_button.nextCheckState()
             is_OR = False
             XOR_switch()
         
-       
+    
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
 
@@ -354,7 +424,12 @@ if __name__ == "__main__":
             after_P_str =  after_P_str + abducibles_str
         
         return after_P_str
-
+    
+    def show_error(e):
+            window.tabWidget.setTabVisible(5, True)
+            window.tabWidget.setCurrentIndex(5)
+            window.error_textEdit.clear()
+            window.error_textEdit.append(str(e))
 
     # Run Example
     @Slot()
@@ -638,7 +713,6 @@ if __name__ == "__main__":
         window.observation_line_edit.setText(Example.DATALOG_2_OBSERVATION.value)
         input_observation()
     window.action2_Birds_Implicit.triggered.connect(DATALOG_2)
-
     
     # run GUI
     window.show()
