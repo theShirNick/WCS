@@ -33,10 +33,6 @@ QTextEdit {{
   color: white;
 }}
 
-.mono_font {{
-    font-family: "Overpass Mono", "Monaco", "Lucida Console", 'mono';
-  }}
-
 .chk_btn{{
   padding: 2px;
 

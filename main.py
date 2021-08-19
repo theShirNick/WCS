@@ -42,12 +42,11 @@ if __name__ == "__main__":
     
 
     font_id_reg = QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Roboto-Regular.ttf")
-    print(f"\n\nfont id: {font_id_reg}\n\n")
     apply_stylesheet(app, theme='dark_lightgreen.xml')
 
     # load custom style additions
     stylesheet = app.styleSheet()
-    with open(str(Path('ui/custom.css'))) as file:
+    with open(os.path.dirname(__file__) + '/ui/custom.css') as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
     
@@ -55,26 +54,32 @@ if __name__ == "__main__":
     window.statusbar.hide()
     window.PTextEdit.setFont(QFont("Overpass Mono", 12))
     window.PTextEdit.setProperty('class', 'output_text_edit')
+    window.Ptab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(1)
 
     window.wcPTextEdit.setFont(QFont("Overpass Mono", 12))
     window.wcPTextEdit.setProperty('class', 'output_text_edit')
+    window.wcPtab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(2)
 
     window.PhiTextEdit.setFont(QFont("Overpass Mono", 12))
     window.PhiTextEdit.setProperty('class', 'output_text_edit')
+    window.Phitab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(3)
 
     window.XTextEdit.setFont(QFont("Overpass Mono", 12))
     window.XTextEdit.setProperty('class', 'output_text_edit')
+    window.Xtab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(4)
 
     window.help_textEdit.setFont(QFont("Overpass Mono", 12))
     window.help_textEdit.setProperty('class', 'output_text_edit')
+    window.help_tab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(5)
 
     window.error_textEdit.setFont(QFont("Overpass Mono", 12))
     window.error_textEdit.setProperty('class', 'output_text_edit')
+    window.error_tab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(4)
 
 
