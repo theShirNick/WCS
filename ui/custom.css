@@ -7,7 +7,7 @@
   border-top-right-radius: 5px;
   border-width: 0 0 2px 0;
   background-color: #232629;
-  font-family: "Overpass Mono", "Monaco", "Lucida Console", monospace;
+  font-family: "Overpass Mono", "Monaco", "Lucida Console", 'mono';
 }}
 
 .output_text_edit{{
