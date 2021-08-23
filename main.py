@@ -1,3 +1,4 @@
+
 import sys
 import os
 from collections import deque
@@ -54,8 +55,10 @@ if __name__ == "__main__":
     window.statusbar.hide()
     window.PTextEdit.setFont(QFont("Overpass Mono", 12))
     window.PTextEdit.setProperty('class', 'output_text_edit')
-    window.Ptab.setFont('Overpass Mono')
+    window.PTextEdit.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(1)
+
+    
 
     window.wcPTextEdit.setFont(QFont("Overpass Mono", 12))
     window.wcPTextEdit.setProperty('class', 'output_text_edit')
