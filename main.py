@@ -53,36 +53,30 @@ if __name__ == "__main__":
     
     # force style
     window.statusbar.hide()
-    window.PTextEdit.setFont(QFont("Overpass Mono", 12))
+    window.PTextEdit.setFont("Overpass Mono")
     window.PTextEdit.setProperty('class', 'output_text_edit')
-    window.PTextEdit.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(1)
 
     
 
-    window.wcPTextEdit.setFont(QFont("Overpass Mono", 12))
+    window.wcPTextEdit.setFont("Overpass Mono")
     window.wcPTextEdit.setProperty('class', 'output_text_edit')
-    window.wcPtab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(2)
 
-    window.PhiTextEdit.setFont(QFont("Overpass Mono", 12))
+    window.PhiTextEdit.setFont("Overpass Mono")
     window.PhiTextEdit.setProperty('class', 'output_text_edit')
-    window.Phitab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(3)
 
-    window.XTextEdit.setFont(QFont("Overpass Mono", 12))
+    window.XTextEdit.setFont("Overpass Mono")
     window.XTextEdit.setProperty('class', 'output_text_edit')
-    window.Xtab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(4)
 
-    window.help_textEdit.setFont(QFont("Overpass Mono", 12))
+    window.help_textEdit.setFont("Overpass Mono")
     window.help_textEdit.setProperty('class', 'output_text_edit')
-    window.help_tab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(5)
 
-    window.error_textEdit.setFont(QFont("Overpass Mono", 12))
+    window.error_textEdit.setFont("Overpass Mono")
     window.error_textEdit.setProperty('class', 'output_text_edit')
-    window.error_tab.setFont('Overpass Mono')
     window.tabWidget.setCurrentIndex(4)
 
 
