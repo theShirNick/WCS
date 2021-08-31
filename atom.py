@@ -13,9 +13,9 @@ class Atom:
             args = ''
             for arg in self.arguments:
                 args = args + arg +','
-            self.string = f'<font color="PaleGreen">{self.predicate}</font>({args[:-1]})'
+            self.string = f'<font color="#ccffcc">{self.predicate}</font>({args[:-1]})'
         elif self.predicate != None:
-            self.string =  f'<font color="PaleGreen">{self.predicate}</font> {self.arguments[0]}'
+            self.string =  f'<font color="#ccffcc">{self.predicate}</font> {self.arguments[0]}'
         else:
             self.string = self.arguments[0]
 

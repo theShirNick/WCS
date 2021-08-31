@@ -93,12 +93,12 @@ if __name__ == "__main__":
     
     # placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"head if body\"\nAn asterisk (*) in the head makes it a clause with a non-necessary antecedent.\nAn asterisk (*) in the body to makes it a factual conditional."
     # window.input_program_text_edit.setPlaceholderText(placeholder_text)
-    help_text = '''Example of a valid program input:<br>
+    help_text = '''<font size="5">Example of a valid program input:<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp; fly X if bird X ∧ not ab_fly X;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; ab_fly X if F;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; bird tweety if T;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; bird jerry if ⊤;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">fly</font> <font color="aqua">X</font> if <font color="#ccffcc">bird</font> <font color="aqua">X</font> ∧ not <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font> if F;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">bird</font> tweety if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">bird</font> jerry if ⊤;<br>
 <br>
 Only datalog programs are supported.<br>
 Enter clauses separated by a semicolon.<br>
@@ -110,7 +110,7 @@ Abnormality predicates must begin with \"ab\".<br>
 The 𝒫 tab shows you input program, the ground program, observations, integrity constraints, and abducibles.<br>
 The 𝑤𝑐𝒫 tab shows the weak completion of the ground program.<br>
 The Φ tab iterates the semantic operator until a fixed point is found.<br>
-The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br> 
+The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br></font> 
 '''
     window.help_textEdit.setHtml(help_text)
     # Important stuff starts here
@@ -131,7 +131,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Program Input
     @Slot()
     def input_program():
-        output = ''
+        output = '<font size="5">'
         try:
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
@@ -168,7 +168,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             if ground_program != program:
                 output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
             output = output + get_after_P()
-            window.PTextEdit.setHtml(output)
+            window.PTextEdit.setHtml(output + "</font>")
             # Remake the other tabs
             wcP_Phi_X()
         
@@ -182,7 +182,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Observation Input
     @Slot()
     def input_observation():
-        output = ''
+        output = '<font size="5">'
         try:
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
@@ -197,7 +197,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             if ground_program != program:
                output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
             output = output + get_after_P()
-            window.PTextEdit.setHtml(output)
+            window.PTextEdit.setHtml(output+ "</font>")
             # Remake the other tabs 
             wcP_Phi_X()
                 
@@ -211,7 +211,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Integrity Constraint Input
     @Slot()
     def input_IC():
-        output = ''
+        output = '<font size="5">'
         try:
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
@@ -229,7 +229,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             if ground_program != program:
                 output = output +"<hr>𝑔𝓟:<br>" + str(ground_program)
             output = output + get_after_P()
-            window.PTextEdit.setHtml(output)
+            window.PTextEdit.setHtml(output+ "</font>")
             # Remake the other tabs
             wcP_Phi_X()
                 
@@ -243,7 +243,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # disjunction Input
     @Slot()
     def input_disjunction():
-        output = ''
+        output = '<font size="5">'
         try:
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
@@ -267,7 +267,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             if ground_program != program:
                output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
             output = output + get_after_P()
-            window.PTextEdit.setHtml(output)
+            window.PTextEdit.setHtml(output+ "</font>")
             # Remake the other tabs
             wcP_Phi_X()
                     
@@ -280,7 +280,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
     # Weakly Complete and construct text
     def wcP(): 
-        output = ''
+        output = '<font size="5">'
         global wc_program
         wc_program = ground_program.weakly_complete()
 
@@ -327,11 +327,11 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
             else:     
                 interpretation_stack.append(next_phi) 
-            window.PhiTextEdit.setHtml(output)
+            window.PhiTextEdit.setHtml(output+ "</font>")
         
     # 𝒳 - explain with abduction
     def abduction():  
-        output = ''
+        output = '<font size="5">'
         window.XTextEdit.clear()
         if len(set_of_abducibles) == 0:
             old_s = ''
@@ -365,7 +365,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 skeptical_result = skeptical(ground_terms, ground_program, abduced_interpretations)
                 output = output + skeptical_result
 
-        window.XTextEdit.setHtml(output)
+        window.XTextEdit.setHtml(output+ "</font>")
 
 
     # Exclusive disjunction button
