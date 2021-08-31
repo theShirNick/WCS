@@ -207,9 +207,9 @@ def skeptical(ground_terms:dict[str, TruthConstant],  program: Program, abduced_
         new_s = new_s[:-2]
     
     if len(new_trues_only) == 0 and len(new_falses_only) == 0:
-        return_str = return_str + f"nothing new follows. We already know:\n{old_s}"
+        return_str = return_str + f"nothing new follows. We already know:<br>{old_s}"
     else:
-        return_str = return_str + f"it follows:\n{new_s}\n in addition to what we already know:\n{old_s}"
+        return_str = return_str + f"it follows:<br>{new_s}<br> in addition to what we already know:<br>{old_s}"
     
 
     return return_str

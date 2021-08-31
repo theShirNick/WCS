@@ -28,16 +28,16 @@ class Interpretation:
     def __repr__(self) -> str:
         s = "〈{"
         for true_term in self.trues:
-            s = s + true_term +","
+            s = s + true_term +", "
         if self.trues != set(): # if not empty
-            s = s[:-1] # delete the last comma
+            s = s[:-2] # delete the last comma
         else:
             s = s + "∅"
         s = s + "}, {"
         for false_term in self.falses:
-            s = s + false_term+","
+            s = s + false_term+", "
         if self.falses != set(): # if not empty
-            s = s[:-1] # delete the last comma 
+            s = s[:-2] # delete the last comma 
         else:
             s = s + "∅"
         s = s + "}〉"

@@ -423,7 +423,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Open PDF manual</string>
+       <string>Open PDF manual (soon)</string>
       </property>
       <property name="flat">
        <bool>true</bool>

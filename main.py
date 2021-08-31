@@ -98,7 +98,7 @@ if __name__ == "__main__":
 &nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">fly</font> <font color="aqua">X</font> if <font color="#ccffcc">bird</font> <font color="aqua">X</font> ∧ not <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font> if F;<br>
 &nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">bird</font> tweety if T;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">bird</font> jerry if ⊤;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">bird</font> jerry if T;<br>
 <br>
 Only datalog programs are supported.<br>
 Enter clauses separated by a semicolon.<br>
@@ -287,10 +287,10 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.wcPTextEdit.clear()
         output = output +"𝔀𝓬𝓟:<br>" + str(wc_program)
         output = output + get_after_P()
-        window.wcPTextEdit.setHtml(output)
+        window.wcPTextEdit.setHtml(output + "</font>")
     # Semantic Phi Operator
     def phi_fixed_point():
-        output = ''
+        output = '<font size="5">'
         interpretation_stack.clear()
         window.PhiTextEdit.clear()
         if len(interpretation_stack) == 0:
@@ -327,7 +327,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
             else:     
                 interpretation_stack.append(next_phi) 
-            window.PhiTextEdit.setHtml(output+ "</font>")
+            window.PhiTextEdit.setHtml(output + "</font>")
         
     # 𝒳 - explain with abduction
     def abduction():  
