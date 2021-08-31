@@ -43,8 +43,10 @@ class InfixExpression:
                 str = str + '('
             elif token.type in [TokenType.ORDER_RPAREN, TokenType.PRED_RPAREN] :
                 str = str + ')'
-            elif token.type in [TokenType.PREDICATE, TokenType.ATOM, TokenType.CONST, TokenType.TRUTHCONST]:
+            elif token.type in [TokenType.PREDICATE, TokenType.ATOM, TokenType.CONST]:
                 str = str + f' {token.value} '  
+            elif token.type == TokenType.TRUTHCONST:
+                str = str + token.value.value
         return str   
 
     def is_ground(self) -> bool:

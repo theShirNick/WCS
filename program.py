@@ -19,7 +19,7 @@ class Program:
         for clause in self.clauses:
             s = s + str(clause)  +";<br>" 
         return s[:-5]
-        
+
     def __eq__(self, o: object) -> bool:
         if type(o) != type(self):
             return False
@@ -81,6 +81,7 @@ class Program:
                 for i in range(len(variables)):
                     new_left_head = InfixExpression(new_left_head.replace_var(variables[i], sub[i]), new_left_head.ground_terms)
                     new_right_body = InfixExpression(new_right_body.replace_var(variables[i], sub[i]), new_right_body.ground_terms)
+                    print(str(new_left_head) + " if " + str(new_right_body)) ###########################################################
                 if new_left_head != clause.left_head or new_right_body != clause.right_body:
                     with_ground_clauses.clauses.append(Rule(new_left_head, new_right_body, clause.non_nec, clause.factual))
         ground_program_clauses = list()
