@@ -93,26 +93,26 @@ if __name__ == "__main__":
     
     # placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"head if body\"\nAn asterisk (*) in the head makes it a clause with a non-necessary antecedent.\nAn asterisk (*) in the body to makes it a factual conditional."
     # window.input_program_text_edit.setPlaceholderText(placeholder_text)
-    help_text = '''Example of a valid program input:
-
-    fly X if bird X ∧ not ab_fly X;
-    ab_fly X if F;
-    bird tweety if T;
-    bird jerry if ⊤;
-
-Only datalog programs are supported.
-Enter clauses separated by a semicolon.
-All clauses must be of the form \"head if body\".
-Add an asterisk to the head to make a non-necessary antecedent.
-Add an asterisk to the head to make a factual conditional.
-Abnormality predicates must begin with \"ab\".
-
-The 𝒫 tab shows you input program, the ground program, observations, integrity constraints, and abducibles.
-The 𝑤𝑐𝒫 tab shows the weak completion of the ground program.
-The Φ tab iterates the semantic operator until a fixed point is found.
-The 𝒳 tab performs abduction to find explanations beyond the fixed point. 
+    help_text = '''Example of a valid program input:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; fly X if bird X ∧ not ab_fly X;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; ab_fly X if F;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; bird tweety if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; bird jerry if ⊤;<br>
+<br>
+Only datalog programs are supported.<br>
+Enter clauses separated by a semicolon.<br>
+All clauses must be of the form \"head if body\".<br>
+Add an asterisk to the head to make a non-necessary antecedent.<br>
+Add an asterisk to the head to make a factual conditional.<br>
+Abnormality predicates must begin with \"ab\".<br>
+<br>
+The 𝒫 tab shows you input program, the ground program, observations, integrity constraints, and abducibles.<br>
+The 𝑤𝑐𝒫 tab shows the weak completion of the ground program.<br>
+The Φ tab iterates the semantic operator until a fixed point is found.<br>
+The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br> 
 '''
-    window.help_textEdit.setText(help_text)
+    window.help_textEdit.setHtml(help_text)
     # Important stuff starts here
     ground_terms:dict[str, TruthConstant] = dict()
     observations = set()
@@ -131,6 +131,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
     # Program Input
     @Slot()
     def input_program():
+        output = ''
         try:
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
@@ -149,7 +150,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
                 except:
                     if len(str(clause)) == 0:
                         raise Exception(f"Empty clause found. Do you have an extra semicolon somwhere?")
-                    raise Exception(f"All clauses must be of the form \"head if body\".\nThis clause is wrong:\n{clause} ")
+                    raise Exception(f"All clauses must be of the form \"head if body\".<br>This clause is wrong:<br>{clause} ")
                 non_nec = False
                 factual = False
                 if '*' in left_head:
@@ -163,11 +164,11 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
             window.input_program_text_edit.clear()
 
             window.PTextEdit.clear()
-            window.PTextEdit.append("𝓟:\n" + str(program))
+            output = output + "𝓟:<br>" + str(program)
             if ground_program != program:
-                window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
-            window.PTextEdit.append(get_after_P())
-            window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
+                output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
+            output = output + get_after_P()
+            window.PTextEdit.setHtml(output)
             # Remake the other tabs
             wcP_Phi_X()
         
@@ -181,6 +182,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
     # Observation Input
     @Slot()
     def input_observation():
+        output = ''
         try:
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
@@ -191,11 +193,11 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
             window.observation_line_edit.clear()
 
             window.PTextEdit.clear()
-            window.PTextEdit.append("𝓟:\n" + str(program))
+            output = output + "𝓟:<br>" + str(program)
             if ground_program != program:
-                window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
-            window.PTextEdit.append(get_after_P())
-            window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
+               output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
+            output = output + get_after_P()
+            window.PTextEdit.setHtml(output)
             # Remake the other tabs 
             wcP_Phi_X()
                 
@@ -209,6 +211,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
     # Integrity Constraint Input
     @Slot()
     def input_IC():
+        output = ''
         try:
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
@@ -222,11 +225,11 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
             window.constraint_left_head_line_edit.clear()
 
             window.PTextEdit.clear()
-            window.PTextEdit.append("𝓟:\n" + str(program))
+            output = output + "𝓟:<br>" + str(program)
             if ground_program != program:
-                window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
-            window.PTextEdit.append(get_after_P())
-            window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
+                output = output +"<hr>𝑔𝓟:<br>" + str(ground_program)
+            output = output + get_after_P()
+            window.PTextEdit.setHtml(output)
             # Remake the other tabs
             wcP_Phi_X()
                 
@@ -240,8 +243,8 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
     # disjunction Input
     @Slot()
     def input_disjunction():
+        output = ''
         try:
-                
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
 
@@ -260,11 +263,11 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
             window.disjunction_line_edit_right.clear()
 
             window.PTextEdit.clear()
-            window.PTextEdit.append("𝓟:\n" + str(program))
+            output = output + "𝓟:<br>" + str(program)
             if ground_program != program:
-                window.PTextEdit.append("---\n𝑔𝓟:\n" + str(ground_program))
-            window.PTextEdit.append(get_after_P())
-            window.PTextEdit.setMarkdown(window.PTextEdit.toMarkdown())
+               output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
+            output = output + get_after_P()
+            window.PTextEdit.setHtml(output)
             # Remake the other tabs
             wcP_Phi_X()
                     
@@ -277,15 +280,17 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
 
     # Weakly Complete and construct text
     def wcP(): 
+        output = ''
         global wc_program
         wc_program = ground_program.weakly_complete()
 
         window.wcPTextEdit.clear()
-        window.wcPTextEdit.append("𝔀𝓬𝓟:\n" + str(wc_program))
-        window.wcPTextEdit.append(get_after_P())
-        window.wcPTextEdit.setMarkdown(window.wcPTextEdit.toMarkdown())
+        output = output +"𝔀𝓬𝓟:<br>" + str(wc_program)
+        output = output + get_after_P()
+        window.wcPTextEdit.setHtml(output)
     # Semantic Phi Operator
     def phi_fixed_point():
+        output = ''
         interpretation_stack.clear()
         window.PhiTextEdit.clear()
         if len(interpretation_stack) == 0:
@@ -293,10 +298,10 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
         
         stop = False
         while stop == False:
-            window.PhiTextEdit.append(f"Φ↑{len(interpretation_stack) -1}: {str(interpretation_stack[-1])}")
+            output = output + f"Φ↑{len(interpretation_stack) -1}: {str(interpretation_stack[-1])}<br>"
             next_phi = phi(wc_program, interpretation_stack[-1])
             if interpretation_stack[-1] == next_phi:
-                window.PhiTextEdit.append(f"Fixed point found.\n")
+                output = output + f"Fixed point found.<br>"
                 stop = True
 
                 integrity_constraint_check = True
@@ -305,7 +310,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
                         integrity_constraint_check = False
                         break
                 if not integrity_constraint_check:
-                    window.PhiTextEdit.append(f"Integrity constraint not satisfied. Try abduction.\n")
+                   output = output + f"Integrity constraint not satisfied. Try abduction.<br>"
 
                 unexplained = set()
                 for ob in observations:
@@ -316,16 +321,17 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
                     for obs in observations:
                         obs_str = obs_str + str(obs) + ', '
                     if len(unexplained) == 1:
-                        window.PhiTextEdit.append(f"Observation {obs_str[:-2]} is unexplained. Abduction may help.")
+                        output = output + f"Observation {obs_str[:-2]} is unexplained. Abduction may help."
                     else:
-                        window.PhiTextEdit.append(f"Observations {obs_str[:-2]} are unexplained. Abduction may help.")
+                        output = output + f"Observations {obs_str[:-2]} are unexplained. Abduction may help."
 
             else:     
                 interpretation_stack.append(next_phi) 
-            window.PhiTextEdit.setMarkdown(window.PhiTextEdit.toMarkdown())
+            window.PhiTextEdit.setHtml(output)
         
     # 𝒳 - explain with abduction
     def abduction():  
+        output = ''
         window.XTextEdit.clear()
         if len(set_of_abducibles) == 0:
             old_s = ''
@@ -342,24 +348,24 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
                     old_s = old_s + f"¬{str(a)}, "
                 if len(old_falses_only) > 0:
                     old_s = old_s[:-2]
-                window.XTextEdit.append(f"Skeptically, nothing new follows. We already know:\n{old_s}")
+                output = output + f"Skeptically, nothing new follows. We already know:<br>{old_s}<br>"
             elif len(interpretation_stack) == 1:
-                window.XTextEdit.append(f"Empty fixed point, emplty set of abducibles. Nothing follows.")
+                output = output + f"Empty fixed point, emplty set of abducibles. Nothing follows."
             else:
-                window.XTextEdit.append("ERROR: Interpretation stack empty. Did Phi run correctly?")
+                raise Exception("Interpretation stack empty. Did Phi run correctly?")
 
         else:
             explanations_interpretations = phi_with_abduction(explanations, ground_program, observations, interpretation_stack[-1], integrity_constraints)
             if len(explanations_interpretations) > 0:
                 abduced_interpretations = list()
                 for expl, interpr in explanations_interpretations:
-                    window.XTextEdit.append(f"𝒳 {expl}\nyields minimal model\n{interpr}\n---")
+                    output = output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<br><hr>"
                     abduced_interpretations.append(interpr)
 
                 skeptical_result = skeptical(ground_terms, ground_program, abduced_interpretations)
-                window.XTextEdit.append(skeptical_result)
+                output = output + skeptical_result
 
-        window.XTextEdit.setMarkdown(window.XTextEdit.toMarkdown())
+        window.XTextEdit.setHtml(output)
 
 
     # Exclusive disjunction button
@@ -416,25 +422,28 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.
 
         after_P_str = ""
         if len (observations) > 0:
-            observations_str = "---\n\n𝓞:\n"
+            observations_str = "<hr>𝓞:<br>"
             for observation in observations:
-                observations_str = observations_str + str(observation) + '\n'
-            after_P_str =  after_P_str + observations_str + '\n'
+                observations_str = observations_str + str(observation) + ';<br>'
+            observations_str = observations_str[:-5]
+            after_P_str =  after_P_str + observations_str
 
         if len (integrity_constraints) > 0:
-            IC_string = "---\n𝓘𝓒:\n"
+            IC_string = "<hr>𝓘𝓒:<br>"
             for IC in integrity_constraints:
-                IC_string = IC_string + str(IC) + '\n'
-            after_P_str =  after_P_str + IC_string + '\n'
+                IC_string = IC_string + str(IC) + ';<br>'
+            IC_string = IC_string[:-5]
+            after_P_str =  after_P_str + IC_string
 
         global set_of_abducibles
         set_of_abducibles = get_set_of_abducibles(ground_terms, ground_program)
         global explanations
         explanations = generate_explanations(set_of_abducibles)
         if len(set_of_abducibles) > 0:
-            abducibles_str = "---\n𝒜:\n"
+            abducibles_str = "<hr>𝒜:<br>"
             for abducible in set_of_abducibles: 
-                abducibles_str = abducibles_str + str(abducible) + "\n"
+                abducibles_str = abducibles_str + str(abducible) + ";<br>"
+            abducibles_str = abducibles_str[:-5]
             after_P_str =  after_P_str + abducibles_str
         
         return after_P_str

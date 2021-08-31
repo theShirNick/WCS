@@ -31,6 +31,10 @@ class Lexer:
                 self.advance()
             elif self.current_char in CONDITIONAL_CLASSIFIER:
                 self.advance()
+            elif self.current_char == '<': # ignore HTML
+                while self.current_char != '>':
+                    self.advance()
+                self.advance()
             elif self.current_char in TRUTHCONST:
                 self.token_sequence.append(self.__generate_truth_const())
             elif self.current_char.isalnum():

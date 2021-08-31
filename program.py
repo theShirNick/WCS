@@ -13,10 +13,13 @@ class Program:
         self.clauses = clauses
 
     def __str__(self) -> str:
+        if len(self.clauses) == 0:
+            return ''
         s = ""
         for clause in self.clauses:
-            s = s + str(clause)  +";\n" 
-        return s[:-1]
+            s = s + str(clause)  +";<br>" 
+        return s[:-5]
+        
     def __eq__(self, o: object) -> bool:
         if type(o) != type(self):
             return False
