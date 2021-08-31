@@ -298,7 +298,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         
         stop = False
         while stop == False:
-            output = output + f"Φ↑{len(interpretation_stack) -1}: {str(interpretation_stack[-1])}<br>"
+            output = output + f"Φ↑{len(interpretation_stack) -1}: {str(interpretation_stack[-1])}<hr>"
             next_phi = phi(wc_program, interpretation_stack[-1])
             if interpretation_stack[-1] == next_phi:
                 output = output + f"Fixed point found.<br>"
