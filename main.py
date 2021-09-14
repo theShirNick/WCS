@@ -83,16 +83,12 @@ if __name__ == "__main__":
     # error tab
     window.tabWidget.setTabVisible(5, False)
     
-
-
     window.observation_line_edit.setProperty('class', 'mono_font')
     window.constraint_left_head_line_edit.setProperty('class', 'mono_font')
     window.constraint_right_body_line_edit.setProperty('class', 'mono_font')
     window.input_program_text_edit.setProperty('class', 'background_active_input')
     window.clear_program_button.setProperty('class', 'danger')
     
-    # placeholder_text = "Enter clauses separated by a semicolon (;)\nAll clauses must be of the form \"head if body\"\nAn asterisk (*) in the head makes it a clause with a non-necessary antecedent.\nAn asterisk (*) in the body to makes it a factual conditional."
-    # window.input_program_text_edit.setPlaceholderText(placeholder_text)
     help_text = '''<font size="5">Example of a valid program input:<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">fly</font> <font color="aqua">X</font> if <font color="#ccffcc">bird</font> <font color="aqua">X</font> ∧ not <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font>;<br>
@@ -127,7 +123,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     
     is_OR = False
 
-    
     # Program Input
     @Slot()
     def input_program():
@@ -736,6 +731,14 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.observation_line_edit.setText(Example.DATALOG_2_OBSERVATION.value)
         input_observation()
     window.action2_Birds_Implicit.triggered.connect(DATALOG_2)
+
+    @Slot()
+    def IA2():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.IA2.value)
+        input_program()
+    window.action1_IA2.triggered.connect(IA2)
     
     # run GUI
     window.show()

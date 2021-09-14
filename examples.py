@@ -7,6 +7,7 @@ from phi import phi
 
 from enum import Enum
 class Example(Enum):
+    # Suppression Task
     _1_AA_PROGRAM = 'e if T;\nl if e and not ab e;\nab e if F'
     _2_AA_ALT_PROGRAM = 'e if T;\nl if e and not ab e;\nl if t and not ab t;\nab e if F;\nab t if F'
     _3_AA_ADD_PROGRAM = 'e if T;\nl if e and not ab e;\nl if o and not ab o;\nab e if not o;ab o if not e'
@@ -26,6 +27,7 @@ class Example(Enum):
     _12_DC_ADD_PROGRAM = 'l if e and not ab e;\nl if o and not ab o;\nab e if not o;\nab o if not e'
     _12_DC_ADD_OBSERVATION = 'not l'
 
+    # Disjunctions
     DIS_1_PROGRAM = 'c if F'
     DIS_1_L_DISJUNCTION = 'c'
     DIS_1_R_DISJUNCTION = 'd'
@@ -56,6 +58,7 @@ class Example(Enum):
     DIS_6_R_DISJUNCTION = 'r'
     DIS_6_EXCLUSIVE = True
 
+    # Classification of Conditionals
     CLASS_1_PROGRAM = '*c if *a and not ab a;\nab a if F;\na if T'
 
     CLASS_2_PROGRAM = '*c if *a and not ab a;\nab a if F;\na if F'
@@ -66,6 +69,7 @@ class Example(Enum):
     CLASS_4_PROGRAM = 'c if * a and not ab a;\nab a if F'
     CLASS_4_OBSERVATION = 'not c'
 
+    #Datalog
     DATALOG_1_PROGRAM = '''fly X if bird X and not ab_fly X;\n
                             ab_fly X if kiwi X;\n
                             ab_fly X if penguin X;\n
@@ -78,6 +82,21 @@ class Example(Enum):
                             bird tweety if T;\n
                             bird jerry if T'''
     DATALOG_2_OBSERVATION = 'not fly jerry'
+
+    # 
+    IA2 = '''b X if c X and not ab_cb X;
+            ab_cb X if F;
+            c o5 if T;
+            b o1 if T;
+            b o2 if T;
+            a X if b X and not ab_ba X;
+            ab_ba o1 if F;
+            a o3 if T;
+            a o4 if T;
+            b X if a X and not ab_ab X;
+            ab_ab o3 if F'''
+
+
 
 
 

@@ -5,7 +5,7 @@ from atom import *
 
 
 WHITESPACE  = ' \n\t'
-NAMECHARS   = '.-_' 
+NAMECHARS   = ".-_'" 
 DISJUNSTION = '|∨'
 CONJUNCTION = '∧&^' 
 NEGATION    = '¬~!'
@@ -37,7 +37,7 @@ class Lexer:
                 self.advance()
             elif self.current_char in TRUTHCONST:
                 self.token_sequence.append(self.__generate_truth_const())
-            elif self.current_char.isalnum():
+            elif self.current_char.isalnum() or self.current_char in NAMECHARS:
                 self.token_sequence.append(self.__parse_word())
                 if len(self.token_sequence) > 1 and self.token_sequence[-2].type == TokenType.TBD and self.token_sequence[-1].type == TokenType.TBD:
                     self.token_sequence[-2].type = TokenType.PREDICATE
