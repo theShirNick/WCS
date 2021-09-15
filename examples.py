@@ -96,6 +96,35 @@ class Example(Enum):
             b X if a X and not ab_ab X;
             ab_ab o3 if F'''
 
+    OA4_PROGRAM = '''c X if b X and not ab_bc X;
+            ab_bc X if F;
+            b o3 if T;
+            b o1 if T;
+            b o2 if T;
+            a' X if b X and not ab_bna X;
+            ab_bna o1 if F;
+            a X if not a' X and not ab_naa X;
+            ab_naa o1 if F;
+            ab_naa o2 if F'''
+    OA4_CONSTRAINT_LEFT = 'U'
+    OA4_CONSTRAINT_RIGHT = "a X and a' X"
+
+    IE4 = '''b o1 if T;
+            b o2 if T;
+            a X if b X and not ab_ba X;
+            ab_ba o1 if F;
+            a o3 if T;
+            a o4 if T;
+            b X if a X and not ab_ab X;
+            ab_ab o3 if F;
+            b o5 if T;
+            c' X if b X and not ab_bnc X;
+            ab_bnc X if F;
+            c X if not c' X and not ab_ncc X;
+            ab_ncc o5 if F'''
+    IE4_CONSTRAINT_LEFT = 'U'
+    IE4_CONSTRAINT_RIGHT = "c X and c' X"
+
 
 
 

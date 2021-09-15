@@ -298,10 +298,29 @@
         <x>0</x>
         <y>0</y>
         <width>511</width>
-        <height>425</height>
+        <height>381</height>
        </rect>
       </property>
       <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="to_wc_button">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>380</y>
+        <width>511</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&gt;&gt;&gt; Ground and Weakly Complete &gt;&gt;&gt;</string>
+      </property>
+      <property name="flat">
        <bool>true</bool>
       </property>
      </widget>
@@ -325,10 +344,29 @@
         <x>0</x>
         <y>0</y>
         <width>511</width>
-        <height>425</height>
+        <height>381</height>
        </rect>
       </property>
       <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="to_phi_button">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>380</y>
+        <width>511</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&gt;&gt;&gt; Find Least Fixed Point &gt;&gt;&gt;</string>
+      </property>
+      <property name="flat">
        <bool>true</bool>
       </property>
      </widget>
@@ -352,10 +390,29 @@
         <x>0</x>
         <y>0</y>
         <width>511</width>
-        <height>425</height>
+        <height>381</height>
        </rect>
       </property>
       <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="to_x_button">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>380</y>
+        <width>511</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&gt;&gt;&gt; Explain with Skeptical Abduction &gt;&gt;&gt;</string>
+      </property>
+      <property name="flat">
        <bool>true</bool>
       </property>
      </widget>
@@ -612,6 +669,8 @@
      <string>Syllogisms</string>
     </property>
     <addaction name="action1_IA2"/>
+    <addaction name="action2_OA4"/>
+    <addaction name="action3_IE4"/>
    </widget>
    <addaction name="menuSuppression_Task"/>
    <addaction name="menuDisjunctions"/>
@@ -743,6 +802,16 @@
   <action name="action1_IA2">
    <property name="text">
     <string>1. IA2</string>
+   </property>
+  </action>
+  <action name="action2_OA4">
+   <property name="text">
+    <string>2. OA4</string>
+   </property>
+  </action>
+  <action name="action3_IE4">
+   <property name="text">
+    <string>3. IE4</string>
    </property>
   </action>
  </widget>

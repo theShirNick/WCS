@@ -18,6 +18,7 @@ from abductive_framework import Observation, generate_explanations, get_set_of_a
 from infix.expression import InfixExpression
 from phi import phi
 from examples import Example
+from ground import ground, find_vars_and_consts
 
 from pathlib import Path
 
@@ -114,22 +115,22 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     observations = set()
     clauses = []
     program = Program(clauses)
-    ground_program:Program = Program([])
     wc_program = Program([]) 
     set_of_abducibles = list()
     interpretation_stack = deque()
-    integrity_constraints = set()
+    integrity_constraints = list()
     explanations = list()
+    variables = list()
+    consts = list()
     
     is_OR = False
 
     # Program Input
     @Slot()
     def input_program():
-        output = '<font size="5">'
         try:
+            window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
-            # window.tabWidget.setTabVisible(4, False)
 
             program_text = window.input_program_text_edit.toPlainText().replace(':-', '←').replace('-:', '←').replace(' if ', '←')
 
@@ -153,93 +154,68 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 if '*' in right_body:
                     factual = True
                 program.clauses.append(Rule(InfixExpression(left_head, ground_terms), InfixExpression(right_body, ground_terms), non_nec, factual))
-            global ground_program
-            ground_program = program.ground()
+
             window.input_program_text_edit.setPlaceholderText("")
             window.input_program_text_edit.clear()
 
-            window.PTextEdit.clear()
-            output = output + "𝓟:<br>" + str(program)
-            if ground_program != program:
-                output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
-            output = output + get_after_P()
-            window.PTextEdit.setHtml(output + "</font>")
-            # Remake the other tabs
-            wcP_Phi_X()
+            P_output()
+            
         
         except Exception as e:
             show_error(e)
             raise(e)
-
     # Connect the Program button to the function
     window.input_program_button.clicked.connect(input_program)
     
     # Observation Input
     @Slot()
     def input_observation():
-        output = '<font size="5">'
         try:
+            window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
-            # window.tabWidget.setTabVisible(4, False)
 
             observation_expr = InfixExpression(window.observation_line_edit.text(), ground_terms)
             observations.add(Observation(observation_expr))
 
             window.observation_line_edit.clear()
-
-            window.PTextEdit.clear()
-            output = output + "𝓟:<br>" + str(program)
-            if ground_program != program:
-               output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
-            output = output + get_after_P()
-            window.PTextEdit.setHtml(output+ "</font>")
-            # Remake the other tabs 
-            wcP_Phi_X()
+           
+            P_output()
                 
         except Exception as e:
             show_error(e)
             raise(e)
-
     # Connect the Observation button to the function
     window.input_observation_button.clicked.connect(input_observation)
 
     # Integrity Constraint Input
     @Slot()
     def input_IC():
-        output = '<font size="5">'
         try:
+            window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
 
             constraint_right_body_expr = InfixExpression(window.constraint_right_body_line_edit.text(), ground_terms)
             constraint_left_head_expr = InfixExpression(window.constraint_left_head_line_edit.text(), ground_terms)
             constraint = Rule(constraint_left_head_expr, constraint_right_body_expr)
-            integrity_constraints.add(constraint)
+            integrity_constraints.append(constraint)
 
             window.constraint_right_body_line_edit.clear()
             window.constraint_left_head_line_edit.clear()
 
-            window.PTextEdit.clear()
-            output = output + "𝓟:<br>" + str(program)
-            if ground_program != program:
-                output = output +"<hr>𝑔𝓟:<br>" + str(ground_program)
-            output = output + get_after_P()
-            window.PTextEdit.setHtml(output+ "</font>")
-            # Remake the other tabs
-            wcP_Phi_X()
+            P_output()
                 
         except Exception as e:
             show_error(e)
             raise(e)
-
     # Connect the Integrity Constraint button to the function
     window.input_constraint_button.clicked.connect(input_IC)
 
     # disjunction Input
     @Slot()
     def input_disjunction():
-        output = '<font size="5">'
         try:
+            window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
             # window.tabWidget.setTabVisible(4, False)
 
@@ -248,43 +224,55 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
             disjunction_of_negated = InfixExpression(f'~{left_text} and ~{right_text}', ground_terms)
             constraint = Rule(InfixExpression("F", ground_terms), disjunction_of_negated)
-            integrity_constraints.add(constraint)
+            integrity_constraints.append(constraint)
             if not is_OR:
                 disjunction_for_exclusive = InfixExpression(f'{left_text} and {right_text}', ground_terms)
                 constraint = Rule(InfixExpression("F", ground_terms), disjunction_for_exclusive)
-                integrity_constraints.add(constraint)
+                integrity_constraints.append(constraint)
 
             window.disjunction_line_edit_left.clear()
             window.disjunction_line_edit_right.clear()
 
-            window.PTextEdit.clear()
-            output = output + "𝓟:<br>" + str(program)
-            if ground_program != program:
-               output = output + "<hr>𝑔𝓟:<br>" + str(ground_program)
-            output = output + get_after_P()
-            window.PTextEdit.setHtml(output+ "</font>")
-            # Remake the other tabs
-            wcP_Phi_X()
-                    
+            P_output()
+
         except Exception as e:
             show_error(e)
             raise(e)
-
     # Connect the Integrity Constraint button to the function
     window.input_disjunction_button.clicked.connect(input_disjunction)
 
-    # Weakly Complete and construct text
-    def wcP(): 
-        output = '<font size="5">'
-        global wc_program
-        wc_program = ground_program.weakly_complete()
+    # Ground, Weakly Complete and construct text
+    def wcP():
+        window.tabWidget.setTabEnabled(1, True) 
+        window.tabWidget.setCurrentIndex(1)
+        global program
+        global integrity_constraints
 
-        window.wcPTextEdit.clear()
-        output = output +"𝔀𝓬𝓟:<br>" + str(wc_program)
-        output = output + get_after_P()
-        window.wcPTextEdit.setHtml(output + "</font>")
+        # detect vars and consts in the abductive framework
+        find_vars_and_consts(program.clauses, variables, consts)
+        find_vars_and_consts(integrity_constraints, variables, consts)
+
+        
+        program = Program(ground(program.clauses, variables, consts))
+        integrity_constraints = ground(integrity_constraints, variables, consts)
+
+        global set_of_abducibles
+        set_of_abducibles = get_set_of_abducibles(ground_terms, program)
+
+        global explanations
+        explanations = generate_explanations(set_of_abducibles)
+
+        global wc_program
+        wc_program = program.weakly_complete()
+
+        P_output(True) # call with a wcFlag
+    # Connect the 'Ground and Weakly Complete' button to the function
+    window.to_wc_button.clicked.connect(wcP)
+
     # Semantic Phi Operator
     def phi_fixed_point():
+        window.tabWidget.setTabEnabled(2, True)
+        window.tabWidget.setCurrentIndex(2)
         output = '<font size="5">'
         interpretation_stack.clear()
         window.PhiTextEdit.clear()
@@ -323,9 +311,13 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             else:     
                 interpretation_stack.append(next_phi) 
             window.PhiTextEdit.setHtml(output + "</font>")
-        
+    # Connect the 'Find Least Fixed Point' button to the function
+    window.to_phi_button.clicked.connect(phi_fixed_point)
+
     # 𝒳 - explain with abduction
     def abduction():  
+        window.tabWidget.setTabEnabled(3, True)
+        window.tabWidget.setCurrentIndex(3)
         output = '<font size="5">'
         window.XTextEdit.clear()
         if len(set_of_abducibles) == 0:
@@ -350,17 +342,21 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 raise Exception("Interpretation stack empty. Did Phi run correctly?")
 
         else:
-            explanations_interpretations = phi_with_abduction(explanations, ground_program, observations, interpretation_stack[-1], integrity_constraints)
+            explanations_interpretations = phi_with_abduction(explanations, program, observations, interpretation_stack[-1], integrity_constraints)
             if len(explanations_interpretations) > 0:
                 abduced_interpretations = list()
                 for expl, interpr in explanations_interpretations:
                     output = output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<br><hr>"
                     abduced_interpretations.append(interpr)
 
-                skeptical_result = skeptical(ground_terms, ground_program, abduced_interpretations)
+                skeptical_result = skeptical(ground_terms, program, abduced_interpretations)
                 output = output + skeptical_result
 
         window.XTextEdit.setHtml(output+ "</font>")
+    # Connect the 'Explain with Skeptical Abduction' button to the function
+    window.to_x_button.clicked.connect(abduction)
+        
+
 
 
     # Exclusive disjunction button
@@ -375,8 +371,9 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Connect the XOR switch to the function  
     window.exclusive_button.clicked.connect(XOR_switch)
 
-    # Call this after input changes
+    # Call this after input changes -- solve the program
     def wcP_Phi_X():
+
         wcP()
         phi_fixed_point()
         abduction()
@@ -384,14 +381,20 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Clear Program
     @Slot()
     def clear_program():
+        window.tabWidget.setTabEnabled(0, False)
+        window.tabWidget.setTabEnabled(1, False)
+        window.tabWidget.setTabEnabled(2, False)
+        window.tabWidget.setTabEnabled(3, False)
         window.tabWidget.setTabVisible(4, True)
         window.tabWidget.setCurrentIndex(4)
         window.tabWidget.setTabVisible(5, False)
         clauses.clear()
-        global ground_program
-        ground_program = Program([])
+        global program
+        program = Program([])
         ground_terms.clear()
         observations.clear()
+        consts.clear()
+        variables.clear()
         integrity_constraints.clear()
         set_of_abducibles.clear()
         interpretation_stack.clear()
@@ -410,38 +413,45 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
 
-    def get_after_P():
+    def P_output(wcFlag = False):
         '''
-            Construct and output text containing observations, integrity constraints, and abducibles
+            Construct and output text containing the program, observations, integrity constraints, and abducibles
         '''
+        
+        output = '<font size="5">'
 
-        after_P_str = ""
+        if not wcFlag:
+            output = output + "𝓟:<br>"+ str(program)
+        elif  wcFlag:
+            output = output + "𝑔𝓟:<br>"+ str(program) + '<hr>𝔀𝓬𝓟:<br>' + str(wc_program)
+           
         if len (observations) > 0:
             observations_str = "<hr>𝓞:<br>"
             for observation in observations:
                 observations_str = observations_str + str(observation) + ';<br>'
             observations_str = observations_str[:-5]
-            after_P_str =  after_P_str + observations_str
+            output =  output + observations_str
 
         if len (integrity_constraints) > 0:
             IC_string = "<hr>𝓘𝓒:<br>"
             for IC in integrity_constraints:
                 IC_string = IC_string + str(IC) + ';<br>'
             IC_string = IC_string[:-5]
-            after_P_str =  after_P_str + IC_string
+            output =  output + IC_string
 
-        global set_of_abducibles
-        set_of_abducibles = get_set_of_abducibles(ground_terms, ground_program)
-        global explanations
-        explanations = generate_explanations(set_of_abducibles)
         if len(set_of_abducibles) > 0:
             abducibles_str = "<hr>𝒜:<br>"
             for abducible in set_of_abducibles: 
                 abducibles_str = abducibles_str + str(abducible) + ";<br>"
             abducibles_str = abducibles_str[:-5]
-            after_P_str =  after_P_str + abducibles_str
+            output=  output + abducibles_str
         
-        return after_P_str
+        if not wcFlag:
+            window.PTextEdit.clear()
+            window.PTextEdit.setHtml(output + "</font>")
+        elif wcFlag:
+            window.wcPTextEdit.clear()
+            window.wcPTextEdit.setHtml(output + "</font>")
     
     def show_error(e):
             window.tabWidget.setTabVisible(5, True)
@@ -739,6 +749,32 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.input_program_text_edit.setPlainText(Example.IA2.value)
         input_program()
     window.action1_IA2.triggered.connect(IA2)
+
+    @Slot()
+    def OA4():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.OA4.value)
+        input_program()
+        window.constraint_left_head_line_edit.clear()
+        window.constraint_left_head_line_edit.setText(Example.OA4_CONSTRAINT_LEFT.value)
+        window.constraint_right_body_line_edit.clear()
+        window.constraint_right_body_line_edit.setText(Example.OA4_CONSTRAINT_RIGHT.value)
+        input_IC()
+    window.action2_OA4.triggered.connect(OA4)
+
+    @Slot()
+    def IE4():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.IE4.value)
+        input_program()
+        window.constraint_left_head_line_edit.clear()
+        window.constraint_left_head_line_edit.setText(Example.IE4_CONSTRAINT_LEFT.value)
+        window.constraint_right_body_line_edit.clear()
+        window.constraint_right_body_line_edit.setText(Example.IE4_CONSTRAINT_RIGHT.value)
+        input_IC()
+    window.action3_IE4.triggered.connect(IE4)
     
     # run GUI
     window.show()
