@@ -754,7 +754,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     def OA4():
         clear_program()
         window.input_program_text_edit.clear()
-        window.input_program_text_edit.setPlainText(Example.OA4.value)
+        window.input_program_text_edit.setPlainText(Example.OA4_PROGRAM.value)
         input_program()
         window.constraint_left_head_line_edit.clear()
         window.constraint_left_head_line_edit.setText(Example.OA4_CONSTRAINT_LEFT.value)
