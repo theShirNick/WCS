@@ -101,11 +101,11 @@ Only datalog programs are supported.<br>
 Enter clauses separated by a semicolon.<br>
 All clauses must be of the form \"head if body\".<br>
 Add an asterisk to the head to make a non-necessary antecedent.<br>
-Add an asterisk to the head to make a factual conditional.<br>
+Add an asterisk to the body to make a factual conditional.<br>
 Abnormality predicates must begin with \"ab\".<br>
 <br>
-The 𝒫 tab shows you input program, the ground program, observations, integrity constraints, and abducibles.<br>
-The 𝑤𝑐𝒫 tab shows the weak completion of the ground program.<br>
+The 𝒫 tab shows you input program, the ground program, observations, and integrity constraints.<br>
+The 𝑤𝑐𝒫 tab shows the groud program its weak completion.<br>
 The Φ tab iterates the semantic operator until a fixed point is found.<br>
 The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br></font> 
 '''
