@@ -1,45 +1,70 @@
-.background_active_input{{
+QPlainTextEdit{{
+  border-width: 0 0 2px 0;
+  background-color: rgb(34, 34, 34);
+  font-family:  'Overpass Mono', 'Menlo', 'Consolas', 'Courier New';
+  font-size :14pt;
+}}
+QPlainTextEdit:focus{{
+  border:  10px solid rgb(55, 116, 214); 
+  background-color:rgb(23, 23, 23);
+  border-width: 0 0 2px 0;
+}}
+
+QLineEdit{{
+  font-family:  'Overpass Mono', 'Menlo', 'Consolas', 'Courier New';
+  font-size :14pt;
+}}
+QLineEdit:focus{{
+  border:  10px solid rgb(55, 116, 214);
+  border-width: 0 0 2px 0;
+}}
+
+QTextEdit{{
+  border-width: 0 0 2px 0;
+  background-color: rgb(34, 34, 34);
+  font-family:  'Overpass Mono', 'Menlo', 'Consolas', 'Courier New';
+  font-size :14pt;
+}}
+
+
+
+QPushButton {{
+  font-size: 10pt;
+  margin: 0px;
+  padding: 0px 16px;
+  height: 34px;
+  min-height: 34px;
+  max-height: 34px;
   
-  border: 1px solid #8bc34a;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-width: 0 0 2px 0;
-  background-color: #232629;
-  font-family: "Overpass Mono", "Monaco", "Lucida Console", 'mono';
 }}
 
-.output_text_edit{{
-  border: 10px solid #8bc34a;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-width: 0 0 2px 0;
-
-}}
-
-QTextEdit {{
-  padding: 8px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 5px;
-  border-top-width: 1px;
-  border-left-width: 1px;
-  border-bottom-width: 1px;
-  border-right-width: 1px;
+QPushButton:checked,
+QPushButton:pressed {{
   color: white;
+  background-color: rgb(34, 34, 34);
 }}
 
-.chk_btn{{
-  padding: 2px;
-
-  border: 1px solid #8bc34a;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-width: 0 0 2px 0;
+QPushButton:flat {{
+  padding: 5px;
+  margin: 0px;
+  color: white;
+  border: none;
+  background-color: transparent;
 }}
+
+QPushButton:flat:hover {{
+  background-color: rgba(55, 116, 214, 0.5);
+}}
+
+QPushButton:flat:pressed,
+QPushButton:flat:checked {{
+  background-color: rgb(55, 116, 214);
+}}
+
+QPushButton#clear_program_button:hover{{
+  background-color: rgba(155, 0, 0, 0.5);
+}}
+QPushButton#clear_program_button:pressed {{
+  background-color: rgb(155, 0, 0);
+}}
+

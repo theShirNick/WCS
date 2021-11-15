@@ -5,11 +5,9 @@ from collections import deque
 from truth_constant import TruthConstant
 
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QFontDatabase, QFont
+from PySide6.QtGui import QFontDatabase
 from PySide6.QtWidgets import QApplication, QMainWindow, QDialog
 from PySide6.QtCore import QFile, QIODevice, Slot
-
-from qt_material import apply_stylesheet
 
 from interpretation import Interpretation
 from program import Program
@@ -38,59 +36,19 @@ if __name__ == "__main__":
         print(loader.errorString())
         sys.exit(-1)
 
-    # setup stylesheet
-    # QFontDatabase.addApplicationFont('ui/OverpassMono-Regular.ttf')
+    #171717# load custom style additions
     QFontDatabase.addApplicationFont(os.path.dirname(__file__) + '/ui/OverpassMono-Regular.ttf')
-    
-
-    font_id_reg = QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Roboto-Regular.ttf")
-    apply_stylesheet(app, theme='dark_lightgreen.xml')
-
-    # load custom style additions
+    QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Roboto-Regular.ttf")
     stylesheet = app.styleSheet()
     with open(os.path.dirname(__file__) + '/ui/custom.css') as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
-
-    
-    # force style
-    window.statusbar.hide()
-    window.PTextEdit.setFont("Overpass Mono")
-    window.PTextEdit.setProperty('class', 'output_text_edit')
-    window.tabWidget.setCurrentIndex(1)
-
-    
-
-    window.wcPTextEdit.setFont("Overpass Mono")
-    window.wcPTextEdit.setProperty('class', 'output_text_edit')
-    window.tabWidget.setCurrentIndex(2)
-
-    window.PhiTextEdit.setFont("Overpass Mono")
-    window.PhiTextEdit.setProperty('class', 'output_text_edit')
-    window.tabWidget.setCurrentIndex(3)
-
-    window.XTextEdit.setFont("Overpass Mono")
-    window.XTextEdit.setProperty('class', 'output_text_edit')
-    window.tabWidget.setCurrentIndex(4)
-
-    window.help_textEdit.setFont("Overpass Mono")
-    window.help_textEdit.setProperty('class', 'output_text_edit')
-    window.tabWidget.setCurrentIndex(5)
-
-    window.error_textEdit.setFont("Overpass Mono")
-    window.error_textEdit.setProperty('class', 'output_text_edit')
-    window.tabWidget.setCurrentIndex(4)
 
 
     # error tab
     window.tabWidget.setTabVisible(5, False)
     
-    window.observation_line_edit.setProperty('class', 'mono_font')
-    window.constraint_left_head_line_edit.setProperty('class', 'mono_font')
-    window.constraint_right_body_line_edit.setProperty('class', 'mono_font')
-    window.input_program_text_edit.setProperty('class', 'background_active_input')
-    window.clear_program_button.setProperty('class', 'danger')
     
-    help_text = '''<font size="5">Example of a valid program input:<br>
+    help_text = '''Example of a valid program input:<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">fly</font> <font color="aqua">X</font> if <font color="#ccffcc">bird</font> <font color="aqua">X</font> ∧ not <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font> if F;<br>
@@ -107,9 +65,10 @@ Abnormality predicates must begin with \"ab\".<br>
 The 𝒫 tab shows you input program, the ground program, observations, and integrity constraints.<br>
 The 𝑤𝑐𝒫 tab shows the groud program its weak completion.<br>
 The Φ tab iterates the semantic operator until a fixed point is found.<br>
-The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br></font> 
+The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 '''
     window.help_textEdit.setHtml(help_text)
+    window.tabWidget.setCurrentIndex(4)
     # Important stuff starts here
     ground_terms:dict[str, TruthConstant] = dict()
     observations = set()
@@ -273,7 +232,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     def phi_fixed_point():
         window.tabWidget.setTabEnabled(2, True)
         window.tabWidget.setCurrentIndex(2)
-        output = '<font size="5">'
+        output = ''
         interpretation_stack.clear()
         window.PhiTextEdit.clear()
         if len(interpretation_stack) == 0:
@@ -310,7 +269,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
             else:     
                 interpretation_stack.append(next_phi) 
-            window.PhiTextEdit.setHtml(output + "</font>")
+            window.PhiTextEdit.setHtml(output + "")
     # Connect the 'Find Least Fixed Point' button to the function
     window.to_phi_button.clicked.connect(phi_fixed_point)
 
@@ -318,7 +277,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     def abduction():  
         window.tabWidget.setTabEnabled(3, True)
         window.tabWidget.setCurrentIndex(3)
-        output = '<font size="5">'
+        output = ''
         window.XTextEdit.clear()
         if len(set_of_abducibles) == 0:
             old_s = ''
@@ -352,7 +311,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 skeptical_result = skeptical(ground_terms, program, abduced_interpretations)
                 output = output + skeptical_result
 
-        window.XTextEdit.setHtml(output+ "</font>")
+        window.XTextEdit.setHtml(output+ "")
     # Connect the 'Explain with Skeptical Abduction' button to the function
     window.to_x_button.clicked.connect(abduction)
         
@@ -418,7 +377,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             Construct and output text containing the program, observations, integrity constraints, and abducibles
         '''
         
-        output = '<font size="5">'
+        output = ''
 
         if not wcFlag:
             output = output + "𝓟:<br>"+ str(program)
@@ -448,10 +407,10 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         
         if not wcFlag:
             window.PTextEdit.clear()
-            window.PTextEdit.setHtml(output + "</font>")
+            window.PTextEdit.setHtml(output + "")
         elif wcFlag:
             window.wcPTextEdit.clear()
-            window.wcPTextEdit.setHtml(output + "</font>")
+            window.wcPTextEdit.setHtml(output + "")
     
     def show_error(e):
             window.tabWidget.setTabVisible(5, True)

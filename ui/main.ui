@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="enabled">
    <bool>true</bool>
   </property>
@@ -19,17 +22,14 @@
     <height>540</height>
    </size>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>960</width>
-    <height>550</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>WCS Reasoner</string>
   </property>
   <property name="documentMode">
    <bool>false</bool>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
@@ -70,9 +70,11 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
       <pointsize>12</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="placeholderText">
      <string/>
@@ -92,6 +94,9 @@
       <pointsize>9</pointsize>
      </font>
     </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <property name="text">
      <string>Input Program</string>
     </property>
@@ -103,9 +108,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>310</y>
+      <y>309</y>
       <width>231</width>
-      <height>40</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -116,7 +121,6 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
       <pointsize>14</pointsize>
      </font>
     </property>
@@ -140,6 +144,9 @@
      <font>
       <pointsize>9</pointsize>
      </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
     </property>
     <property name="text">
      <string>Add Observation</string>
@@ -185,9 +192,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>410</y>
+      <y>409</y>
       <width>51</width>
-      <height>40</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -198,7 +205,6 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
       <pointsize>14</pointsize>
      </font>
     </property>
@@ -234,9 +240,9 @@
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>410</y>
+      <y>409</y>
       <width>141</width>
-      <height>40</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -247,7 +253,6 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
       <pointsize>14</pointsize>
      </font>
     </property>
@@ -261,17 +266,11 @@
       <height>471</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <family>Courier New</family>
-      <pointsize>16</pointsize>
-     </font>
-    </property>
     <property name="toolTip">
      <string/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>5</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -282,7 +281,6 @@
     <widget class="QWidget" name="Ptab">
      <property name="font">
       <font>
-       <family>Courier New</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -300,6 +298,9 @@
         <width>511</width>
         <height>381</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -328,7 +329,6 @@
     <widget class="QWidget" name="wcPtab">
      <property name="font">
       <font>
-       <family>Courier New</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -346,6 +346,9 @@
         <width>511</width>
         <height>381</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -374,7 +377,6 @@
     <widget class="QWidget" name="Phitab">
      <property name="font">
       <font>
-       <family>Courier New</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -392,6 +394,9 @@
         <width>511</width>
         <height>381</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -420,7 +425,6 @@
     <widget class="QWidget" name="Xtab">
      <property name="font">
       <font>
-       <family>Courier New</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -438,6 +442,9 @@
         <width>511</width>
         <height>425</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -459,9 +466,11 @@
       </property>
       <property name="font">
        <font>
-        <family>Courier New</family>
         <pointsize>14</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -505,9 +514,11 @@
       </property>
       <property name="font">
        <font>
-        <family>Courier New</family>
         <pointsize>14</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -519,9 +530,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>360</y>
+      <y>359</y>
       <width>91</width>
-      <height>40</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -532,7 +543,6 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
       <pointsize>14</pointsize>
      </font>
     </property>
@@ -568,9 +578,9 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>360</y>
+      <y>359</y>
       <width>91</width>
-      <height>40</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -581,7 +591,6 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
       <pointsize>14</pointsize>
      </font>
     </property>
@@ -617,7 +626,7 @@
      <x>0</x>
      <y>0</y>
      <width>960</width>
-     <height>26</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSuppression_Task">
@@ -830,7 +839,9 @@
   <tabstop>clear_program_button</tabstop>
   <tabstop>exclusive_button</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>observation_line_edit</sender>
