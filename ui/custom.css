@@ -18,7 +18,7 @@ QTabBar::tab {{
   background: rgb(101, 101, 101); 
   color:white;
   min-width: 5ex;
-  padding: 2px;
+  padding: 2px 5px 2px 5px;
   /* border-top: 1px solid rgba(255,255,255,0.4); */
   border-left: 1px solid rgb(90, 86, 95);
 
