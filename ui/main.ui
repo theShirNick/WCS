@@ -270,7 +270,7 @@
      <string/>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>0</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -315,7 +315,7 @@
         <x>0</x>
         <y>380</y>
         <width>511</width>
-        <height>51</height>
+        <height>61</height>
        </rect>
       </property>
       <property name="text">

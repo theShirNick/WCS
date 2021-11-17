@@ -2,6 +2,25 @@ QMainWindow{{
   background-color: rgb(50, 50, 50);
 }}
 
+/* QTabWidget{{
+  background-color: rgba(150, 50, 50, 1);
+}} */
+
+/* QScrollArea,
+QStackedWidget,
+QWidget > QToolBox,
+QToolBox > QWidget,
+QTabWidget > QWidget {{
+  border: none;
+}} */
+
+QTabWidget::pane
+{{
+border: 1px solid rgb();
+margin-top:5px;
+}}
+
+
 QPlainTextEdit{{
   border-width: 0 0 2px 0;
   background-color: rgb(34, 34, 34);
@@ -9,24 +28,27 @@ QPlainTextEdit{{
   font-size :14pt;
 }}
 QPlainTextEdit:focus{{
-  border:  10px solid rgb(55, 116, 214); 
+  border:  10px solid rgb(54, 113, 207); 
   background-color:rgb(23, 23, 23);
   border-width: 0 0 2px 0;
 }}
 
 QLineEdit{{
-  font-family:  'Overpass Mono', 'Menlo', 'Consolas', 'Courier New';
+  background-color: rgb(34, 34, 34);
+  color: rgb(254, 254, 254);
+  font-family:  'Overpass Mono', 'Consolas', 'Courier New';
   font-size :14pt;
 }}
 QLineEdit:focus{{
-  border:  10px solid rgb(55, 116, 214);
+  background-color: rgb(23, 23, 23);
+  border:  10px solid rgb(54, 113, 207);
   border-width: 0 0 2px 0;
 }}
 
 QTextEdit{{
   border-width: 0 0 2px 0;
   background-color: rgb(34, 34, 34);
-  font-family:  'Overpass Mono', 'Menlo', 'Consolas', 'Courier New';
+  font-family:  'Overpass Mono', 'Consolas', 'Courier New';
   font-size :14pt;
 }}
 
@@ -57,7 +79,7 @@ QPushButton:flat {{
 }}
 
 QPushButton:flat:hover {{
-  background-color: rgba(55, 116, 214, 0.5);
+  background-color: rgba(54, 113, 207, 0.5);
 }}
 
 QPushButton:flat:pressed,
