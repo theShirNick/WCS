@@ -51,7 +51,7 @@
     <item>
      <layout class="QGridLayout" name="gridLayout">
       <property name="topMargin">
-       <number>5</number>
+       <number>2</number>
       </property>
       <property name="horizontalSpacing">
        <number>1</number>
