@@ -687,7 +687,6 @@
    <addaction name="menuDatalog"/>
    <addaction name="menuSyllogisms"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="action1_AA">
    <property name="text">
     <string>1. AA</string>

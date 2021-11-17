@@ -1,7 +1,11 @@
+QMainWindow{{
+  background-color: rgb(50, 50, 50);
+}}
+
 QPlainTextEdit{{
   border-width: 0 0 2px 0;
   background-color: rgb(34, 34, 34);
-  font-family:  'Overpass Mono', 'Menlo', 'Consolas', 'Courier New';
+  font-family:  'Overpass Mono', 'Consolas', 'Courier New';
   font-size :14pt;
 }}
 QPlainTextEdit:focus{{
