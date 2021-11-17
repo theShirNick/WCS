@@ -96,7 +96,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>14</pointsize>
          </font>
         </property>
         <property name="toolTip">
@@ -126,7 +126,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>14</pointsize>
          </font>
         </property>
         <property name="autoFillBackground">
@@ -143,7 +143,7 @@
       <item row="3" column="3">
        <widget class="QPushButton" name="input_observation_button">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -156,7 +156,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>14</pointsize>
          </font>
         </property>
         <property name="autoFillBackground">
@@ -173,7 +173,7 @@
       <item row="4" column="3">
        <widget class="QPushButton" name="input_disjunction_button">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -186,7 +186,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>14</pointsize>
          </font>
         </property>
         <property name="text">
@@ -237,7 +237,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>14</pointsize>
          </font>
         </property>
         <property name="text">
@@ -305,7 +305,7 @@
          <bool>true</bool>
         </property>
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -318,7 +318,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>14</pointsize>
          </font>
         </property>
         <property name="text">
@@ -421,6 +421,11 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
       <property name="toolTip">
        <string/>
       </property>
@@ -487,6 +492,11 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+           </font>
           </property>
           <property name="text">
            <string>&gt;&gt;&gt; Ground and Weakly Complete &gt;&gt;&gt;</string>
@@ -943,12 +953,28 @@
  </widget>
  <tabstops>
   <tabstop>input_program_text_edit</tabstop>
+  <tabstop>input_program_button</tabstop>
   <tabstop>observation_line_edit</tabstop>
+  <tabstop>input_observation_button</tabstop>
   <tabstop>disjunction_line_edit_left</tabstop>
+  <tabstop>exclusive_button</tabstop>
+  <tabstop>disjunction_line_edit_right</tabstop>
+  <tabstop>input_disjunction_button</tabstop>
   <tabstop>constraint_left_head_line_edit</tabstop>
   <tabstop>constraint_right_body_line_edit</tabstop>
-  <tabstop>input_program_button</tabstop>
+  <tabstop>input_constraint_button</tabstop>
   <tabstop>clear_program_button</tabstop>
+  <tabstop>to_wc_button</tabstop>
+  <tabstop>wcPTextEdit</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>to_phi_button</tabstop>
+  <tabstop>PTextEdit</tabstop>
+  <tabstop>PhiTextEdit</tabstop>
+  <tabstop>to_x_button</tabstop>
+  <tabstop>XTextEdit</tabstop>
+  <tabstop>help_textEdit</tabstop>
+  <tabstop>open_PDF_button</tabstop>
+  <tabstop>error_textEdit</tabstop>
  </tabstops>
  <resources/>
  <connections>

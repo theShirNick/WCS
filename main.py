@@ -36,7 +36,14 @@ if __name__ == "__main__":
         print(loader.errorString())
         sys.exit(-1)
 
-    #171717# load custom style additions
+    window.tabWidget.setTabEnabled(0, False)
+    window.tabWidget.setTabEnabled(1, False)
+    window.tabWidget.setTabEnabled(2, False)
+    window.tabWidget.setTabEnabled(3, False)
+    window.tabWidget.setTabVisible(4, True)
+    window.tabWidget.setCurrentIndex(4)
+    window.tabWidget.setTabVisible(5, False)
+    # load custom style additions
     QFontDatabase.addApplicationFont(os.path.dirname(__file__) + '/ui/OverpassMono-Regular.ttf')
     QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Roboto-Regular.ttf")
     stylesheet = app.styleSheet()
