@@ -17,4 +17,5 @@ Run main.py with the appropriate Python interpreter:
 
 If it doesn't run in a venv, try on the non-virtual Python
 
-Linux may need `sudo install libopengl0 -y`
+Linux may need `sudo apt update
+sudo apt install libopengl0`
