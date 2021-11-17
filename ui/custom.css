@@ -2,29 +2,20 @@ QMainWindow{{
   color: rgb(255, 255, 255);
   background-color: rgb(50, 50, 50);
 }}
-
-/* QTabWidget{{
-  background-color: rgba(150, 50, 50, 1);
-}} */
-
-/* QScrollArea,
-QStackedWidget,
-QWidget > QToolBox,
-QToolBox > QWidget,
-QTabWidget > QWidget {{
-  border: none;
-}} */
+QLabel{{
+  color: rgb(255, 255, 255);
+}}
 
 QTabWidget::pane
 {{
-border: 1px solid rgb();
+border: 1px solid rgb(34,34,34);
 margin-top:5px;
 }}
 
 
 QPlainTextEdit{{
   color: rgb(255, 255, 255);
-  border-width: 0 0 2px 0;
+  border:  1px solid rgb(34, 34, 34); 
   background-color: rgb(34, 34, 34);
   font-family:  'Overpass Mono', 'Consolas', 'Courier New';
   font-size :14pt;
@@ -33,12 +24,12 @@ QPlainTextEdit:focus{{
   color: rgb(255, 255, 255);
   border:  10px solid rgb(54, 113, 207); 
   background-color:rgb(23, 23, 23);
-  border-width: 0 0 2px 0;
+  border-width: 0px 0px 2px 0px;
 }}
 
 QLineEdit{{
   color: rgb(255, 255, 255);
-  border-width: 0 0 2px 0;
+  border:  1px solid rgb(34, 34, 34); 
   background-color: rgb(34, 34, 34);
   font-family:  'Overpass Mono', 'Consolas', 'Courier New';
   font-size :14pt;
@@ -47,17 +38,16 @@ QLineEdit:focus{{
   color: rgb(255, 255, 255);
   background-color: rgb(23, 23, 23);
   border:  10px solid rgb(54, 113, 207);
-  border-width: 0 0 2px 0;
+  border-width: 0px 0px 2px 0px;
 }}
 
 QTextEdit{{
   color: rgb(255, 255, 255);
-  border-width: 0 0 2px 0;
+  border:  1px solid rgb(34, 34, 34); 
   background-color: rgb(34, 34, 34);
   font-family:  'Overpass Mono', 'Consolas', 'Courier New';
   font-size :14pt;
 }}
-
 
 
 QPushButton {{
