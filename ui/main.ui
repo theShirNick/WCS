@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>818</width>
-    <height>581</height>
+    <width>718</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -51,13 +51,10 @@
     <item>
      <layout class="QGridLayout" name="gridLayout">
       <property name="topMargin">
-       <number>2</number>
+       <number>0</number>
       </property>
-      <property name="horizontalSpacing">
-       <number>1</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>2</number>
+      <property name="spacing">
+       <number>0</number>
       </property>
       <item row="4" column="0">
        <widget class="QLineEdit" name="disjunction_line_edit_left">
@@ -753,7 +750,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>818</width>
+     <width>718</width>
      <height>24</height>
     </rect>
    </property>

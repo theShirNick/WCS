@@ -303,7 +303,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                     old_s = old_s[:-2]
                 output = output + f"Skeptically, nothing new follows. We already know:<br>{old_s}<br>"
             elif len(interpretation_stack) == 1:
-                output = output + f"Empty fixed point, emplty set of abducibles. Nothing follows."
+                output = output + f"Empty fixed point, empty set of abducibles. Nothing follows."
             else:
                 raise Exception("Interpretation stack empty. Did Phi run correctly?")
 
