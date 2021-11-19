@@ -46,6 +46,7 @@ if __name__ == "__main__":
     # load custom style additions
     QFontDatabase.addApplicationFont(os.path.dirname(__file__) + '/ui/OverpassMono-Regular.ttf')
     QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Roboto-Regular.ttf")
+    QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Symbola.otf")
     stylesheet = app.styleSheet()
     with open(os.path.dirname(__file__) + '/ui/custom.css') as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
@@ -69,7 +70,7 @@ Add an asterisk to the head to make a non-necessary antecedent.<br>
 Add an asterisk to the body to make a factual conditional.<br>
 Abnormality predicates must begin with \"ab\".<br>
 <br>
-The 𝒫 tab shows you input program, the ground program, observations, and integrity constraints.<br>
+The 𝒫 tab displays the input program, the ground program, observations, and integrity constraints.<br>
 The 𝑤𝑐𝒫 tab shows the groud program its weak completion.<br>
 The Φ tab iterates the semantic operator until a fixed point is found.<br>
 The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>

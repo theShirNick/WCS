@@ -29,6 +29,7 @@ QTabBar::tab {{
   /* background: rgb(101, 101, 101);  */
   background: rgb(44,41,52);
   color:white;
+  font-family: 'Symbola';
   min-width: 45px;
   padding: 2px 5px 2px 5px;
   /* border-top: 1px solid rgba(255,255,255,0.4); */
@@ -48,6 +49,15 @@ QTabBar::tab:last {{
   border-top-right-radius: 5px; 
   border-bottom-right-radius: 5px;
   /* border: 1px solid rgba(255,255,255,0.1); */
+}} 
+QTabBar::tab:hover {{
+  /* background: rgb(22, 101, 220); */
+  background: rgba(90, 86, 95, 0.7);
+  /* border: 1px solid rgba(255,255,255,0.1); */
+}}
+QTabBar::tab:disabled {{ 
+  
+  color:rgb(90, 86, 95);
 }} 
 
 QTabBar::tab:pressed {{
@@ -128,7 +138,7 @@ QPushButton:flat {{
 
 QPushButton:flat:hover {{
   /* background-color: rgba(54, 113, 207, 0.5); */
-  background-color: rgba(90, 86, 95, 0.5);
+  background-color: rgba(90, 86, 95, 0.7);
 }}
 
 QPushButton:flat:pressed,
