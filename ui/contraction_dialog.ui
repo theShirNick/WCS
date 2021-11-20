@@ -3,7 +3,7 @@
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
   <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
+   <enum>Qt::NonModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -35,11 +35,11 @@
    <string>Dialog</string>
   </property>
   <property name="modal">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,1,0,1,0">
    <item row="2" column="3">
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="falses">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -136,7 +136,7 @@
  </widget>
  <tabstops>
   <tabstop>truths</tabstop>
-  <tabstop>lineEdit</tabstop>
+  <tabstop>falses</tabstop>
   <tabstop>submit_button</tabstop>
  </tabstops>
  <resources/>

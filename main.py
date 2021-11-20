@@ -50,10 +50,6 @@ if __name__ == "__main__":
     if not contraction_dialog:
         print(loader.errorString())
         sys.exit(-1)
-    if platform.system() != 'Windows':
-        contraction_dialog.setWindowFlags(contraction_dialog.windowFlags() | QtCore.Qt.Sheet)
-        contraction_dialog.setParent(window)
-        contraction_dialog.close()
 
 
     window.tabWidget.setTabEnabled(0, False)
@@ -100,6 +96,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     window.help_textEdit.setHtml(help_text)
     window.tabWidget.setCurrentIndex(4)
     # Important stuff starts here
+    global ground_terms
     ground_terms:dict[str, TruthConstant] = dict()
     observations = set()
     clauses = []
@@ -111,7 +108,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     explanations = list()
     variables = list()
     consts = list()
-    
+    contraction = None
     is_OR = False
 
     # Program Input
@@ -147,7 +144,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             window.input_program_text_edit.setPlaceholderText("")
             P_output()
             window.input_program_text_edit.clear()
-            
+
         
         except Exception as e:
             show_error(e)
@@ -252,21 +249,43 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
         global wc_program
         wc_program = program.weakly_complete()
-
+        print(ground_terms)
         P_output(True) # call with a wcFlag
+    
     # Connect the 'Ground and Weakly Complete' button to the function
     window.to_wc_button.clicked.connect(wcP)
 
     # Enter Contraction Dialog
     def show_contraction_dialog():
         
-        contraction_dialog.open()
+        contraction_dialog.exec_()
 
     # Connect the 'Enter Contraction' button to the function
     window.contraction_button.clicked.connect(show_contraction_dialog)
 
     # Sumbit Contraction Dialog
     def submit_contraction_dialog():
+        truths_input = set()
+        if len(contraction_dialog.truths.text()) > 0:
+            truths_input = contraction_dialog.truths.text().split(',')
+            for i in range(len(truths_input)):
+                truths_input[i] = str(InfixExpression(truths_input[i], ground_terms))
+
+        falses_input = set()
+        if len(contraction_dialog.falses.text()) > 0:
+            falses_input = contraction_dialog.falses.text().split(',')
+            for i in range(len(falses_input)):
+                falses_input[i] = str(InfixExpression(falses_input[i], ground_terms))
+        print(falses_input)
+
+        unknowns_left = set()
+        for gt in ground_terms:
+            if gt not in falses_input and gt not in truths_input:
+                unknowns_left.add(gt)
+        global contraction
+        contraction = Interpretation(ground_terms, set(truths_input), set(falses_input), unknowns_left)
+        print(ground_terms)
+        interpretation_stack.append(contraction)
         contraction_dialog.close()
 
     # Connect the 'Enter Contraction' button to the function
@@ -279,10 +298,12 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.tabWidget.setTabEnabled(2, True)
         window.tabWidget.setCurrentIndex(2)
         output = ''
-        interpretation_stack.clear()
+        # interpretation_stack.clear()
         window.PhiTextEdit.clear()
+        # if len(interpretation_stack) == 0:
+        #     interpretation_stack.append(Interpretation(ground_terms, set(), set(), set(ground_terms.keys() )))
         if len(interpretation_stack) == 0:
-            interpretation_stack.append(Interpretation(ground_terms, set(), set(), set(ground_terms.keys() )))
+            interpretation_stack.append(Interpretation(ground_terms, set(), set(), set(ground_terms.keys())))
         
         stop = False
         while stop == False:
@@ -396,6 +417,8 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         clauses.clear()
         global program
         program = Program([])
+        global contraction
+        contraction = None
         ground_terms.clear()
         observations.clear()
         consts.clear()
