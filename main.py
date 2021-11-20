@@ -1,14 +1,16 @@
 
 import sys
 import os
+import platform
 from collections import deque
 from truth_constant import TruthConstant
 
+
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtGui import QFontDatabase
-from PySide6.QtWidgets import QApplication, QMainWindow, QDialog
+from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QMessageBox
 from PySide6.QtCore import QFile, QIODevice, Slot
-
+import PySide6.QtCore as QtCore
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
@@ -18,7 +20,6 @@ from phi import phi
 from examples import Example
 from ground import ground, find_vars_and_consts
 
-from pathlib import Path
 
 
 if __name__ == "__main__":
@@ -36,6 +37,25 @@ if __name__ == "__main__":
         print(loader.errorString())
         sys.exit(-1)
 
+
+    ui_file_name = os.path.dirname(__file__) + "/ui/contraction_dialog.ui"
+    ui_file = QFile(ui_file_name)
+    if not ui_file.open(QIODevice.ReadOnly):
+        print(f"Cannot open {ui_file_name}: {ui_file.errorString()}")
+        sys.exit(-1)
+    loader = QUiLoader()
+    contraction_dialog = loader.load(ui_file)
+    
+    ui_file.close()
+    if not contraction_dialog:
+        print(loader.errorString())
+        sys.exit(-1)
+    if platform.system() != 'Windows':
+        contraction_dialog.setWindowFlags(contraction_dialog.windowFlags() | QtCore.Qt.Sheet)
+        contraction_dialog.setParent(window)
+        contraction_dialog.close()
+
+
     window.tabWidget.setTabEnabled(0, False)
     window.tabWidget.setTabEnabled(1, False)
     window.tabWidget.setTabEnabled(2, False)
@@ -47,6 +67,8 @@ if __name__ == "__main__":
     QFontDatabase.addApplicationFont(os.path.dirname(__file__) + '/ui/OverpassMono-Regular.ttf')
     QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Roboto-Regular.ttf")
     QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Symbola.otf")
+    
+
     stylesheet = app.styleSheet()
     with open(os.path.dirname(__file__) + '/ui/custom.css') as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
@@ -123,9 +145,8 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 program.clauses.append(Rule(InfixExpression(left_head, ground_terms), InfixExpression(right_body, ground_terms), non_nec, factual))
 
             window.input_program_text_edit.setPlaceholderText("")
-            window.input_program_text_edit.clear()
-
             P_output()
+            window.input_program_text_edit.clear()
             
         
         except Exception as e:
@@ -235,6 +256,23 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         P_output(True) # call with a wcFlag
     # Connect the 'Ground and Weakly Complete' button to the function
     window.to_wc_button.clicked.connect(wcP)
+
+    # Enter Contraction Dialog
+    def show_contraction_dialog():
+        
+        contraction_dialog.open()
+
+    # Connect the 'Enter Contraction' button to the function
+    window.contraction_button.clicked.connect(show_contraction_dialog)
+
+    # Sumbit Contraction Dialog
+    def submit_contraction_dialog():
+        contraction_dialog.close()
+
+    # Connect the 'Enter Contraction' button to the function
+    contraction_dialog.submit_button.clicked.connect(submit_contraction_dialog)
+
+
 
     # Semantic Phi Operator
     def phi_fixed_point():

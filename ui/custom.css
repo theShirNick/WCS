@@ -1,7 +1,8 @@
-QMainWindow{{
+QMainWindow, QDialog{{
   color: rgb(255, 255, 255);
   background-color: rgb(50, 50, 50);
 }}
+
 QLabel{{
   color: rgb(255, 255, 255);
 }}
@@ -30,8 +31,9 @@ QTabBar::tab {{
   background: rgb(44,41,52);
   color:white;
   font-family: 'Symbola';
-  min-width: 45px;
-  padding: 2px 5px 2px 5px;
+  min-width: 30px;
+  height: 20px;
+  padding: 2px 8px 2px 8px;
   /* border-top: 1px solid rgba(255,255,255,0.4); */
   border-left: 1px solid rgb(90, 86, 95);
 
