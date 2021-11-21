@@ -79,7 +79,7 @@ QPlainTextEdit{{
   color: rgb(255, 255, 255);
   border:  1px solid rgb(34, 34, 34); 
   background-color: rgb(34, 34, 34);
-  font-family:  'Overpass Mono', 'Courier New';
+  font-family:  'Overpass Mono';
   font-size :14pt;
 }}
 QPlainTextEdit:focus{{
@@ -93,7 +93,7 @@ QLineEdit{{
   color: rgb(255, 255, 255);
   border:  1px solid rgb(34, 34, 34); 
   background-color: rgb(34, 34, 34);
-  font-family:  'Overpass Mono', 'Courier New';
+  font-family:  'Overpass Mono';
   font-size :14pt;
 }}
 QLineEdit:focus{{
@@ -107,7 +107,7 @@ QTextEdit{{
   color: rgb(255, 255, 255);
   border:  1px solid rgb(34, 34, 34); 
   background-color: rgb(34, 34, 34);
-  font-family:  'Overpass Mono', 'Courier New';
+  font-family:  'Overpass Mono';
   font-size :14pt;
 }}
 

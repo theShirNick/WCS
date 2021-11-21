@@ -4,6 +4,8 @@
 Python 3.9.2 or newer is required (make sure PATH has path to Python and Python/Scripts)
 
 Homebrew (tested on arm64 Mac):
+`brew install pyside`
+https://formulae.brew.sh/formula/pyside
 
 
 Pip

@@ -249,7 +249,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
         global wc_program
         wc_program = program.weakly_complete()
-        print(ground_terms)
+
         P_output(True) # call with a wcFlag
     
     # Connect the 'Ground and Weakly Complete' button to the function
@@ -276,7 +276,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             falses_input = contraction_dialog.falses.text().split(',')
             for i in range(len(falses_input)):
                 falses_input[i] = str(InfixExpression(falses_input[i], ground_terms))
-        print(falses_input)
+        
 
         unknowns_left = set()
         for gt in ground_terms:
@@ -284,9 +284,12 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 unknowns_left.add(gt)
         global contraction
         contraction = Interpretation(ground_terms, set(truths_input), set(falses_input), unknowns_left)
-        print(ground_terms)
+        
         interpretation_stack.append(contraction)
+        contraction_dialog.truths.clear()
+        contraction_dialog.falses.clear()
         contraction_dialog.close()
+        phi_fixed_point()
 
     # Connect the 'Enter Contraction' button to the function
     contraction_dialog.submit_button.clicked.connect(submit_contraction_dialog)

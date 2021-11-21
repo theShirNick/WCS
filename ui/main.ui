@@ -47,7 +47,7 @@
      <height>400</height>
     </size>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,8">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,0">
     <item>
      <layout class="QGridLayout" name="gridLayout">
       <property name="topMargin">
@@ -56,6 +56,120 @@
       <property name="spacing">
        <number>0</number>
       </property>
+      <item row="4" column="0">
+       <widget class="QLineEdit" name="disjunction_line_edit_left">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QLineEdit" name="observation_line_edit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="disjunction_line_edit_right">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4">
+       <widget class="QPlainTextEdit" name="input_program_text_edit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="placeholderText">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLineEdit" name="constraint_left_head_line_edit">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+       </widget>
+      </item>
       <item row="5" column="2">
        <widget class="QLineEdit" name="constraint_right_body_line_edit">
         <property name="enabled">
@@ -107,8 +221,8 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="QLineEdit" name="observation_line_edit">
+      <item row="6" column="0" colspan="4">
+       <widget class="QPushButton" name="clear_program_button">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -126,56 +240,14 @@
           <pointsize>14</pointsize>
          </font>
         </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLineEdit" name="disjunction_line_edit_left">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1" alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="reverse_label_4">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
+        <property name="toolTip">
+         <string/>
         </property>
         <property name="text">
-         <string>←</string>
+         <string>Start over</string>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -209,48 +281,10 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLineEdit" name="constraint_left_head_line_edit">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2">
-       <widget class="QLineEdit" name="disjunction_line_edit_right">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
+      <item row="0" column="0" colspan="4">
+       <widget class="QLabel" name="inputLabel">
+        <property name="text">
+         <string> Input:</string>
         </property>
        </widget>
       </item>
@@ -278,6 +312,66 @@
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="reverse_label_4">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>←</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QPushButton" name="input_constraint_button">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Add Constraint</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -314,100 +408,6 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0" colspan="4">
-       <widget class="QPushButton" name="clear_program_button">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Start over</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="3">
-       <widget class="QPushButton" name="input_constraint_button">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Add Constraint</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="4">
-       <widget class="QPlainTextEdit" name="input_program_text_edit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>250</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="placeholderText">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="4">
-       <widget class="QLabel" name="inputLabel">
-        <property name="text">
-         <string> Input:</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
@@ -433,7 +433,7 @@
        <string/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -486,28 +486,42 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="to_wc_button">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>14</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>&gt;&gt;&gt; Ground and Weakly Complete &gt;&gt;&gt;</string>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="to_wc_button">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>&gt;&gt;&gt; Ground and Weakly Complete &gt;&gt;&gt;</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="p_latex">
+            <property name="text">
+             <string>LaTeX</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -556,7 +570,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="8,5">
+         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="8,5,0">
           <item>
            <widget class="QPushButton" name="to_phi_button">
             <property name="enabled">
@@ -574,6 +588,16 @@
            <widget class="QPushButton" name="contraction_button">
             <property name="text">
              <string>Enter Contraction</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="wcP_latex">
+            <property name="text">
+             <string>LaTeX</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -623,17 +647,31 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="to_x_button">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>&gt;&gt;&gt; Explain with Skeptical Abduction &gt;&gt;&gt;</string>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="to_x_button">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>&gt;&gt;&gt; Explain with Skeptical Abduction &gt;&gt;&gt;</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="phi_latex">
+            <property name="text">
+             <string>LaTeX</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -671,6 +709,16 @@
            <string notr="true"/>
           </property>
           <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="x_latex">
+          <property name="text">
+           <string>LaTeX</string>
+          </property>
+          <property name="flat">
            <bool>true</bool>
           </property>
          </widget>
@@ -987,12 +1035,10 @@
   <tabstop>constraint_right_body_line_edit</tabstop>
   <tabstop>input_constraint_button</tabstop>
   <tabstop>clear_program_button</tabstop>
-  <tabstop>to_wc_button</tabstop>
   <tabstop>wcPTextEdit</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>PTextEdit</tabstop>
   <tabstop>PhiTextEdit</tabstop>
-  <tabstop>to_x_button</tabstop>
   <tabstop>XTextEdit</tabstop>
   <tabstop>help_textEdit</tabstop>
   <tabstop>open_PDF_button</tabstop>
