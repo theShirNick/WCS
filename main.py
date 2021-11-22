@@ -4,13 +4,11 @@ import os
 import platform
 from collections import deque
 from truth_constant import TruthConstant
+import resources
 
-
-from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QFontDatabase
-from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QMessageBox
-from PySide6.QtCore import QFile, QIODevice, Slot
-import PySide6.QtCore as QtCore
+from PyQt5 import uic
+from PyQt5.QtGui import QFontDatabase
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
@@ -25,31 +23,30 @@ from ground import ground, find_vars_and_consts
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    ui_file_name = os.path.dirname(__file__) + "/ui/main.ui"
-    ui_file = QFile(ui_file_name)
-    if not ui_file.open(QIODevice.ReadOnly):
-        print(f"Cannot open {ui_file_name}: {ui_file.errorString()}")
-        sys.exit(-1)
-    loader = QUiLoader()
-    window = loader.load(ui_file)
-    ui_file.close()
-    if not window:
-        print(loader.errorString())
-        sys.exit(-1)
 
-
-    ui_file_name = os.path.dirname(__file__) + "/ui/contraction_dialog.ui"
-    ui_file = QFile(ui_file_name)
-    if not ui_file.open(QIODevice.ReadOnly):
-        print(f"Cannot open {ui_file_name}: {ui_file.errorString()}")
-        sys.exit(-1)
-    loader = QUiLoader()
-    contraction_dialog = loader.load(ui_file)
+    def resource_path(relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+        returnMe = os.path.join(base_path, relative_path)
+        return returnMe
+    # Change the current dir to the temporary one created by PyInstaller
     
-    ui_file.close()
-    if not contraction_dialog:
-        print(loader.errorString())
-        sys.exit(-1)
+    class Ui(QMainWindow):
+        def __init__(self):
+            super(Ui, self).__init__()
+            uic.loadUi(resource_path("ui/main.ui"), self)
+    window = Ui()
+
+    class ContractionDialog(QDialog):
+        def __init__(self):
+            super(ContractionDialog, self).__init__()
+            uic.loadUi(resource_path("ui/contraction_dialog.ui"), self)
+    contraction_dialog = ContractionDialog()
+    
 
 
     window.tabWidget.setTabEnabled(0, False)
@@ -60,13 +57,13 @@ if __name__ == "__main__":
     window.tabWidget.setCurrentIndex(4)
     window.tabWidget.setTabVisible(5, False)
     # load custom style additions
-    QFontDatabase.addApplicationFont(os.path.dirname(__file__) + '/ui/OverpassMono-Regular.ttf')
-    QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Roboto-Regular.ttf")
-    QFontDatabase.addApplicationFont(os.path.dirname(__file__) + "/ui/Symbola.otf")
+    QFontDatabase.addApplicationFont(resource_path('ui/OverpassMono-Regular.ttf'))
+    QFontDatabase.addApplicationFont(resource_path("ui/Roboto-Regular.ttf"))
+    QFontDatabase.addApplicationFont(resource_path("ui/Symbola.otf"))
     
 
     stylesheet = app.styleSheet()
-    with open(os.path.dirname(__file__) + '/ui/custom.css') as file:
+    with open(resource_path('ui/custom.css')) as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
 
@@ -112,7 +109,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     is_OR = False
 
     # Program Input
-    @Slot()
     def input_program():
         try:
             window.tabWidget.setTabEnabled(0, True)
@@ -153,7 +149,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     window.input_program_button.clicked.connect(input_program)
     
     # Observation Input
-    @Slot()
     def input_observation():
         try:
             window.tabWidget.setTabEnabled(0, True)
@@ -173,7 +168,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     window.input_observation_button.clicked.connect(input_observation)
 
     # Integrity Constraint Input
-    @Slot()
     def input_IC():
         try:
             window.tabWidget.setTabEnabled(0, True)
@@ -197,7 +191,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     window.input_constraint_button.clicked.connect(input_IC)
 
     # disjunction Input
-    @Slot()
     def input_disjunction():
         try:
             window.tabWidget.setTabEnabled(0, True)
@@ -389,7 +382,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
 
     # Exclusive disjunction button
-    @Slot()
     def XOR_switch():
         global is_OR
         is_OR = window.exclusive_button.isChecked()
@@ -408,7 +400,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         abduction()
         
     # Clear Program
-    @Slot()
     def clear_program():
         window.tabWidget.setTabEnabled(0, False)
         window.tabWidget.setTabEnabled(1, False)
@@ -491,7 +482,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             window.error_textEdit.append(str(e))
 
     # Run Example
-    @Slot()
     def _1_AA():
         clear_program()
         window.input_program_text_edit.clear()
@@ -499,7 +489,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action1_AA.triggered.connect(_1_AA)
 
-    @Slot()
+
     def _2_AA_ALT():
         clear_program()
         window.input_program_text_edit.clear()
@@ -507,7 +497,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action2_AA_ALT.triggered.connect(_2_AA_ALT)
 
-    @Slot()
+    
     def _3_AA_ADD():
         clear_program()
         window.input_program_text_edit.clear()
@@ -515,7 +505,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action3_AA_ADD.triggered.connect(_3_AA_ADD)
 
-    @Slot()
+    
     def _4_DA():
         clear_program()
         window.input_program_text_edit.clear()
@@ -523,7 +513,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action4_DA.triggered.connect(_4_DA)
 
-    @Slot()
+    
     def _5_DA_ALT():
         clear_program()
         window.input_program_text_edit.clear()
@@ -531,7 +521,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action5_DA_ALT.triggered.connect(_5_DA_ALT)
 
-    @Slot()
+    
     def _6_DA_ADD():
         clear_program()
         window.input_program_text_edit.clear()
@@ -539,7 +529,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action6_DA_ADD.triggered.connect(_6_DA_ADD)
 
-    @Slot()
+    
     def _7_AC():
         clear_program()
         window.input_program_text_edit.clear()
@@ -550,7 +540,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action7_AC.triggered.connect(_7_AC)
 
-    @Slot()
+    
     def _8_AC_ALT():
         clear_program()
         window.input_program_text_edit.clear()
@@ -561,7 +551,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action8_AC_ALT.triggered.connect(_8_AC_ALT)
 
-    @Slot()
+    
     def _9_AC_ADD():
         clear_program()
         window.input_program_text_edit.clear()
@@ -572,7 +562,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action9_AC_ADD.triggered.connect(_9_AC_ADD)
 
-    @Slot()
+    
     def _10_DC():
         clear_program()
         window.input_program_text_edit.clear()
@@ -583,7 +573,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action10_DC.triggered.connect(_10_DC)
 
-    @Slot()
+    
     def _11_DC_ALT():
         clear_program()
         window.input_program_text_edit.clear()
@@ -594,7 +584,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action11_DC_ALT.triggered.connect(_11_DC_ALT)
 
-    @Slot()
+    
     def _12_DC_ADD():
         clear_program()
         window.input_program_text_edit.clear()
@@ -605,7 +595,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action12_DC_ADD.triggered.connect(_12_DC_ADD)
 
-    @Slot()
+    
     def DIS_1():
         clear_program()
         window.input_program_text_edit.clear()
@@ -623,7 +613,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_disjunction()
     window.actionExample_1.triggered.connect(DIS_1)
 
-    @Slot()
+    
     def DIS_2():
         clear_program()
         window.input_program_text_edit.clear()
@@ -641,7 +631,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_disjunction()
     window.actionExample_2.triggered.connect(DIS_2)
 
-    @Slot()
+    
     def DIS_3():
         clear_program()
         window.input_program_text_edit.clear()
@@ -659,7 +649,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_disjunction()
     window.actionExample_3.triggered.connect(DIS_3)
 
-    @Slot()
+    
     def DIS_4():
         clear_program()
         window.input_program_text_edit.clear()
@@ -677,7 +667,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_disjunction()
     window.actionExample_4.triggered.connect(DIS_4)
 
-    @Slot()
+    
     def DIS_5():
         clear_program()
         window.input_program_text_edit.clear()
@@ -695,7 +685,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_disjunction()
     window.actionExample_5.triggered.connect(DIS_5)
 
-    @Slot()
+    
     def DIS_6():
         clear_program()
         window.input_program_text_edit.clear()
@@ -713,7 +703,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_disjunction()
     window.actionExample_6.triggered.connect(DIS_6)
 
-    @Slot()
+    
     def CLASS_1():
         clear_program()
         window.input_program_text_edit.clear()
@@ -721,7 +711,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action1_AA_both.triggered.connect(CLASS_1)
 
-    @Slot()
+    
     def CLASS_2():
         clear_program()
         window.input_program_text_edit.clear()
@@ -729,7 +719,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action2_DA_both.triggered.connect(CLASS_2)
 
-    @Slot()
+    
     def CLASS_3():
         clear_program()
         window.input_program_text_edit.clear()
@@ -740,7 +730,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action3_AC_non_necessary.triggered.connect(CLASS_3)
 
-    @Slot()
+    
     def CLASS_4():
         clear_program()
         window.input_program_text_edit.clear()
@@ -751,7 +741,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action4_DC_factual.triggered.connect(CLASS_4)
 
-    @Slot()
+    
     def DATALOG_1():
         clear_program()
         window.input_program_text_edit.clear()
@@ -762,7 +752,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action1_Birds_Explicit.triggered.connect(DATALOG_1)
 
-    @Slot()
+    
     def DATALOG_2():
         clear_program()
         window.input_program_text_edit.clear()
@@ -773,7 +763,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_observation()
     window.action2_Birds_Implicit.triggered.connect(DATALOG_2)
 
-    @Slot()
+    
     def IA2():
         clear_program()
         window.input_program_text_edit.clear()
@@ -781,7 +771,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_program()
     window.action1_IA2.triggered.connect(IA2)
 
-    @Slot()
+    
     def OA4():
         clear_program()
         window.input_program_text_edit.clear()
@@ -794,7 +784,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         input_IC()
     window.action2_OA4.triggered.connect(OA4)
 
-    @Slot()
+    
     def IE4():
         clear_program()
         window.input_program_text_edit.clear()

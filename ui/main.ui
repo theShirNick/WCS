@@ -1044,7 +1044,9 @@
   <tabstop>open_PDF_button</tabstop>
   <tabstop>error_textEdit</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../r.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>observation_line_edit</sender>

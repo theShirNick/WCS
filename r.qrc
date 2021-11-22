@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="resources">
+    <file>ui/contraction_dialog.ui</file>
+    <file>ui/custom.css</file>
+    <file>ui/main.ui</file>
+    <file>ui/OverpassMono-Regular.ttf</file>
+    <file>ui/Roboto-Regular.ttf</file>
+    <file>ui/Symbola.otf</file>
+  </qresource>
+</RCC>
