@@ -12,20 +12,6 @@ class InfixExpression:
         self.ground_terms = ground_terms
         self.node_string = str(self.parse_lexer_tokens(self.get_lexer_tokens())) # string representation of the expression
         
-        
-
-    # def bold_abnormalities(self) -> str:
-    #     '''
-    #         Analogous to node_string ( __repr__ ), except here, abnormality node tokens are replaced with dummy clones whose names have markdown boldness
-    #     '''
-
-    #     mod_tokens = list(self.get_lexer_tokens())
-    #     for i in range(len(mod_tokens)):
-    #         token = mod_tokens[i]
-    #         if token.type == TokenType.ATOM and token.value.is_abnormality:
-    #             mod_tokens[i] = Token(TokenType.ATOM, Atom(f"**{token.value.name}**", token.value.ground_value, True))
-    #     return str(self.parse_lexer_tokens(mod_tokens))
-
     def replace_var(self, original:str, replacement:str) -> str:
         str = ''
         for token in self.get_lexer_tokens():

@@ -67,6 +67,7 @@ if __name__ == "__main__":
     window.constraint_right_body_line_edit.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
     contraction_dialog.truths.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
     contraction_dialog.falses.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+
     
 
     stylesheet = app.styleSheet()
@@ -375,7 +376,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             if len(explanations_interpretations) > 0:
                 abduced_interpretations = list()
                 for expl, interpr in explanations_interpretations:
-                    output = output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<br><hr>"
+                    output = output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<hr>"
                     abduced_interpretations.append(interpr)
 
                 skeptical_result = skeptical(ground_terms, program, abduced_interpretations)

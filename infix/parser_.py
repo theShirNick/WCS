@@ -149,4 +149,8 @@ class Parser:
             self.advance()
             return NegationNode(self.factor())
         
+        elif token.type == TokenType.CONTEXT:
+            self.advance()
+            return ContextNode(self.factor())
+        
         self.raise_error()

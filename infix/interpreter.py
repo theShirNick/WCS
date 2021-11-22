@@ -27,3 +27,6 @@ class Interpreter:
 
     def visit_NegationNode(self, node, ground_terms):
         return negation(self.visit(node.node, ground_terms))
+
+    def visit_ContextNode(self, node, ground_terms):
+            return context(self.visit(node.node, ground_terms))

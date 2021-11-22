@@ -15,6 +15,7 @@ class TokenType(Enum):
    VAR              = 10
    CONST            = 11
    COMMA            = 12
+   CONTEXT          = 13
 
    TBD              = 99
 

@@ -51,3 +51,13 @@ class NegationNode:
             return f"¬{self.node}"
         else:
             return f"¬({self.node})"
+
+@dataclass
+class ContextNode:
+    node: any
+
+    def __repr__(self) -> str:
+        if type(self.node) in [AtomNode, TruthConstNode]:
+            return f"ctxt {self.node}"
+        else:
+            return f"ctxt ({self.node})"

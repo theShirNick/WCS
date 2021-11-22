@@ -111,6 +111,8 @@ class Lexer:
             return Token(TokenType.CONJUNCTION)
         elif  str.lower() == 'or':
             return Token(TokenType.DISJUNCTION)
+        elif str.lower() == 'ctxt':
+            return Token(TokenType.CONTEXT)
         elif str == 'T':
             return Token(TokenType.TRUTHCONST, TruthConstant.TRUE)
         elif str == 'F':
