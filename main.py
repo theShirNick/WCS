@@ -6,7 +6,8 @@ from collections import deque
 from truth_constant import TruthConstant
 import resources
 
-from PyQt5 import uic
+
+from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
 from interpretation import Interpretation
@@ -46,8 +47,6 @@ if __name__ == "__main__":
             super(ContractionDialog, self).__init__()
             uic.loadUi(resource_path("ui/contraction_dialog.ui"), self)
     contraction_dialog = ContractionDialog()
-    
-
 
     window.tabWidget.setTabEnabled(0, False)
     window.tabWidget.setTabEnabled(1, False)
@@ -60,6 +59,14 @@ if __name__ == "__main__":
     QFontDatabase.addApplicationFont(resource_path('ui/OverpassMono-Regular.ttf'))
     QFontDatabase.addApplicationFont(resource_path("ui/Roboto-Regular.ttf"))
     QFontDatabase.addApplicationFont(resource_path("ui/Symbola.otf"))
+    #disable mac outline upon selecting a lineedit
+    window.observation_line_edit.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+    window.disjunction_line_edit_left.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+    window.disjunction_line_edit_right.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+    window.constraint_left_head_line_edit.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+    window.constraint_right_body_line_edit.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+    contraction_dialog.truths.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+    contraction_dialog.falses.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
     
 
     stylesheet = app.styleSheet()

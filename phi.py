@@ -45,7 +45,6 @@ def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
         interpretation.ground_terms[term] = TruthConstant.UNKNOWN
         new_interpretation.falses.remove(term)
         new_interpretation.unknowns.add(term)
-    # print(f'untrue: {untrue}, unfalse: {unfalse}')
 
 
     # get immediate consequences
