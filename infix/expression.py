@@ -25,6 +25,8 @@ class InfixExpression:
                 str = str + '∨'
             elif token.type == TokenType.NEGATION:
                 str = str + '~'
+            elif token.type == TokenType.CONTEXT:
+                str = str + ' ctxt '
             elif token.type in [TokenType.ORDER_LPAREN, TokenType.PRED_LPAREN] :
                 str = str + '('
             elif token.type in [TokenType.ORDER_RPAREN, TokenType.PRED_RPAREN] :

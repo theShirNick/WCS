@@ -152,7 +152,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         
         except Exception as e:
             show_error(e)
-            raise(e)
+            # raise(e)
     # Connect the Program button to the function
     window.input_program_button.clicked.connect(input_program)
     
@@ -171,7 +171,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 
         except Exception as e:
             show_error(e)
-            raise(e)
+            # raise(e)
     # Connect the Observation button to the function
     window.input_observation_button.clicked.connect(input_observation)
 
@@ -194,7 +194,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 
         except Exception as e:
             show_error(e)
-            raise(e)
+            # raise(e)
     # Connect the Integrity Constraint button to the function
     window.input_constraint_button.clicked.connect(input_IC)
 
@@ -223,7 +223,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
         except Exception as e:
             show_error(e)
-            raise(e)
+            # raise(e)
     # Connect the Integrity Constraint button to the function
     window.input_disjunction_button.clicked.connect(input_disjunction)
 
@@ -804,6 +804,28 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.constraint_right_body_line_edit.setText(Example.IE4_CONSTRAINT_RIGHT.value)
         input_IC()
     window.action3_IE4.triggered.connect(IE4)
+
+    def CONTEXT_TWEETY_DEFAULT():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.CONTEXT_TWEETY_DEFAULT_PROGRAM.value)
+        input_program()
+    window.actionTweety_by_Default.triggered.connect(CONTEXT_TWEETY_DEFAULT)
+
+    
+    def CONTEXT_TWEETY_PENGUIN():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.CONTEXT_TWEETY_PENGUIN_PROGRAM.value)
+        input_program()
+    window.actionTweety_is_a_Penguin.triggered.connect(CONTEXT_TWEETY_PENGUIN)
+
+    def CONTEXT_TWEETY_HAS_WINGS():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.CONTEXT_TWEETY_HAS_WINNGS_PROGRAM.value)
+        input_program()
+    window.actionTweety_has_Wings.triggered.connect(CONTEXT_TWEETY_HAS_WINGS)
     
     # run GUI
     window.show()

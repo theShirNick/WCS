@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>747</width>
+    <width>606</width>
     <height>418</height>
    </rect>
   </property>
@@ -21,7 +21,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>600</width>
+    <width>530</width>
     <height>418</height>
    </size>
   </property>
@@ -48,17 +48,20 @@
     </size>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,8">
+    <property name="spacing">
+     <number>5</number>
+    </property>
     <property name="leftMargin">
-     <number>10</number>
+     <number>5</number>
     </property>
     <property name="topMargin">
      <number>10</number>
     </property>
     <property name="rightMargin">
-     <number>10</number>
+     <number>5</number>
     </property>
     <property name="bottomMargin">
-     <number>10</number>
+     <number>5</number>
     </property>
     <item>
      <layout class="QGridLayout" name="gridLayout">
@@ -141,7 +144,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>250</width>
+          <width>200</width>
           <height>0</height>
          </size>
         </property>
@@ -286,7 +289,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Input Program</string>
+         <string>Add to Program</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -295,6 +298,12 @@
       </item>
       <item row="0" column="0" colspan="4">
        <widget class="QLabel" name="inputLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string> Input:</string>
         </property>
@@ -425,7 +434,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -445,7 +454,7 @@
        <string/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -836,7 +845,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>747</width>
+     <width>606</width>
      <height>24</height>
     </rect>
    </property>
@@ -892,11 +901,20 @@
     <addaction name="action2_OA4"/>
     <addaction name="action3_IE4"/>
    </widget>
+   <widget class="QMenu" name="menuContext">
+    <property name="title">
+     <string>Context</string>
+    </property>
+    <addaction name="actionTweety_by_Default"/>
+    <addaction name="actionTweety_is_a_Penguin"/>
+    <addaction name="actionTweety_has_Wings"/>
+   </widget>
    <addaction name="menuSuppression_Task"/>
    <addaction name="menuDisjunctions"/>
    <addaction name="menuClassification_of_Conditionals"/>
    <addaction name="menuDatalog"/>
    <addaction name="menuSyllogisms"/>
+   <addaction name="menuContext"/>
   </widget>
   <action name="action1_AA">
    <property name="text">
@@ -1031,6 +1049,21 @@
   <action name="action3_IE4">
    <property name="text">
     <string>3. IE4</string>
+   </property>
+  </action>
+  <action name="actionTweety_by_Default">
+   <property name="text">
+    <string>Tweety by Default</string>
+   </property>
+  </action>
+  <action name="actionTweety_is_a_Penguin">
+   <property name="text">
+    <string>Tweety is a Penguin</string>
+   </property>
+  </action>
+  <action name="actionTweety_has_Wings">
+   <property name="text">
+    <string>Tweety has Wings</string>
    </property>
   </action>
  </widget>

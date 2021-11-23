@@ -125,6 +125,25 @@ class Example(Enum):
     IE4_CONSTRAINT_LEFT = 'U'
     IE4_CONSTRAINT_RIGHT = "c X and c' X"
 
+    CONTEXT_TWEETY_DEFAULT_PROGRAM = '''fly X if bird X and not ab_fly X;\n
+                            ab_fly X if ctxt kiwi X;\n
+                            ab_fly X if ctxt penguin X;\n
+                            bird tweety if T;\n
+                            bird jerry if T'''
+    CONTEXT_TWEETY_PENGUIN_PROGRAM = '''fly X if bird X and not ab_fly X;\n
+                            ab_fly X if ctxt kiwi X;\n
+                            ab_fly X if ctxt penguin X;\n
+                            bird tweety if T;\n
+                            bird jerry if T;
+                            penguin tweety if T'''
+
+    CONTEXT_TWEETY_HAS_WINNGS_PROGRAM = '''fly X if bird X and not ab_fly X;\n
+                            ab_fly X if ctxt penguin X;\n
+                            ab_fly X if ctxt moa X;\n
+                            wings X if bird X and not ab_wings X;\n
+                            ab_wings X if ctxt moa X\n;
+                            bird tweety if T;\n
+                            penguin tweety if T\n'''
 
 
 
