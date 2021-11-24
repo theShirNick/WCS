@@ -19,5 +19,4 @@ Run main.py with the appropriate Python interpreter:
 
 If it doesn't run in a venv, try on the non-virtual Python
 
-Linux may need `sudo apt update
-sudo apt install libopengl0`
+Linux may need `sudo apt-get install libxcb-xinerama0-dev`
