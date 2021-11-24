@@ -8,8 +8,8 @@ import resources
 
 
 from PyQt5 import uic, QtCore
-from PyQt5.QtGui import QFontDatabase
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
+from PyQt5.QtGui import QFontDatabase, QPixmap
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QMessageBox
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
@@ -47,6 +47,15 @@ if __name__ == "__main__":
             super(ContractionDialog, self).__init__()
             uic.loadUi(resource_path("ui/contraction_dialog.ui"), self)
     contraction_dialog = ContractionDialog()
+
+    class HaltingDialog(QDialog):
+        def __init__(self):
+            super(HaltingDialog, self).__init__()
+            uic.loadUi(resource_path("ui/halting_dialog.ui"), self)
+    halting_dialog = HaltingDialog()
+    halting_dialog.img.setPixmap(QPixmap('ui/roundabout.png'))
+    
+
 
     window.tabWidget.setTabEnabled(0, False)
     window.tabWidget.setTabEnabled(1, False)
@@ -113,7 +122,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     explanations = list()
     variables = list()
     consts = list()
-    contraction = None
     is_OR = False
 
     # Program Input
@@ -258,9 +266,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
     # Enter Contraction Dialog
     def show_contraction_dialog():
-        
         contraction_dialog.exec_()
-
     # Connect the 'Enter Contraction' button to the function
     window.contraction_button.clicked.connect(show_contraction_dialog)
 
@@ -283,9 +289,10 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         for gt in ground_terms:
             if gt not in falses_input and gt not in truths_input:
                 unknowns_left.add(gt)
-        global contraction
+        
         contraction = Interpretation(ground_terms, set(truths_input), set(falses_input), unknowns_left)
         
+        interpretation_stack.clear()
         interpretation_stack.append(contraction)
         contraction_dialog.truths.clear()
         contraction_dialog.falses.clear()
@@ -295,35 +302,46 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Connect the 'Enter Contraction' button to the function
     contraction_dialog.submit_button.clicked.connect(submit_contraction_dialog)
 
+    def halt_phi():
+        halting_dialog.done(0)    
+    halting_dialog.halt_phi.clicked.connect(halt_phi)
 
+    def more_phi():
+        halting_dialog.done(1)
+    halting_dialog.more_phi.clicked.connect(more_phi)
 
-    # Semantic Phi Operator
+    def safety_off():
+        halting_dialog.done(2)
+    halting_dialog.safety_off.clicked.connect(safety_off)
+
+    # Semantic Operator Phi 
     def phi_fixed_point():
         window.tabWidget.setTabEnabled(2, True)
+        window.to_x_button.setEnabled(True)
         window.tabWidget.setCurrentIndex(2)
         output = ''
         # interpretation_stack.clear()
         window.PhiTextEdit.clear()
-        # if len(interpretation_stack) == 0:
-        #     interpretation_stack.append(Interpretation(ground_terms, set(), set(), set(ground_terms.keys() )))
         if len(interpretation_stack) == 0:
             interpretation_stack.append(Interpretation(ground_terms, set(), set(), set(ground_terms.keys())))
-        
-        stop = False
-        while stop == False:
+        halt_safety=True
+        iterations_left = 5
+        fixed_point_found = False
+
+
+        while fixed_point_found == False and (iterations_left > 0 or halt_safety == False):
             output = output + f"Φ↑{len(interpretation_stack) -1}: {str(interpretation_stack[-1])}<hr>"
             next_phi = phi(wc_program, interpretation_stack[-1])
             if interpretation_stack[-1] == next_phi:
                 output = output + f"Fixed point found.<br>"
-                stop = True
-
+                fixed_point_found = True
                 integrity_constraint_check = True
                 for constraint in integrity_constraints:
                     if constraint.evaluate() != TruthConstant.TRUE:
                         integrity_constraint_check = False
                         break
                 if not integrity_constraint_check:
-                   output = output + f"Integrity constraint not satisfied. Try abduction.<br>"
+                    output = output + f"Integrity constraint not satisfied. Try abduction.<br>"
 
                 unexplained = set()
                 for ob in observations:
@@ -337,12 +355,29 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                         output = output + f"Observation {obs_str[:-2]} is unexplained. Abduction may help."
                     else:
                         output = output + f"Observations {obs_str[:-2]} are unexplained. Abduction may help."
-
             else:     
                 interpretation_stack.append(next_phi) 
             window.PhiTextEdit.setHtml(output + "")
+            iterations_left = iterations_left - 1
+            if iterations_left == 0 and fixed_point_found == False and halt_safety == True:
+                halting_dialog.label.setText(f"The semantic operator has been running for {len(interpretation_stack)-1} iterations. \nIt may never finish. ")
+                halting_decision = halting_dialog.exec()
+                if halting_decision == 0:
+                    window.PhiTextEdit.setHtml(output + "...")
+                    window.tabWidget.setTabEnabled(3, False)
+                    window.to_x_button.setEnabled(False)
+                elif halting_decision == 1:
+                    iterations_left = 5
+                elif halting_decision == 2:
+                    halt_safety = False
+            
+    def start_phi_from_empty_interpretation():
+        interpretation_stack.clear()
+        phi_fixed_point()
+
     # Connect the 'Find Least Fixed Point' button to the function
-    window.to_phi_button.clicked.connect(phi_fixed_point)
+    window.to_phi_button.clicked.connect(start_phi_from_empty_interpretation)
+    
 
     # 𝒳 - explain with abduction
     def abduction():  
@@ -400,13 +435,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Connect the XOR switch to the function  
     window.exclusive_button.clicked.connect(XOR_switch)
 
-    # Call this after input changes -- solve the program
-    def wcP_Phi_X():
-
-        wcP()
-        phi_fixed_point()
-        abduction()
-        
     # Clear Program
     def clear_program():
         window.tabWidget.setTabEnabled(0, False)
@@ -826,6 +854,13 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.input_program_text_edit.setPlainText(Example.CONTEXT_TWEETY_HAS_WINNGS_PROGRAM.value)
         input_program()
     window.actionTweety_has_Wings.triggered.connect(CONTEXT_TWEETY_HAS_WINGS)
+
+    def CONTEXT_NON_MONOTONIC():
+        clear_program()
+        window.input_program_text_edit.clear()
+        window.input_program_text_edit.setPlainText(Example.CONTEXT_NON_MONOTONIC_PROGRAM.value)
+        input_program()
+    window.actionNon_mootonic.triggered.connect(CONTEXT_NON_MONOTONIC)
     
     # run GUI
     window.show()

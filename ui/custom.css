@@ -102,25 +102,15 @@ QTextEdit{{
 }}
 
 
-QPushButton {{
+
+QPushButton:flat {{
   color: rgb(255, 255, 255);
-  font-size: 11pt;
+  font-size: 12pt;
   margin: 0px;
   padding: 0px 25px;
   height: 34px;
   min-height: 34px;
   max-height: 34px;
-  
-}}
-
-/* QPushButton:checked,
-QPushButton:pressed {{
-
-  color: rgb(255, 255, 255);
-  background-color: rgb(34, 34, 34);
-}} */
-
-QPushButton:flat {{
   padding: 5px;
   margin: 0px;
   border: none;
@@ -133,16 +123,20 @@ QPushButton:flat:hover {{
   background-color: rgba(90, 86, 95, 0.7);
 }}
 
-QPushButton:flat:pressed,
-QPushButton:flat:checked {{
+QPushButton:flat:pressed{{
   /* background-color: rgb(55, 116, 214); */
   background-color: rgba(90, 86, 95, 1);
 }}
 
-QPushButton#clear_program_button:hover{{
+QPushButton:flat:disabled{{
+  /* background-color: rgb(55, 116, 214); */
+  color:rgb(90, 86, 95);
+}}
+
+QPushButton#clear_program_button:hover, QPushButton#safety_off:hover{{
   background-color: rgba(155, 0, 0, 0.5);
 }}
-QPushButton#clear_program_button:pressed {{
+QPushButton#clear_program_button:pressed, QPushButton#safety_off:pressed {{
   background-color: rgb(155, 0, 0);
 }}
 

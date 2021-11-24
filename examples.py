@@ -144,6 +144,8 @@ class Example(Enum):
                             ab_wings X if ctxt moa X\n;
                             bird tweety if T;\n
                             penguin tweety if T\n'''
+                            
+    CONTEXT_NON_MONOTONIC_PROGRAM = '''p if ctxt not p'''
 
 
 

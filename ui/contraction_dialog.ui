@@ -32,7 +32,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Start with a non-empty interpretation</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -96,7 +96,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>}, {</string>
+      <string>},  {</string>
      </property>
     </widget>
    </item>
