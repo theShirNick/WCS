@@ -16,6 +16,7 @@ class TruthConstNode:
     def __repr__(self) -> str:
         return f"{self.truth_constant.value}"
 
+
 @dataclass
 class ConjunctionNode:
     node_a: any

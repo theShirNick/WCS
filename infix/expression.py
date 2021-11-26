@@ -35,7 +35,37 @@ class InfixExpression:
                 str = str + f' {token.value} '  
             elif token.type == TokenType.TRUTHCONST:
                 str = str + token.value.value
-        return str   
+        return str 
+    
+    def latex(self) -> str:
+        str = ''
+        for token in self.get_lexer_tokens():
+            
+            if token.type == TokenType.CONJUNCTION:
+                str = str + r'\lor~'
+            elif token.type == TokenType.DISJUNCTION:
+                str = str + r'\land~'
+            elif token.type == TokenType.NEGATION:
+                str = str + r'\lnot~'
+            elif token.type == TokenType.TRUTHCONST:
+                if token.value == TruthConstant.FALSE:
+                    str = str + r'\bot~'
+                if token.value == TruthConstant.TRUE:
+                    str = str + r'\top~'
+                if token.value == TruthConstant.UNKNOWN:
+                    str = str + r'\cup~'
+            elif token.type == TokenType.CONTEXT:
+                str = str + 'ctxt~'
+            elif token.type in [TokenType.ORDER_LPAREN, TokenType.PRED_LPAREN] :
+                str = str + '('
+            elif token.type in [TokenType.ORDER_RPAREN, TokenType.PRED_RPAREN] :
+                str = str + ')~'
+            else:
+                str = str + f'{token.value}~'  
+            
+        return str 
+
+
 
     def is_ground(self) -> bool:
         for token in self.get_lexer_tokens():
@@ -44,6 +74,7 @@ class InfixExpression:
         return True
     def __repr__(self) -> str:
         return self.node_string
+
 
     def get_lexer_tokens(self) -> list:
         return Lexer(self.expression).generate_tokens()

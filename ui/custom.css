@@ -3,7 +3,9 @@ QMainWindow, QDialog{{
   background-color: rgb(50, 50, 50);
 }}
 
-
+QGroupBox{{
+  border: 5px solid rgb(34,34,34);
+}}
 
 QLabel{{
   color: rgb(255, 255, 255);
@@ -28,7 +30,6 @@ QTabBar::tab {{
   /* background: rgb(101, 101, 101);  */
   background: rgb(44,41,52);
   color:white;
-  font-family: 'Symbola';
   min-width: 20px;
   height: 20px;
   padding: 2px 8px 2px 8px;
@@ -73,6 +74,8 @@ QPlainTextEdit{{
   background-color: rgb(34, 34, 34);
   font-family:  'Overpass Mono';
   font-size :14pt;
+  border-top-left-radius: 5px; 
+  border-top-right-radius: 5px;
 }}
 QPlainTextEdit:focus{{
   color: rgb(255, 255, 255);
@@ -81,8 +84,9 @@ QPlainTextEdit:focus{{
 }}
 
 QLineEdit{{
+  height: 35px;
   color: rgb(255, 255, 255);
-  border:  1px solid rgb(34, 34, 34); 
+  border:  0px solid rgb(34, 34, 34); 
   background-color: rgb(34, 34, 34);
   font-family:  'Overpass Mono';
   font-size :14pt;
@@ -104,14 +108,10 @@ QTextEdit{{
 
 
 QPushButton:flat {{
+  /* font-size: 14pt; */
   color: rgb(255, 255, 255);
-  font-size: 12pt;
   margin: 0px;
-  padding: 0px 25px;
-  height: 34px;
-  min-height: 34px;
-  max-height: 34px;
-  padding: 5px;
+  padding: 0px;
   margin: 0px;
   border: none;
   /* background-color: transparent; */
@@ -131,6 +131,16 @@ QPushButton:flat:pressed{{
 QPushButton:flat:disabled{{
   /* background-color: rgb(55, 116, 214); */
   color:rgb(90, 86, 95);
+}}
+
+QPushButton:flat:checked{{
+  background-color: rgba(90, 86, 95, 0.5);
+}}
+QPushButton:flat:checked:hover{{
+  background-color: rgba(90, 86, 95, 0.7);
+}}
+QPushButton:flat:checked:pressed{{
+  background-color: rgba(90, 86, 95, 1);
 }}
 
 QPushButton#clear_program_button:hover, QPushButton#safety_off:hover{{

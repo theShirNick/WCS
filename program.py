@@ -17,6 +17,14 @@ class Program:
         for clause in self.clauses:
             s = s + str(clause)  +";<br>" 
         return s[:-5]
+    
+    def latex(self) -> str:
+        if len(self.clauses) == 0:
+            return ''
+        s = ""
+        for clause in self.clauses:
+            s = s + clause.latex() 
+        return s[:-7]+'.'
 
     def __eq__(self, o: object) -> bool:
         if type(o) != type(self):

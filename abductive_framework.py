@@ -17,7 +17,7 @@ class Observation:
         '''
         An observation is a ground term or its negation that is not entailed from Phi and should be explained by abduction
         '''
-     
+        self.infix_expression = infix_expression
         self.is_negated = False
         count_negs = 0
         token_list = []
@@ -35,6 +35,9 @@ class Observation:
         if self.is_negated:
             s = '¬'
         return s+ self.ground_term
+    
+    def latex(self):
+        return self.infix_expression.latex()
 
     def __eq__(self, other):
         if self.ground_term == other.ground_term and self.is_negated == other.is_negated:

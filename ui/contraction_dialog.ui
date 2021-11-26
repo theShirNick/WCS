@@ -46,6 +46,9 @@
        <height>36</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>False atoms</string>
+     </property>
     </widget>
    </item>
    <item row="2" column="1">
@@ -56,21 +59,8 @@
        <height>36</height>
       </size>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Enter a valid contraction:</string>
-     </property>
-     <property name="buddy">
-      <cstring>truths</cstring>
+     <property name="toolTip">
+      <string>True atoms</string>
      </property>
     </widget>
    </item>
@@ -121,6 +111,12 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>35</height>
+      </size>
+     </property>
      <property name="text">
       <string>Submit</string>
      </property>
@@ -129,6 +125,22 @@
      </property>
      <property name="flat">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="3">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Enter a starting interpretation:</string>
+     </property>
+     <property name="buddy">
+      <cstring>truths</cstring>
      </property>
     </widget>
    </item>

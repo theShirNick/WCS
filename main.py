@@ -1,15 +1,16 @@
 
 import sys
 import os
-import platform
+
 from collections import deque
 from truth_constant import TruthConstant
-import resources
+
 
 
 from PyQt5 import uic, QtCore
-from PyQt5.QtGui import QFontDatabase, QPixmap
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QMessageBox
+from PyQt5.QtGui import QFontDatabase
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QLabel
+from PyQt5.QtSvg import QSvgWidget
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
@@ -52,9 +53,18 @@ if __name__ == "__main__":
         def __init__(self):
             super(HaltingDialog, self).__init__()
             uic.loadUi(resource_path("ui/halting_dialog.ui"), self)
+            self.svg_widget = QSvgWidget('ui/roundabout.svg')
+            self.svg_widget.setFixedSize(114,100)
+            self.label = QLabel()
+            self.label.setWordWrap(True)
+            self.label.setAlignment(QtCore.Qt.AlignCenter)
+            self.layout.addWidget(self.svg_widget,0,0,QtCore.Qt.AlignCenter)
+            self.layout.addWidget(self.label,1,0)
     halting_dialog = HaltingDialog()
-    halting_dialog.img.setPixmap(QPixmap('ui/roundabout.png'))
+    # halting_dialog.img.setPixmap(QPixmap('ui/roundabout.png'))
     
+
+
 
 
     window.tabWidget.setTabEnabled(0, False)
@@ -66,8 +76,7 @@ if __name__ == "__main__":
     window.tabWidget.setTabVisible(5, False)
     # load custom style additions
     QFontDatabase.addApplicationFont(resource_path('ui/OverpassMono-Regular.ttf'))
-    QFontDatabase.addApplicationFont(resource_path("ui/Roboto-Regular.ttf"))
-    QFontDatabase.addApplicationFont(resource_path("ui/Symbola.otf"))
+ 
     #disable mac outline upon selecting a lineedit
     window.observation_line_edit.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
     window.disjunction_line_edit_left.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
@@ -77,11 +86,13 @@ if __name__ == "__main__":
     contraction_dialog.truths.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
     contraction_dialog.falses.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
 
-    
-
     stylesheet = app.styleSheet()
     with open(resource_path('ui/custom.css')) as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
+    if sys.platform == 'win32' :
+        stylesheet = app.styleSheet()
+        with open(resource_path('ui/windows_font.css')) as file:
+            app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
 
     # error tab
@@ -129,6 +140,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         try:
             window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
+            window.p_latex.setChecked(False)
 
             program_text = window.input_program_text_edit.toPlainText().replace(':-', '←').replace('-:', '←').replace(' if ', '←')
 
@@ -169,6 +181,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         try:
             window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
+            window.p_latex.setChecked(False)
 
             observation_expr = InfixExpression(window.observation_line_edit.text(), ground_terms)
             observations.add(Observation(observation_expr))
@@ -188,6 +201,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         try:
             window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
+            window.p_latex.setChecked(False)
             # window.tabWidget.setTabVisible(4, False)
 
             constraint_right_body_expr = InfixExpression(window.constraint_right_body_line_edit.text(), ground_terms)
@@ -211,6 +225,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         try:
             window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
+            window.p_latex.setChecked(False)
             # window.tabWidget.setTabVisible(4, False)
 
             left_text = window.disjunction_line_edit_left.text()
@@ -435,6 +450,25 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Connect the XOR switch to the function  
     window.exclusive_button.clicked.connect(XOR_switch)
 
+
+    # P Latex output switch button
+    def P_latex_switch():
+        if window.p_latex.isChecked():
+            P_latex_output()
+        else:
+            P_output()
+    # Connect the LaTeX switch to the function  
+    window.p_latex.clicked.connect(P_latex_switch)
+
+    # wcP Latex output switch button
+    def wcP_latex_switch():
+        if window.wcP_latex.isChecked():
+            P_latex_output(True)
+        else:
+            P_output(True)
+    # Connect the LaTeX switch to the function  
+    window.wcP_latex.clicked.connect(wcP_latex_switch)
+
     # Clear Program
     def clear_program():
         window.tabWidget.setTabEnabled(0, False)
@@ -461,6 +495,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.PhiTextEdit.clear()
         window.XTextEdit.clear()
         window.input_program_text_edit.clear()
+        window.p_latex.setChecked(False)
         global is_OR
         if is_OR:
             window.exclusive_button.nextCheckState()
@@ -471,6 +506,47 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Connect the Clear button to the function
     window.clear_program_button.clicked.connect(clear_program)
 
+    def P_latex_output(wcFlag = False):
+        '''
+            Construct and output LaTeX containing the program, observations, integrity constraints, and abducibles
+        '''
+        
+        output = ''
+
+        if not wcFlag:
+            output = r"$\mathcal{P}:\\<br>" + program.latex() + r'$'
+        elif  wcFlag:
+            output = output + r"$g\mathcal{P}:\\<br>"+ program.latex()+ r'$' + r'<hr>$wc\mathcal{P}:\\<br>' + wc_program.latex() + r'$'
+           
+        if len (observations) > 0:
+            observations_str = r"<hr>$\mathcal{O}:~\{"
+            for observation in observations:
+                observations_str = observations_str + observation.latex()[:-1] + r',~'
+            observations_str = observations_str[:-2]
+            output =  output + observations_str + r"\}$"
+
+        if len (integrity_constraints) > 0:
+            IC_string = r"<hr>$\mathcal{I}\mathcal{C}:\\"
+            for IC in integrity_constraints:
+                IC_string = IC_string + IC.latex()
+            IC_string = IC_string[:-7] + r'\}$'
+            output =  output + IC_string
+
+        if len(set_of_abducibles) > 0:
+            abducibles_str = r"<hr>$\mathcal{A}:\\"
+            for abducible in set_of_abducibles: 
+                abducibles_str = abducibles_str + abducible.latex()
+            abducibles_str = abducibles_str[:-7] + r'.$'
+            output=  output + abducibles_str
+        
+        if not wcFlag:
+            window.PTextEdit.clear()
+            window.PTextEdit.setHtml(output)
+        elif wcFlag:
+            window.wcPTextEdit.clear()
+            window.wcPTextEdit.setHtml(output)
+    
+    
     def P_output(wcFlag = False):
         '''
             Construct and output text containing the program, observations, integrity constraints, and abducibles
@@ -479,19 +555,19 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         output = ''
 
         if not wcFlag:
-            output = output + "𝓟:<br>"+ str(program)
+            output = output + "𝒫:<br>"+ str(program)
         elif  wcFlag:
-            output = output + "𝑔𝓟:<br>"+ str(program) + '<hr>𝔀𝓬𝓟:<br>' + str(wc_program)
+            output = output + "𝑔𝒫:<br>"+ str(program) + '<hr>𝓌𝒸𝒫:<br>' + str(wc_program)
            
         if len (observations) > 0:
-            observations_str = "<hr>𝓞:<br>"
+            observations_str = "<hr>𝒪:<br>"
             for observation in observations:
                 observations_str = observations_str + str(observation) + ';<br>'
             observations_str = observations_str[:-5]
             output =  output + observations_str
 
         if len (integrity_constraints) > 0:
-            IC_string = "<hr>𝓘𝓒:<br>"
+            IC_string = "<hr>ℐ𝒞:<br>"
             for IC in integrity_constraints:
                 IC_string = IC_string + str(IC) + ';<br>'
             IC_string = IC_string[:-5]
@@ -860,7 +936,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.input_program_text_edit.clear()
         window.input_program_text_edit.setPlainText(Example.CONTEXT_NON_MONOTONIC_PROGRAM.value)
         input_program()
-    window.actionNon_mootonic.triggered.connect(CONTEXT_NON_MONOTONIC)
+    window.actionNon_monotonic.triggered.connect(CONTEXT_NON_MONOTONIC)
     
     # run GUI
     window.show()

@@ -39,17 +39,20 @@ class Rule(Clause):
     def __repr__(self):
         left = str(self.left_head)
         if self.non_nec:
-            # left = f"**{self.left_head}**"
+            left = f'<span style="background-color: rgba(255,0,0,0.2)">{self.left_head}</span>'
             pass
         right = str(self.right_body)
         if self.factual:
-            # right = self.right_body.bold_abnormalities()
+            right = f'<span style="background-color: rgba(255,0,0,0.2)">{self.right_body}</span>'
             pass
 
         return f"{left} ← {right}"
 
     def __str__(self):
         return self.__repr__()
+
+    def latex(self):
+        return f"{self.left_head.latex()}\leftarrow~{self.right_body.latex()}"[:-1] +  r",\\<br>"
     
     def __eq__(self, o: object) -> bool:
         if self.left_head == o.left_head and self.right_body == o.right_body and self.non_nec == o.non_nec and self.factual == o.factual:
@@ -88,6 +91,9 @@ class WC_Rule(Clause):
     
     def __repr__(self):
             return f"{self.left_head} ↔ {self.right_body}"
+
+    def latex(self):
+        return f"{self.left_head.latex()}\leftrightarrow~{self.right_body.latex()}"[:-1] +  r",\\<br>"
 
     def evaluate(self) -> TruthConstant:
 
