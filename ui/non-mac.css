@@ -13,3 +13,18 @@ margin-top: -16px;
 border-top-left-radius: 5px; 
 border-top-right-radius: 5px;
 }}
+
+QScrollBar{{
+    background: rgb(50,50,50);
+    color:white;
+    border: none;
+    width:8px;
+}}
+
+QScrollBar::handle{{
+    background: rgb(44,41,52);
+    
+}}
+QScrollBar::handle:hover{{
+    background: rgb(61, 57, 74);
+}}

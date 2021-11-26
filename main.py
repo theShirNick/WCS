@@ -20,8 +20,6 @@ from phi import phi
 from examples import Example
 from ground import ground, find_vars_and_consts
 
-
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
@@ -62,10 +60,6 @@ if __name__ == "__main__":
             self.layout.addWidget(self.label,1,0)
     halting_dialog = HaltingDialog()
     # halting_dialog.img.setPixmap(QPixmap('ui/roundabout.png'))
-    
-
-
-
 
     window.tabWidget.setTabEnabled(0, False)
     window.tabWidget.setTabEnabled(1, False)
@@ -89,9 +83,9 @@ if __name__ == "__main__":
     stylesheet = app.styleSheet()
     with open(resource_path('ui/custom.css')) as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
-    if sys.platform == 'win32' :
+    if sys.platform == 'win32' or sys.platform == 'linux':
         stylesheet = app.styleSheet()
-        with open(resource_path('ui/windows_font.css')) as file:
+        with open(resource_path('ui/non-mac.css')) as file:
             app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
 
@@ -376,6 +370,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             iterations_left = iterations_left - 1
             if iterations_left == 0 and fixed_point_found == False and halt_safety == True:
                 halting_dialog.label.setText(f"The semantic operator has been running for {len(interpretation_stack)-1} iterations. \nIt may never finish. ")
+                QApplication.beep()
                 halting_decision = halting_dialog.exec()
                 if halting_decision == 0:
                     window.PhiTextEdit.setHtml(output + "...")
