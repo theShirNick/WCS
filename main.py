@@ -128,11 +128,16 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     variables = list()
     consts = list()
     is_OR = False
+    phi_output = ''
 
     # Program Input
     def input_program():
         try:
             window.tabWidget.setTabEnabled(0, True)
+            window.tabWidget.setTabEnabled(1, False)
+            window.tabWidget.setTabEnabled(2, False)
+            window.tabWidget.setTabEnabled(3, False)
+            window.tabWidget.setTabEnabled(4, False)
             window.tabWidget.setCurrentIndex(0)
             window.p_latex.setChecked(False)
 
@@ -175,6 +180,10 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         try:
             window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
+            window.tabWidget.setTabEnabled(1, False)
+            window.tabWidget.setTabEnabled(2, False)
+            window.tabWidget.setTabEnabled(3, False)
+            window.tabWidget.setTabEnabled(4, False)
             window.p_latex.setChecked(False)
 
             observation_expr = InfixExpression(window.observation_line_edit.text(), ground_terms)
@@ -195,6 +204,10 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         try:
             window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
+            window.tabWidget.setTabEnabled(1, False)
+            window.tabWidget.setTabEnabled(2, False)
+            window.tabWidget.setTabEnabled(3, False)
+            window.tabWidget.setTabEnabled(4, False)
             window.p_latex.setChecked(False)
             # window.tabWidget.setTabVisible(4, False)
 
@@ -219,6 +232,10 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         try:
             window.tabWidget.setTabEnabled(0, True)
             window.tabWidget.setCurrentIndex(0)
+            window.tabWidget.setTabEnabled(1, False)
+            window.tabWidget.setTabEnabled(2, False)
+            window.tabWidget.setTabEnabled(3, False)
+            window.tabWidget.setTabEnabled(4, False)
             window.p_latex.setChecked(False)
             # window.tabWidget.setTabVisible(4, False)
 
@@ -248,6 +265,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     def wcP():
         window.tabWidget.setTabEnabled(1, True) 
         window.tabWidget.setCurrentIndex(1)
+        window.wcP_latex.setChecked(False)
         global program
         global integrity_constraints
 
@@ -328,6 +346,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.tabWidget.setTabEnabled(2, True)
         window.to_x_button.setEnabled(True)
         window.tabWidget.setCurrentIndex(2)
+        window.phi_latex.setChecked(False)
         output = ''
         # interpretation_stack.clear()
         window.PhiTextEdit.clear()
@@ -365,8 +384,11 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                     else:
                         output = output + f"Observations {obs_str[:-2]} are unexplained. Abduction may help."
             else:     
-                interpretation_stack.append(next_phi) 
+                interpretation_stack.append(next_phi)
+            
             window.PhiTextEdit.setHtml(output + "")
+            global phi_output
+            phi_output = window.PhiTextEdit.toHtml()
             iterations_left = iterations_left - 1
             if iterations_left == 0 and fixed_point_found == False and halt_safety == True:
                 halting_dialog.label.setText(f"The semantic operator has been running for {len(interpretation_stack)-1} iterations. \nIt may never finish. ")
@@ -374,6 +396,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 halting_decision = halting_dialog.exec()
                 if halting_decision == 0:
                     window.PhiTextEdit.setHtml(output + "...")
+                    phi_output = window.PhiTextEdit.toHtml()
                     window.tabWidget.setTabEnabled(3, False)
                     window.to_x_button.setEnabled(False)
                 elif halting_decision == 1:
@@ -463,6 +486,22 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             P_output(True)
     # Connect the LaTeX switch to the function  
     window.wcP_latex.clicked.connect(wcP_latex_switch)
+
+    # Ф Latex output switch button
+    def Phi_latex_switch():
+        if window.phi_latex.isChecked():
+            output = r'%\usepackage{array}<br>\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}<br>\begin{center}<br>\begin{tabular}{ M{0.5cm} M{3cm} M{3cm} }<br>\hline<br>$\Phi$ & $I^\top$ & $I^\bot$ \\<br>\hline<br>'
+            for i in range(len(interpretation_stack)):
+                output = output + f"$\\uparrow${str(i)} & {interpretation_stack[i].latex()} \\\\<br>\\hline<br>"
+            output = output.replace('_', r'\_')
+            if '...' in phi_output:
+                output = output + r"~\vdots & ~\vdots & ~\vdots \\<br>\hline<br>"
+            window.PhiTextEdit.setHtml(output+"\\end{tabular}<br>\\end{center}")
+        else:
+            window.PhiTextEdit.setHtml(phi_output)
+            
+    # Connect the LaTeX switch to the function  
+    window.phi_latex.clicked.connect(Phi_latex_switch)
 
     # Clear Program
     def clear_program():

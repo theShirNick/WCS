@@ -15,7 +15,7 @@ border-top-right-radius: 5px;
 }}
 
 QScrollBar{{
-    background: rgb(50,50,50);
+    background: rgb(90, 86, 95);
     color:white;
     border: none;
     width:8px;

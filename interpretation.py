@@ -42,6 +42,18 @@ class Interpretation:
             s = s + "∅"
         s = s + "}〉"
         return s
+    def latex(self):
+        s = ''
+        for true_term in self.trues:
+            s = s + f"{str(true_term)}, "
+        if len(self.trues) > 0:
+            s = s[:-2]
+        s = s + ' & '
+        for false_term in self.falses:
+            s = s + f"{str(false_term)}, "
+        if len(self.falses) > 0:
+            s = s[:-2]
+        return s
 
     def isModel(self, program: Program) -> bool:
         self.__reset_values()
