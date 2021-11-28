@@ -137,7 +137,6 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             window.tabWidget.setTabEnabled(1, False)
             window.tabWidget.setTabEnabled(2, False)
             window.tabWidget.setTabEnabled(3, False)
-            window.tabWidget.setTabEnabled(4, False)
             window.tabWidget.setCurrentIndex(0)
             window.p_latex.setChecked(False)
 
@@ -183,7 +182,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             window.tabWidget.setTabEnabled(1, False)
             window.tabWidget.setTabEnabled(2, False)
             window.tabWidget.setTabEnabled(3, False)
-            window.tabWidget.setTabEnabled(4, False)
+            
             window.p_latex.setChecked(False)
 
             observation_expr = InfixExpression(window.observation_line_edit.text(), ground_terms)
@@ -235,7 +234,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             window.tabWidget.setTabEnabled(1, False)
             window.tabWidget.setTabEnabled(2, False)
             window.tabWidget.setTabEnabled(3, False)
-            window.tabWidget.setTabEnabled(4, False)
+            
             window.p_latex.setChecked(False)
             # window.tabWidget.setTabVisible(4, False)
 
@@ -344,9 +343,11 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # Semantic Operator Phi 
     def phi_fixed_point():
         window.tabWidget.setTabEnabled(2, True)
+        window.tabWidget.setTabEnabled(3, False)
         window.to_x_button.setEnabled(True)
         window.tabWidget.setCurrentIndex(2)
         window.phi_latex.setChecked(False)
+        window.PhiTextEdit.setFocus()
         output = ''
         # interpretation_stack.clear()
         window.PhiTextEdit.clear()
@@ -464,6 +465,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                         output = output + x_latex + r"\noindent $\mathcal{M}_{\mathcal{P}\cup\mathcal{X}}$ = " + interpr.line_latex().replace('_', '\\_') + r'\\<hr>'
 
         window.XTextEdit.setHtml(output)
+        window.XTextEdit.setFocus()
     # Connect the 'Explain with Skeptical Abduction' button to the function
     window.to_x_button.clicked.connect(abduction)
         
@@ -512,6 +514,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             window.PhiTextEdit.setHtml(output+"\\end{tabular}<br>\\end{center}")
         else:
             window.PhiTextEdit.setHtml(phi_output)
+        window.PhiTextEdit.setFocus()
             
     # Connect the LaTeX switch to the function  
     window.phi_latex.clicked.connect(Phi_latex_switch)
@@ -642,9 +645,11 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         if not wcFlag:
             window.PTextEdit.clear()
             window.PTextEdit.setHtml(output + "")
+            window.PTextEdit.setFocus()
         elif wcFlag:
             window.wcPTextEdit.clear()
             window.wcPTextEdit.setHtml(output + "")
+            window.wcPTextEdit.setFocus()
     
     def show_error(e):
             window.tabWidget.setTabVisible(5, True)
