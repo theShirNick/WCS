@@ -42,7 +42,7 @@ class Interpretation:
             s = s + "∅"
         s = s + "}〉"
         return s
-    def latex(self):
+    def table_latex(self):
         s = ''
         for true_term in self.trues:
             s = s + f"{str(true_term)}, "
@@ -53,6 +53,24 @@ class Interpretation:
             s = s + f"{str(false_term)}, "
         if len(self.falses) > 0:
             s = s[:-2]
+        return s
+
+    def line_latex(self):
+        s = r"$\langle$\{"
+        for true_term in self.trues:
+            s = s + true_term +", "
+        if self.trues != set(): # if not empty
+            s = s[:-2] # delete the last comma
+        else:
+            s = s + "∅"
+        s = s + r"\}, \{"
+        for false_term in self.falses:
+            s = s + false_term+", "
+        if self.falses != set(): # if not empty
+            s = s[:-2] # delete the last comma 
+        else:
+            s = s + "∅"
+        s = s + r"\}$\rangle$"
         return s
 
     def isModel(self, program: Program) -> bool:

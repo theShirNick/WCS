@@ -52,7 +52,7 @@ class Rule(Clause):
         return self.__repr__()
 
     def latex(self):
-        return f"{self.left_head.latex()}\leftarrow~{self.right_body.latex()}"[:-1] +  r",\\<br>"
+        return f"{self.left_head.latex()}$\leftarrow$~{self.right_body.latex()}"[:-1] +  r",\\<br>"
     
     def __eq__(self, o: object) -> bool:
         if self.left_head == o.left_head and self.right_body == o.right_body and self.non_nec == o.non_nec and self.factual == o.factual:
@@ -93,7 +93,7 @@ class WC_Rule(Clause):
             return f"{self.left_head} ↔ {self.right_body}"
 
     def latex(self):
-        return f"{self.left_head.latex()}\leftrightarrow~{self.right_body.latex()}"[:-1] +  r",\\<br>"
+        return f"{self.left_head.latex()}$\leftrightarrow$~{self.right_body.latex()}"[:-1] +  r",\\<br>"
 
     def evaluate(self) -> TruthConstant:
 

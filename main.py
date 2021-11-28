@@ -413,7 +413,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     
 
     # 𝒳 - explain with abduction
-    def abduction():  
+    def abduction(latex = False):  
         window.tabWidget.setTabEnabled(3, True)
         window.tabWidget.setCurrentIndex(3)
         output = ''
@@ -443,14 +443,27 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             explanations_interpretations = phi_with_abduction(explanations, program, observations, interpretation_stack[-1], integrity_constraints)
             if len(explanations_interpretations) > 0:
                 abduced_interpretations = list()
-                for expl, interpr in explanations_interpretations:
-                    output = output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<hr>"
-                    abduced_interpretations.append(interpr)
 
-                skeptical_result = skeptical(ground_terms, program, abduced_interpretations)
-                output = output + skeptical_result
+                if latex == False:
+                    for expl, interpr in explanations_interpretations:
+                        output = output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<hr>"
+                        abduced_interpretations.append(interpr)
 
-        window.XTextEdit.setHtml(output+ "")
+                    skeptical_result = skeptical(ground_terms, program, abduced_interpretations)
+                    output = output + skeptical_result
+                else: 
+                    for expl, interpr in explanations_interpretations:
+                        x_latex = r'\noindent$\mathcal{X}$: \{'
+                        for rule in expl:
+                            x_latex = x_latex + rule.latex()
+                        if len(expl) > 0:
+                            x_latex = x_latex[:-7] 
+                        x_latex = x_latex + r'\}\\<br>'
+                        
+                        
+                        output = output + x_latex + r"\noindent $\mathcal{M}_{\mathcal{P}\cup\mathcal{X}}$ = " + interpr.line_latex().replace('_', '\\_') + r'\\<hr>'
+
+        window.XTextEdit.setHtml(output)
     # Connect the 'Explain with Skeptical Abduction' button to the function
     window.to_x_button.clicked.connect(abduction)
         
@@ -492,7 +505,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         if window.phi_latex.isChecked():
             output = r'%\usepackage{array}<br>\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}<br>\begin{center}<br>\begin{tabular}{ M{0.5cm} M{3cm} M{3cm} }<br>\hline<br>$\Phi$ & $I^\top$ & $I^\bot$ \\<br>\hline<br>'
             for i in range(len(interpretation_stack)):
-                output = output + f"$\\uparrow${str(i)} & {interpretation_stack[i].latex()} \\\\<br>\\hline<br>"
+                output = output + f"$\\uparrow${str(i)} & {interpretation_stack[i].table_latex()} \\\\<br>\\hline<br>"
             output = output.replace('_', r'\_')
             if '...' in phi_output:
                 output = output + r"~\vdots & ~\vdots & ~\vdots \\<br>\hline<br>"
@@ -502,6 +515,16 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             
     # Connect the LaTeX switch to the function  
     window.phi_latex.clicked.connect(Phi_latex_switch)
+
+    # 𝒳 Latex output switch button
+    def X_latex_switch():
+        if window.x_latex.isChecked():
+            abduction(True)
+        else:
+            abduction()
+            
+    # Connect the LaTeX switch to the function  
+    window.x_latex.clicked.connect(X_latex_switch)
 
     # Clear Program
     def clear_program():
@@ -548,31 +571,33 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         output = ''
 
         if not wcFlag:
-            output = r"$\mathcal{P}:\\<br>" + program.latex() + r'$'
+            output = r"\noindent$\mathcal{P}$:\\<br>" + program.latex()
         elif  wcFlag:
-            output = output + r"$g\mathcal{P}:\\<br>"+ program.latex()+ r'$' + r'<hr>$wc\mathcal{P}:\\<br>' + wc_program.latex() + r'$'
+            output = output + r"\noindent$g\mathcal{P}$:\\<br>"+ program.latex() + r'<hr>\noindentwc$\mathcal{P}$:\\<br>' + wc_program.latex()
            
         if len (observations) > 0:
-            observations_str = r"<hr>$\mathcal{O}:~\{"
+            observations_str = r"<hr>\noindent$\mathcal{O}$:~\{"
             for observation in observations:
                 observations_str = observations_str + observation.latex()[:-1] + r',~'
             observations_str = observations_str[:-2]
-            output =  output + observations_str + r"\}$"
+            output =  output + observations_str + r"\}"
 
         if len (integrity_constraints) > 0:
-            IC_string = r"<hr>$\mathcal{I}\mathcal{C}:\\"
+            IC_string = r"<hr>\noindent$\mathcal{I}$$\mathcal{C}$:\\"
             for IC in integrity_constraints:
                 IC_string = IC_string + IC.latex()
-            IC_string = IC_string[:-7] + r'\}$'
+            IC_string = IC_string[:-7] + r'\}'
             output =  output + IC_string
 
-        if len(set_of_abducibles) > 0:
-            abducibles_str = r"<hr>$\mathcal{A}:\\"
+        if len(set_of_abducibles) > 0 and wcFlag == True:
+            abducibles_str = r"<hr>\noindent$\mathcal{A}$:\\"
             for abducible in set_of_abducibles: 
                 abducibles_str = abducibles_str + abducible.latex()
-            abducibles_str = abducibles_str[:-7] + r'.$'
+            abducibles_str = abducibles_str[:-7] + r'.'
             output=  output + abducibles_str
-        
+            
+
+        output = output.replace("_", "\\_")
         if not wcFlag:
             window.PTextEdit.clear()
             window.PTextEdit.setHtml(output)
@@ -607,7 +632,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             IC_string = IC_string[:-5]
             output =  output + IC_string
 
-        if len(set_of_abducibles) > 0:
+        if len(set_of_abducibles) > 0 and wcFlag == True:
             abducibles_str = "<hr>𝒜:<br>"
             for abducible in set_of_abducibles: 
                 abducibles_str = abducibles_str + str(abducible) + ";<br>"

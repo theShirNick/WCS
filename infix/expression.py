@@ -42,18 +42,18 @@ class InfixExpression:
         for token in self.get_lexer_tokens():
             
             if token.type == TokenType.CONJUNCTION:
-                str = str + r'\lor~'
+                str = str + r'$\lor$~'
             elif token.type == TokenType.DISJUNCTION:
-                str = str + r'\land~'
+                str = str + r'$\land$~'
             elif token.type == TokenType.NEGATION:
-                str = str + r'\lnot~'
+                str = str + r'$\lnot$~'
             elif token.type == TokenType.TRUTHCONST:
                 if token.value == TruthConstant.FALSE:
-                    str = str + r'\bot~'
+                    str = str + r'$\bot$~'
                 if token.value == TruthConstant.TRUE:
-                    str = str + r'\top~'
+                    str = str + r'$\top$~'
                 if token.value == TruthConstant.UNKNOWN:
-                    str = str + r'\cup~'
+                    str = str + r'$\cup$~'
             elif token.type == TokenType.CONTEXT:
                 str = str + 'ctxt~'
             elif token.type in [TokenType.ORDER_LPAREN, TokenType.PRED_LPAREN] :
