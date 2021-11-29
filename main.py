@@ -51,7 +51,7 @@ if __name__ == "__main__":
         def __init__(self):
             super(HaltingDialog, self).__init__()
             uic.loadUi(resource_path("ui/halting_dialog.ui"), self)
-            self.svg_widget = QSvgWidget('ui/roundabout.svg')
+            self.svg_widget = QSvgWidget(resource_path('ui/roundabout.svg'))
             self.svg_widget.setFixedSize(114,100)
             self.label = QLabel()
             self.label.setWordWrap(True)
@@ -454,7 +454,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                     output = output + skeptical_result
                 else: 
                     for expl, interpr in explanations_interpretations:
-                        x_latex = r'\noindent$\mathcal{X}$: \{'
+                        x_latex = r'\noindent $\mathcal{X}$: \{'
                         for rule in expl:
                             x_latex = x_latex + rule.latex()
                         if len(expl) > 0:
@@ -574,26 +574,26 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         output = ''
 
         if not wcFlag:
-            output = r"\noindent$\mathcal{P}$:\\<br>" + program.latex()
+            output = r"\noindent $\mathcal{P}$:\\<br>" + program.latex()
         elif  wcFlag:
-            output = output + r"\noindent$g\mathcal{P}$:\\<br>"+ program.latex() + r'<hr>\noindentwc$\mathcal{P}$:\\<br>' + wc_program.latex()
+            output = output + r"\noindent $g\mathcal{P}$:\\<br>"+ program.latex() + r'<hr>\noindent wc$\mathcal{P}$:\\<br>' + wc_program.latex()
            
         if len (observations) > 0:
-            observations_str = r"<hr>\noindent$\mathcal{O}$:~\{"
+            observations_str = r"<hr>\noindent $\mathcal{O}$:~\{"
             for observation in observations:
                 observations_str = observations_str + observation.latex()[:-1] + r',~'
             observations_str = observations_str[:-2]
             output =  output + observations_str + r"\}"
 
         if len (integrity_constraints) > 0:
-            IC_string = r"<hr>\noindent$\mathcal{I}$$\mathcal{C}$:\\"
+            IC_string = r"<hr>\noindent $\mathcal{I}$$\mathcal{C}$:\\"
             for IC in integrity_constraints:
                 IC_string = IC_string + IC.latex()
             IC_string = IC_string[:-7] + r'\}'
             output =  output + IC_string
 
         if len(set_of_abducibles) > 0 and wcFlag == True:
-            abducibles_str = r"<hr>\noindent$\mathcal{A}$:\\"
+            abducibles_str = r"<hr>\noindent $\mathcal{A}$:\\"
             for abducible in set_of_abducibles: 
                 abducibles_str = abducibles_str + abducible.latex()
             abducibles_str = abducibles_str[:-7] + r'.'

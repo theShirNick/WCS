@@ -1,10 +1,13 @@
 <RCC>
   <qresource prefix="resources">
     <file>ui/contraction_dialog.ui</file>
-    <file>ui/custom.css</file>
     <file>ui/main.ui</file>
+    <file>ui/halting_dialog.ui</file>
+    <file>ui/custom.css</file>
+    <file>ui/non-mac.css</file>
     <file>ui/OverpassMono-Regular.ttf</file>
-    <file>ui/Roboto-Regular.ttf</file>
-    <file>ui/Symbola.otf</file>
+    <file>ui/OFL.txt</file>
+    <file>ui/roundabout.svg</file>
+    <file>ui/icon.icns</file>
   </qresource>
 </RCC>
