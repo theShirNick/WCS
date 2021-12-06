@@ -8,7 +8,7 @@ from truth_constant import TruthConstant
 
 
 from PyQt5 import uic, QtCore
-from PyQt5.QtGui import QFontDatabase
+from PyQt5.QtGui import QFontDatabase, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QLabel
 from PyQt5.QtSvg import QSvgWidget
 from interpretation import Interpretation
@@ -22,7 +22,7 @@ from ground import ground, find_vars_and_consts
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
+    
 
     def resource_path(relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -33,6 +33,9 @@ if __name__ == "__main__":
             base_path = os.path.abspath(".")
         returnMe = os.path.join(base_path, relative_path)
         return returnMe
+        
+    app.setWindowIcon(QIcon(resource_path("ui/icon.icns")))
+
     # Change the current dir to the temporary one created by PyInstaller
     
     class Ui(QMainWindow):
@@ -40,6 +43,7 @@ if __name__ == "__main__":
             super(Ui, self).__init__()
             uic.loadUi(resource_path("ui/main.ui"), self)
     window = Ui()
+    
 
     class ContractionDialog(QDialog):
         def __init__(self):

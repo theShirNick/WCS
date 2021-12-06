@@ -9,5 +9,6 @@
     <file>ui/OFL.txt</file>
     <file>ui/roundabout.svg</file>
     <file>ui/icon.icns</file>
+    <file>ui/icon.ico</file>
   </qresource>
 </RCC>
