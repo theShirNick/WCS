@@ -95,15 +95,14 @@ def generate_explanations(abducibles) ->list[set[Rule]]:
     explanations = []
     for abducible in abducibles:
         for explanation in explanations:
-            contradictory = False
             for clause in explanation:
                 if abducible.left_head == clause.left_head:
                     contradictory = True # we don't need contradictory explanations
             
-            if not contradictory:
-                extended_explanation = explanation.copy()
-                extended_explanation.add(abducible)
-                explanations.append(extended_explanation) # add a new explanation that is a copy of an existing explanation + this abducible
+            
+            extended_explanation = explanation.copy()
+            extended_explanation.add(abducible)
+            explanations.append(extended_explanation) # add a new explanation that is a copy of an existing explanation + this abducible
         explanations.append({abducible}) # add a new explanation that is just this abducible
     explanations.sort(key=len)
     return explanations
@@ -114,7 +113,7 @@ def phi_with_abduction(explanations: list[set[Rule]], program: Program,  observa
     '''
 
     fixed_point_clone = fixed_point.clone()
-    explanation_interpretation = list() # of tuples, containing a valid explanation and the correcponding model
+    explanation_interpretation = list() # of tuples, containing a valid explanation and the corresponding model
     for explanation in explanations:
 
         redundant = False

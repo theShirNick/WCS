@@ -6,7 +6,7 @@ def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
 
     new_interpretation = interpretation.clone()
 
-    # sanity check for already true atoms
+    # move true atoms to either falses or unknowns
     from_T_to_U = set()
     from_T_to_F = set()
     for true_term in new_interpretation.trues:
@@ -29,7 +29,7 @@ def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
                 from_T_to_U.add(true_term)
 
             
-    # sanity check for already false atoms
+    # move false atoms to either trues or unknowns
     from_F_to_U = set()
     from_F_to_T = set()
     for false_term in new_interpretation.falses:
@@ -51,7 +51,8 @@ def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
             from_F_to_T.add(false_term)
         elif all_F_flag !=True:
             from_F_to_U.add(false_term)
-        
+
+    # move unknown atoms to either falses or trues 
     from_U_to_T = set()
     from_U_to_F = set()
     for unknown_term in new_interpretation.unknowns:
@@ -74,7 +75,7 @@ def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
         elif all_F_flag ==True:
             from_U_to_F.add(unknown_term)
 
-    # fix interpretation that failed the sanity check
+    # apply movement (one phi iteration) 
     for term in from_T_to_U:
         interpretation.ground_terms[term] = TruthConstant.UNKNOWN
         new_interpretation.trues.remove(term)
@@ -101,46 +102,7 @@ def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
         new_interpretation.falses.add(term)
 
 
-    # # discover immediate consequences
-    # candidates_for_false = dict()
-    # to_true = set()
-
-    # for clause in wc_program.clauses:
-    #     consequence_term = str(clause.left_head)
-    #     if consequence_term not in interpretation.ground_terms:
-    #         raise Exception("Head of a clause is not a ground term.")
-        
-
-    #     if clause.right_body.evaluate() == TruthConstant.TRUE:
-    #         to_true.add(consequence_term)
-
-    #         if consequence_term in candidates_for_false:
-    #             candidates_for_false[consequence_term] = False
-
-    #     elif clause.right_body.evaluate() == TruthConstant.FALSE:
-    #         if consequence_term not in candidates_for_false:
-    #             candidates_for_false[consequence_term] = True
-    #     elif clause.right_body.evaluate() == TruthConstant.UNKNOWN:
-    #         if consequence_term in candidates_for_false:
-    #             candidates_for_false[consequence_term] = False
-
-
-
-    # for term in to_true:
-    #     interpretation.ground_terms[term] = TruthConstant.TRUE
-    #     if term in new_interpretation.unknowns:
-    #         new_interpretation.unknowns.remove(term)
-    #         new_interpretation.trues.add(term)
-    #     if term in new_interpretation.falses:
-    #         new_interpretation.falses.remove(term)
-    #         new_interpretation.trues.add(term)
-        
-    # for term in candidates_for_false:
-    #     if candidates_for_false[term] == True:
-    #         interpretation.ground_terms[term] = TruthConstant.FALSE
-    #         if term in new_interpretation.unknowns:
-    #             new_interpretation.unknowns.remove(term)
-    #             new_interpretation.falses.add(term)
+  
 
 
     return new_interpretation

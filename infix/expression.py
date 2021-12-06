@@ -12,11 +12,16 @@ class InfixExpression:
         self.ground_terms = ground_terms
         self.node_string = str(self.parse_lexer_tokens(self.get_lexer_tokens())) # string representation of the expression
         
-    def replace_var(self, original:str, replacement:str) -> str:
+    def replace_var(self, original:list, replacement:list) -> str:
+        if len(original) != len(replacement):
+            raise Exception("Grounding error. Length of original variables and replacement atoms must match")
         str = ''
         for token in self.get_lexer_tokens():
-            if token.type == TokenType.VAR and token.value == original:
-                str = str + replacement
+            if token.type == TokenType.VAR:
+                for i in range(len(original)):
+                    if original[i] == token.value:
+                        str = str + replacement[i]
+                        break
             elif token.type == TokenType.COMMA:
                 str = str + ','
             elif token.type == TokenType.CONJUNCTION:

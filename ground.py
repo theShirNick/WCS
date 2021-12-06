@@ -4,6 +4,7 @@ from infix.tokens import TokenType
 from clauses import Rule
 
 
+
 def find_vars_and_consts(clauses, variables, consts):
     for clause in clauses:
             for token in clause.left_head.get_lexer_tokens():
@@ -23,23 +24,25 @@ def find_vars_and_consts(clauses, variables, consts):
 
 
 def ground(clauses, variables, consts):
-    with_ground_clauses = clauses.copy()
+    ground_clauses = set()
+    non_ground_clauses = set()
 
-    substitutions = itertools.product(consts, repeat = len(variables))
+    for clause in clauses:
+        if clause.is_ground():
+            ground_clauses.add(clause)
+        else:
+            non_ground_clauses.add(clause)
+
+    substitutions = list(itertools.product(consts, repeat = len(variables)))
     for sub in substitutions:
-        for clause in clauses:
+        for clause in non_ground_clauses:
+            
             new_left_head = clause.left_head
             new_right_body = clause.right_body
-            for i in range(len(variables)):
-                new_left_head = InfixExpression(new_left_head.replace_var(variables[i], sub[i]), new_left_head.ground_terms)
-                new_right_body = InfixExpression(new_right_body.replace_var(variables[i], sub[i]), new_right_body.ground_terms)
-            if new_left_head != clause.left_head or new_right_body != clause.right_body:
-                with_ground_clauses.append(Rule(new_left_head, new_right_body, clause.non_nec, clause.factual))
-    ground_clauses = list()
-    for clause in with_ground_clauses:
-        if clause.is_ground():
-            ground_clauses.append(clause) 
+            new_left_head = InfixExpression(new_left_head.replace_var(variables, sub), new_left_head.ground_terms)
+            new_right_body = InfixExpression(new_right_body.replace_var(variables, sub), new_right_body.ground_terms)
+            ground_clauses.add(Rule(new_left_head, new_right_body, clause.non_nec, clause.factual))
 
-    ground_clauses = list(dict.fromkeys(ground_clauses))
     
-    return ground_clauses
+    return list(ground_clauses)
+    

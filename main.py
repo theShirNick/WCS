@@ -63,7 +63,6 @@ if __name__ == "__main__":
             self.layout.addWidget(self.svg_widget,0,0,QtCore.Qt.AlignCenter)
             self.layout.addWidget(self.label,1,0)
     halting_dialog = HaltingDialog()
-    # halting_dialog.img.setPixmap(QPixmap('ui/roundabout.png'))
 
     window.tabWidget.setTabEnabled(0, False)
     window.tabWidget.setTabEnabled(1, False)
@@ -124,6 +123,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     observations = set()
     clauses = []
     program = Program(clauses)
+    ground_program = Program([])
     wc_program = Program([]) 
     set_of_abducibles = list()
     interpretation_stack = deque()
@@ -270,6 +270,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         window.tabWidget.setCurrentIndex(1)
         window.wcP_latex.setChecked(False)
         global program
+        global ground_program
         global integrity_constraints
 
         # detect vars and consts in the abductive framework
@@ -277,17 +278,19 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         find_vars_and_consts(integrity_constraints, variables, consts)
 
         
-        program = Program(ground(program.clauses, variables, consts))
+        ground_program = Program(ground(program.clauses, variables, consts))
+
+        
         integrity_constraints = ground(integrity_constraints, variables, consts)
 
         global set_of_abducibles
-        set_of_abducibles = get_set_of_abducibles(ground_terms, program)
+        set_of_abducibles = get_set_of_abducibles(ground_terms, ground_program)
 
         global explanations
         explanations = generate_explanations(set_of_abducibles)
 
         global wc_program
-        wc_program = program.weakly_complete()
+        wc_program = ground_program.weakly_complete()
 
         P_output(True) # call with a wcFlag
     
@@ -623,7 +626,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         if not wcFlag:
             output = output + "𝒫:<br>"+ str(program)
         elif  wcFlag:
-            output = output + "𝑔𝒫:<br>"+ str(program) + '<hr>𝓌𝒸𝒫:<br>' + str(wc_program)
+            output = output + "𝑔𝒫:<br>"+ str(ground_program) + '<hr>𝓌𝒸𝒫:<br>' + str(wc_program)
            
         if len (observations) > 0:
             observations_str = "<hr>𝒪:<br>"
