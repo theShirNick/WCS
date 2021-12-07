@@ -127,18 +127,27 @@ def phi_with_abduction(abducibles: list[Rule], program: Program,  observations: 
     unique_abducible_heads = set()
     for abducible in abducibles:
         unique_abducible_heads.add(abducible.left_head)
-    print(f"UAH {len(unique_abducible_heads)} {str(unique_abducible_heads)}")
     fixed_point_clone = fixed_point.clone()
     count = 0
     explanation_interpretation = list() # of tuples, containing a valid explanation and the corresponding model
     explanations = itertools.chain.from_iterable(itertools.combinations(abducibles, r) for r in range(1, len(unique_abducible_heads)+1))
     # explanations = custom_powerset(abducibles)
+
     for expl in explanations:
         explanation = set(expl)
         count = count + 1
         print(f"#{count}   {explanation}")
 
+        redundant = False
+        for existing_explanation, interpretation in explanation_interpretation:
+            if explanation.issuperset(existing_explanation):
+                redundant = True # a smaller valid explanation exists
+                break
+        if  redundant:
+            continue 
+            # break 
         
+            
 
         contradictory = False
         for rule in explanation:
@@ -151,14 +160,7 @@ def phi_with_abduction(abducibles: list[Rule], program: Program,  observations: 
         if contradictory:
             continue
 
-        minimal = True
-        for existing_explanation, interpretation in explanation_interpretation:
-            if explanation.issuperset(existing_explanation):
-                minimal = False # a smaller valid explanation exists
-                break
-        if not minimal:
-            # continue # this explanation is redundant. No need to go on with it
-            break # EXPERIMANTAL
+
 
                         
 
@@ -195,6 +197,8 @@ def phi_with_abduction(abducibles: list[Rule], program: Program,  observations: 
         # We are here only if the explanation is valid and minimal. Add it!
         explanation_interpretation.append((explanation, abduced_interpretation))
         
+
+    print(f"UAH {len(unique_abducible_heads)} len {len(list(itertools.chain.from_iterable(itertools.combinations(abducibles, r) for r in range(1, len(unique_abducible_heads)+1))))} {str(unique_abducible_heads)}")    
     return  explanation_interpretation 
     
 
