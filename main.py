@@ -82,6 +82,7 @@ if __name__ == "__main__":
     window.constraint_right_body_line_edit.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
     contraction_dialog.truths.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
     contraction_dialog.falses.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+    window.spinBox.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
 
     stylesheet = app.styleSheet()
     with open(resource_path('ui/custom.css')) as file:
@@ -286,6 +287,16 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         global set_of_abducibles
         set_of_abducibles = get_set_of_abducibles(ground_terms, ground_program)
 
+        window.spinBox.setMinimum(1)
+        
+        unique_abducible_heads = set()
+        for abducible in set_of_abducibles:
+            unique_abducible_heads.add(abducible.left_head)
+        window.spinBox.setMaximum(len(unique_abducible_heads))
+        if len(unique_abducible_heads) > 4:
+            window.spinBox.setValue(4)
+        else:
+            window.spinBox.setValue(len(unique_abducible_heads))
 
 
         global wc_program
@@ -447,7 +458,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 raise Exception("Interpretation stack empty. Did Phi run correctly?")
 
         else:
-            explanations_interpretations = phi_with_abduction(set_of_abducibles, ground_program, observations, interpretation_stack[-1], integrity_constraints)
+            explanations_interpretations = phi_with_abduction(set_of_abducibles, window.spinBox.value(), ground_program, observations, interpretation_stack[-1], integrity_constraints)
             if len(explanations_interpretations) > 0:
                 abduced_interpretations = list()
 

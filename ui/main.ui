@@ -415,7 +415,7 @@
        <string/>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -712,7 +712,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="8,5">
+         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="8,0,5">
           <item>
            <widget class="QPushButton" name="to_x_button">
             <property name="enabled">
@@ -737,6 +737,28 @@
             </property>
             <property name="flat">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Maximum explanation length</string>
+            </property>
+            <property name="frame">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
