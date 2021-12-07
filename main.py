@@ -14,7 +14,7 @@ from PyQt5.QtSvg import QSvgWidget
 from interpretation import Interpretation
 from program import Program
 from clauses import Rule
-from abductive_framework import Observation, generate_explanations, get_set_of_abducibles, phi_with_abduction, skeptical
+from abductive_framework import Observation, get_set_of_abducibles, phi_with_abduction, skeptical
 from infix.expression import InfixExpression
 from phi import phi
 from examples import Example
@@ -286,8 +286,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         global set_of_abducibles
         set_of_abducibles = get_set_of_abducibles(ground_terms, ground_program)
 
-        global explanations
-        explanations = generate_explanations(set_of_abducibles)
+
 
         global wc_program
         wc_program = ground_program.weakly_complete()
@@ -448,7 +447,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                 raise Exception("Interpretation stack empty. Did Phi run correctly?")
 
         else:
-            explanations_interpretations = phi_with_abduction(explanations, program, observations, interpretation_stack[-1], integrity_constraints)
+            explanations_interpretations = phi_with_abduction(set_of_abducibles, ground_program, observations, interpretation_stack[-1], integrity_constraints)
             if len(explanations_interpretations) > 0:
                 abduced_interpretations = list()
 
@@ -457,7 +456,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                         output = output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<hr>"
                         abduced_interpretations.append(interpr)
 
-                    skeptical_result = skeptical(ground_terms, program, abduced_interpretations)
+                    skeptical_result = skeptical(ground_terms, ground_program, abduced_interpretations)
                     output = output + skeptical_result
                 else: 
                     for expl, interpr in explanations_interpretations:

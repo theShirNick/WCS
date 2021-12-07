@@ -1,3 +1,4 @@
+import itertools
 from truth_constant import TruthConstant
 from atom import Atom
 from phi import phi
@@ -82,7 +83,7 @@ def get_set_of_abducibles(ground_terms:dict[str, TruthConstant], program: Progra
                     if ground_term in str(clause.right_body):
                         extra_abducible = Rule(InfixExpression(ground_term, ground_terms), InfixExpression('T', ground_terms))
                         abducibles.add(extra_abducible)
-    return abducibles
+    return list(abducibles)
 
 def generate_explanations(abducibles) ->list[set[Rule]]:
     ''' 
@@ -107,26 +108,60 @@ def generate_explanations(abducibles) ->list[set[Rule]]:
     explanations.sort(key=len)
     return explanations
 
-def phi_with_abduction(explanations: list[set[Rule]], program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
+def custom_powerset(seq):
+    """
+    Returns all the subsets of this set. This is a generator.
+    """
+    if len(seq) <= 1:
+        yield seq
+        yield []
+    else:
+        for item in custom_powerset(seq[1:]):
+            yield [seq[0]]+item
+            yield item
+
+def phi_with_abduction(abducibles: list[Rule], program: Program,  observations: set[Observation], fixed_point: Interpretation, integrity_constraints: set[Rule]):
     '''
         Continue the semantic operator from the least fixed point by adding each explanation. Discard everything but minimal models.  
     '''
-
+    unique_abducible_heads = set()
+    for abducible in abducibles:
+        unique_abducible_heads.add(abducible.left_head)
+    print(f"UAH {len(unique_abducible_heads)} {str(unique_abducible_heads)}")
     fixed_point_clone = fixed_point.clone()
+    count = 0
     explanation_interpretation = list() # of tuples, containing a valid explanation and the corresponding model
-    for explanation in explanations:
+    explanations = itertools.chain.from_iterable(itertools.combinations(abducibles, r) for r in range(1, len(unique_abducible_heads)+1))
+    # explanations = custom_powerset(abducibles)
+    for expl in explanations:
+        explanation = set(expl)
+        count = count + 1
+        print(f"#{count}   {explanation}")
 
-        redundant = False
+        
+
+        contradictory = False
+        for rule in explanation:
+                for other_rule in explanation:
+                    if rule.left_head == other_rule.left_head and rule.right_body != other_rule.right_body:
+                        contradictory = True
+                        break
+                if contradictory:
+                    break
+        if contradictory:
+            continue
+
+        minimal = True
         for existing_explanation, interpretation in explanation_interpretation:
             if explanation.issuperset(existing_explanation):
-                redundant = True # a smaller valid explanation exists
+                minimal = False # a smaller valid explanation exists
                 break
-        if redundant:
-            continue # this explanation is redundant. No need to go on with it
+        if not minimal:
+            # continue # this explanation is redundant. No need to go on with it
+            break # EXPERIMANTAL
 
-        # We are here only if the explanation is minimal. Let's see if it actually explains everything
-        #
-        # Find the new least fixed point, now that we added the explanation to our program
+                        
+
         prog = Program(program.clauses + list(explanation)).weakly_complete()
         abduced_interpretation = phi(prog, fixed_point_clone)
         next_phi = phi(prog, abduced_interpretation)
@@ -159,7 +194,7 @@ def phi_with_abduction(explanations: list[set[Rule]], program: Program,  observa
 
         # We are here only if the explanation is valid and minimal. Add it!
         explanation_interpretation.append((explanation, abduced_interpretation))
-           
+        
     return  explanation_interpretation 
     
 
