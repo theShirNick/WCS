@@ -135,6 +135,8 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     consts = list()
     is_OR = False
     phi_output = ''
+    x_output = ''
+    x_latex_output = ''
 
     # Program Input
     def input_program():
@@ -298,9 +300,10 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
         if len(set_of_abducibles) > 0:
             window.spinBox.setVisible(True)
-            while combination_count < 100000 and default_cap <= len(unique_abducible_heads):
+            while combination_count < 100000 and default_cap <= len(unique_abducible_heads) and default_cap < len(set_of_abducibles):
                 default_cap = default_cap+1
                 combination_count = combination_count + (math.factorial(len(set_of_abducibles))/(math.factorial(default_cap) * math.factorial(len(set_of_abducibles)-default_cap)))
+                
             window.spinBox.setMinimum(1)
             window.spinBox.setMaximum(len(unique_abducible_heads))
             window.spinBox.setValue(default_cap-1)
@@ -336,7 +339,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a few seconds to crunch {int(combination_count)} explanations')
         else:
             window.spinBox.setStyleSheet("QSpinBox{color:red; selection-color:red;} ")
-            window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a few minutes to crunch {int(combination_count)} explanations')
+            window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a while to crunch {int(combination_count)} explanations')
 
     window.spinBox.valueChanged.connect(X_len_warning)
 
@@ -464,10 +467,15 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     
 
     # 𝒳 - explain with abduction
-    def abduction(latex = False):  
+    def abduction():  
         window.tabWidget.setTabEnabled(3, True)
         window.tabWidget.setCurrentIndex(3)
-        output = ''
+        window.x_latex.setChecked(False)
+        global x_output
+        x_output = ''
+        global x_latex_output
+        x_latex_output = ''
+
         window.XTextEdit.clear()
         if len(set_of_abducibles) == 0:
             old_s = ''
@@ -484,9 +492,9 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
                     old_s = old_s + f"¬{str(a)}, "
                 if len(old_falses_only) > 0:
                     old_s = old_s[:-2]
-                output = output + f"Skeptically, nothing new follows. We already know:<br>{old_s}<br>"
+                x_output = x_output + f"Skeptically, nothing new follows. We already know:<br>{old_s}<br>"
             elif len(interpretation_stack) == 1:
-                output = output + f"Empty fixed point, empty set of abducibles. Nothing follows."
+                x_output = x_output + f"Empty fixed point, empty set of abducibles. Nothing follows."
             else:
                 raise Exception("Interpretation stack empty. Did Phi run correctly?")
 
@@ -495,27 +503,26 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             if len(explanations_interpretations) > 0:
                 abduced_interpretations = list()
 
-                if latex == False:
-                    for expl, interpr in explanations_interpretations:
-                        output = output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<hr>"
-                        abduced_interpretations.append(interpr)
+                for expl, interpr in explanations_interpretations:
+                    x_output = x_output + f"𝒳 {expl}<br>yields minimal model<br>{interpr}<hr>"
+                    abduced_interpretations.append(interpr)
 
-                    skeptical_result = skeptical(ground_terms, ground_program, abduced_interpretations)
-                    output = output + skeptical_result
-                else: 
-                    for expl, interpr in explanations_interpretations:
-                        x_latex = r'\noindent $\mathcal{X}$: \{'
-                        for rule in expl:
-                            x_latex = x_latex + rule.latex()
-                        if len(expl) > 0:
-                            x_latex = x_latex[:-7] 
-                        x_latex = x_latex + r'\}\\<br>'
+                    x_latex = r'\noindent $\mathcal{X}$: \{'
+                    for rule in expl:
+                        x_latex = x_latex + rule.latex()[:-6] + ' '
+                    if len(expl) > 0:
+                        x_latex = x_latex[:-2] 
+                    x_latex = x_latex + r'\}\\<br>'
+                    x_latex_output = x_latex_output + x_latex.replace(r'_', r'\_') + r"\noindent $\mathcal{M}_{\mathcal{P}\cup\mathcal{X}}$ = " + interpr.line_latex().replace(r'_', r'\_') + r'\\<hr>'
                         
-                        
-                        output = output + x_latex + r"\noindent $\mathcal{M}_{\mathcal{P}\cup\mathcal{X}}$ = " + interpr.line_latex().replace('_', '\\_') + r'\\<hr>'
-
-        window.XTextEdit.setHtml(output)
+                skeptical_result = skeptical(ground_terms, ground_program, abduced_interpretations)
+                x_output = skeptical_result + x_output
+            else:
+                x_output = "Abduction yielded nothing"
+              
+        window.XTextEdit.setHtml(x_output)
         window.XTextEdit.setFocus()
+        
     # Connect the 'Explain with Skeptical Abduction' button to the function
     window.to_x_button.clicked.connect(abduction)
         
@@ -572,9 +579,9 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     # 𝒳 Latex output switch button
     def X_latex_switch():
         if window.x_latex.isChecked():
-            abduction(True)
+            window.XTextEdit.setHtml(x_latex_output)
         else:
-            abduction()
+            window.XTextEdit.setHtml(x_output)
             
     # Connect the LaTeX switch to the function  
     window.x_latex.clicked.connect(X_latex_switch)
