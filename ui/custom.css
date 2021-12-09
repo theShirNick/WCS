@@ -29,7 +29,7 @@ QTabWidget::tab-bar{{
 QTabBar::tab {{
   /* background: rgb(101, 101, 101);  */
   background: rgb(44,41,52);
-  color:white;
+  color:rgb(255, 255, 255);
   min-width: 20px;
   height: 20px;
   padding: 2px 8px 2px 8px;
@@ -104,17 +104,18 @@ QTextEdit{{
   font-family: 'Overpass Mono';
   font-size :14pt;
 }}
+QTextEdit:focus{{
+  background-color: rgb(23, 23, 23);
+}}
 
 
 
 QPushButton:flat {{
-  /* font-size: 14pt; */
   color: rgb(255, 255, 255);
   margin: 0px;
   padding: 0px;
   margin: 0px;
   border: none;
-  /* background-color: transparent; */
   background-color: rgba(90, 86, 95, 0.3);
 }}
 
@@ -151,7 +152,7 @@ QPushButton#clear_program_button:pressed, QPushButton#safety_off:pressed {{
 }}
 
 QMenuBar {{
-  color:white;
+  color:rgb(255, 255, 255);
   background-color: rgb(41, 42, 42);
   /* background-color: rgb(44,41,52); */
   spacing: 5px; /* spacing between menu bar items */
@@ -181,8 +182,9 @@ QSpinBox{{
   font-family:  'Overpass Mono';
   font-size :14pt;
 }}
+
 QSpinBox:focus{{
-  color: rgb(255, 255, 255);
+  /* color: rgb(255, 255, 255); */
   background-color: rgb(23, 23, 23);
   /* border-bottom: 2px solid rgb(90, 86, 95); */
 }}
@@ -198,6 +200,7 @@ QSpinBox::up-button {{
   border-width: 0px;
   
 }}
+
 QSpinBox::down-button:hover , QSpinBox::up-button:hover{{
   background-color: rgba(90, 86, 95, 0.7);
 }}

@@ -293,8 +293,8 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         for abducible in set_of_abducibles:
             unique_abducible_heads.add(abducible.left_head)
         window.spinBox.setMaximum(len(unique_abducible_heads))
-        if len(unique_abducible_heads) > 4:
-            window.spinBox.setValue(4)
+        if len(unique_abducible_heads) > 5:
+            window.spinBox.setValue(5)
         else:
             window.spinBox.setValue(len(unique_abducible_heads))
 
@@ -306,6 +306,20 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     
     # Connect the 'Ground and Weakly Complete' button to the function
     window.to_wc_button.clicked.connect(wcP)
+
+    def X_len_warning():
+        val = window.spinBox.value()
+        if val < 6:
+            window.spinBox.setStyleSheet("QSpinBox{color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
+            window.spinBox.setToolTip('Maximum explanation length')
+        elif val >= 6 and val <= 8:
+            window.spinBox.setStyleSheet("QSpinBox{color:orange; selection-color:orange;}")
+            window.spinBox.setToolTip('Maximum explanation length.\nValues over 5 can take a little while to crunch')
+        else:
+            window.spinBox.setStyleSheet("QSpinBox{color:red; selection-color:red;} ")
+            window.spinBox.setToolTip('Maximum explanation length.\nValues over 8 can take a long while to crunch')
+
+    window.spinBox.valueChanged.connect(X_len_warning)
 
     # Enter Contraction Dialog
     def show_contraction_dialog():

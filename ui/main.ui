@@ -755,7 +755,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Maximum explanation length</string>
+             <string/>
             </property>
             <property name="frame">
              <bool>false</bool>

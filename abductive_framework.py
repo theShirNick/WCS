@@ -100,7 +100,7 @@ def phi_with_abduction(abducibles: list[Rule], max_x_len:int, program: Program, 
     for expl in explanations:
         explanation = set(expl)
         count = count + 1
-        print(f"#{count}   {explanation}")
+        # print(f"#{count}   {explanation}")
 
         redundant = False
         for existing_explanation, interpretation in explanation_interpretation:
