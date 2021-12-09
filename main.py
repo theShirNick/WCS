@@ -1,6 +1,7 @@
 
 import sys
 import os
+import math
 
 from collections import deque
 from truth_constant import TruthConstant
@@ -99,10 +100,10 @@ if __name__ == "__main__":
     
     help_text = '''Example of a valid program input:<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">fly</font> <font color="aqua">X</font> if <font color="#ccffcc">bird</font> <font color="aqua">X</font> ∧ not <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">ab_fly</font> <font color="aqua">X</font> if F;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">bird</font> tweety if T;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ccffcc">bird</font> jerry if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="LightYellow">fly</font> <font color="Salmon">X</font> if <font color="LightYellow">bird</font> <font color="Salmon">X</font> ∧ not <font color="LightYellow">ab_fly</font> <font color="Salmon">X</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="LightYellow">ab_fly</font> <font color="Salmon">X</font> if F;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="LightYellow">bird</font> tweety if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="LightYellow">bird</font> jerry if T;<br>
 <br>
 Only datalog programs are supported.<br>
 Enter clauses separated by a semicolon.<br>
@@ -287,16 +288,26 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         global set_of_abducibles
         set_of_abducibles = get_set_of_abducibles(ground_terms, ground_program)
 
-        window.spinBox.setMinimum(1)
+        
         
         unique_abducible_heads = set()
         for abducible in set_of_abducibles:
             unique_abducible_heads.add(abducible.left_head)
-        window.spinBox.setMaximum(len(unique_abducible_heads))
-        if len(unique_abducible_heads) > 5:
-            window.spinBox.setValue(5)
+        default_cap = 0
+        combination_count = 0
+
+        if len(set_of_abducibles) > 0:
+            window.spinBox.setVisible(True)
+            while combination_count < 100000 and default_cap <= len(unique_abducible_heads):
+                default_cap = default_cap+1
+                combination_count = combination_count + (math.factorial(len(set_of_abducibles))/(math.factorial(default_cap) * math.factorial(len(set_of_abducibles)-default_cap)))
+            window.spinBox.setMinimum(1)
+            window.spinBox.setMaximum(len(unique_abducible_heads))
+            window.spinBox.setValue(default_cap-1)
         else:
-            window.spinBox.setValue(len(unique_abducible_heads))
+            window.spinBox.setVisible(False)
+
+        
 
 
         global wc_program
@@ -308,16 +319,24 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
     window.to_wc_button.clicked.connect(wcP)
 
     def X_len_warning():
+        combination_count = 0
         val = window.spinBox.value()
-        if val < 6:
+        unique_abducible_heads = set()
+        for abducible in set_of_abducibles:
+            unique_abducible_heads.add(abducible.left_head)
+        
+        for i in range(1, val+1):
+            combination_count = combination_count + (math.factorial(len(set_of_abducibles))/(math.factorial(i) * math.factorial(len(set_of_abducibles)- i)))
+
+        if combination_count < 100000:
             window.spinBox.setStyleSheet("QSpinBox{color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
             window.spinBox.setToolTip('Maximum explanation length')
-        elif val >= 6 and val <= 8:
+        elif combination_count >= 100000 and combination_count <= 4000000:
             window.spinBox.setStyleSheet("QSpinBox{color:orange; selection-color:orange;}")
-            window.spinBox.setToolTip('Maximum explanation length.\nValues over 5 can take a little while to crunch')
+            window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a few seconds to crunch {int(combination_count)} explanations')
         else:
             window.spinBox.setStyleSheet("QSpinBox{color:red; selection-color:red;} ")
-            window.spinBox.setToolTip('Maximum explanation length.\nValues over 8 can take a long while to crunch')
+            window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a few minutes to crunch {int(combination_count)} explanations')
 
     window.spinBox.valueChanged.connect(X_len_warning)
 

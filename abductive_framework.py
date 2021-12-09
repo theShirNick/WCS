@@ -79,7 +79,7 @@ def get_set_of_abducibles(ground_terms:dict[str, TruthConstant], program: Progra
         
         if clause.factual == True:
             for ground_term in ground_terms:
-                if '<font color="#ccffcc">ab' in ground_term:
+                if '<font color="LightYellow">ab' in ground_term:
                     if ground_term in str(clause.right_body):
                         extra_abducible = Rule(InfixExpression(ground_term, ground_terms), InfixExpression('T', ground_terms))
                         abducibles.add(extra_abducible)
@@ -96,7 +96,7 @@ def phi_with_abduction(abducibles: list[Rule], max_x_len:int, program: Program, 
     explanation_interpretation = list() # of tuples, containing a valid explanation and the corresponding model
     explanations = itertools.chain.from_iterable(itertools.combinations(abducibles, r) for r in range(1, max_x_len+1))
 
-
+    # print("**************************************")
     for expl in explanations:
         explanation = set(expl)
         count = count + 1

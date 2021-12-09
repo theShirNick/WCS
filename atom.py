@@ -12,12 +12,12 @@ class Atom:
         if len(self.arguments) > 1:
             args = ''
             for arg in self.arguments:
-                args = args + arg +','
-            self.string = f'<font color="#ccffcc">{self.predicate}</font>({args[:-1]})'
+                args = args + f'<font color="LightCyan">{arg}</font>' +','
+            self.string = f'<font color="LightYellow">{self.predicate}</font>({args[:-1]})'
         elif self.predicate != None:
-            self.string =  f'<font color="#ccffcc">{self.predicate}</font> {self.arguments[0]}'
+            self.string =  f'<font color="LightYellow">{self.predicate}</font> <font color="LightCyan">{self.arguments[0]}</font>'
         else:
-            self.string = self.arguments[0]
+            self.string = f'<font color="LightCyan">{self.arguments[0]}</font>'
 
     def __str__(self):
        return self.string
