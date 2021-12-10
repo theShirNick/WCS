@@ -181,11 +181,11 @@ QSpinBox{{
   background-color: rgb(34, 34, 34);
   font-family:  'Overpass Mono';
   font-size :14pt;
-  padding-left:10px;
+  /* padding-left:10px; */
+  border-bottom: 2px solid rgba(0,0,0,0);
 }}
 
 QSpinBox:focus{{
-  /* color: rgb(255, 255, 255); */
   background-color: rgb(23, 23, 23);
   
   /* border-bottom: 2px solid rgb(90, 86, 95); */

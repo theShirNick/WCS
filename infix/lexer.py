@@ -121,7 +121,7 @@ class Lexer:
             return Token(TokenType.TRUTHCONST, TruthConstant.UNKNOWN)
 
         if str[0].isupper():
-            return Token(TokenType.VAR, f'<font color="#EE81B0">{str}</font>')
+            return Token(TokenType.VAR, f'<font color="#89DCFB">{str}</font>')
 
         return Token(TokenType.TBD, str)
 

@@ -100,10 +100,10 @@ if __name__ == "__main__":
     
     help_text = '''Example of a valid program input:<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D5CA85">fly</font> <font color="#EE81B0">X</font> if <font color="#D5CA85">bird</font> <font color="#EE81B0">X</font> and not <font color="#D5CA85">ab_fly</font> <font color="#EE81B0">X</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D5CA85">ab_fly</font> <font color="#EE81B0">X</font> if F;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D5CA85">bird</font> <font color="#BBE491">tweety</font> if T;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D5CA85">bird</font> <font color="#BBE491">jerry</font> if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D6CA86">fly</font> <font color="#89DCFB">X</font> if <font color="#D6CA86">bird</font> <font color="#89DCFB">X</font> and not <font color="#D6CA86">ab_fly</font> <font color="#89DCFB">X</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D6CA86">ab_fly</font> <font color="#89DCFB">X</font> if F;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D6CA86">bird</font> <font color="#BBE491">tweety</font> if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D6CA86">bird</font> <font color="#BBE491">jerry</font> if T;<br>
 <br>
 Only datalog programs are supported.<br>
 Enter clauses separated by a semicolon.<br>
@@ -332,14 +332,13 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
             combination_count = combination_count + (math.factorial(len(set_of_abducibles))/(math.factorial(i) * math.factorial(len(set_of_abducibles)- i)))
 
         if combination_count < 80000:
-            window.spinBox.setStyleSheet("QSpinBox{color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
+            window.spinBox.setStyleSheet("QSpinBox:focus{border-bottom: 2px solid rgba(0,0,0,0); color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);} QSpinBox:focus{border-bottom: 2px solid rgb(90, 86, 95);}")
             window.spinBox.setToolTip('Maximum explanation length')
         elif combination_count >= 80000 and combination_count <= 4000000:
-            window.spinBox.setStyleSheet("QSpinBox{border: 1px solid Orange; border-radius:3px; color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
+            window.spinBox.setStyleSheet("QSpinBox{border-bottom: 2px solid rgba(255,255,0, 0.6); color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
             window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a few seconds to crunch {int(combination_count)} explanations')
         else:
-            # window.spinBox.setStyleSheet("QSpinBox{color:red; selection-color:red;} ")
-            window.spinBox.setStyleSheet("QSpinBox{border: 1px solid DeepPink; border-radius:3px; color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
+            window.spinBox.setStyleSheet("QSpinBox{border-bottom: 2px solid rgba(255,0,0,0.4); color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
             window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a while to crunch {int(combination_count)} explanations')
 
     window.spinBox.valueChanged.connect(X_len_warning)
