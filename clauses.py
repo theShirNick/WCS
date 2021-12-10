@@ -39,11 +39,11 @@ class Rule(Clause):
     def __repr__(self):
         left = str(self.left_head)
         if self.non_nec:
-            left = f'<span style="background-color: rgba(255,0,0,0.2)">{self.left_head}</span>'
+            left = f'<span style="background-color: #303238">{self.left_head}</span>'
             pass
         right = str(self.right_body)
         if self.factual:
-            right = f'<span style="background-color: rgba(255,0,0,0.2)">{self.right_body}</span>'
+            right = f'<span style="background-color: #303238">{self.right_body}</span>'
             pass
 
         return f"{left} ← {right}"

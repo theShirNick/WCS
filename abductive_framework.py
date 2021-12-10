@@ -79,7 +79,7 @@ def get_set_of_abducibles(ground_terms:dict[str, TruthConstant], program: Progra
         
         if clause.factual == True:
             for ground_term in ground_terms:
-                if '<font color="LightYellow">ab' in ground_term:
+                if '<font color="#D5CA85">ab' in ground_term:
                     if ground_term in str(clause.right_body):
                         extra_abducible = Rule(InfixExpression(ground_term, ground_terms), InfixExpression('T', ground_terms))
                         abducibles.add(extra_abducible)

@@ -16,9 +16,9 @@ QTabWidget::pane
 border: 1px solid rgb(34,34,34);
 padding-top: 10px;
 padding-bottom: 0px;
-padding-left: 2px;
-padding-right: 2px;
-margin-top: -10px;
+padding-left: 0px;
+padding-right: 0px;
+margin-top: -11px;
 border-top-left-radius: 5px; 
 border-top-right-radius: 5px;
 }}
@@ -34,7 +34,7 @@ QTabBar::tab {{
   height: 20px;
   padding: 2px 8px 2px 8px;
   /* border-top: 1px solid rgba(255,255,255,0.4); */
-  border-left: 1px solid rgb(90, 86, 95); 
+  /* border-left: 1px solid rgb(90, 86, 95);  */
 }} 
 
 QTabBar::tab:first {{ 
@@ -181,23 +181,27 @@ QSpinBox{{
   background-color: rgb(34, 34, 34);
   font-family:  'Overpass Mono';
   font-size :14pt;
+  padding-left:10px;
 }}
 
 QSpinBox:focus{{
   /* color: rgb(255, 255, 255); */
   background-color: rgb(23, 23, 23);
+  
   /* border-bottom: 2px solid rgb(90, 86, 95); */
 }}
 QSpinBox::down-button {{
   width: 20px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
   image: url(ui/down.svg);
   border-width: 0px;
+  /* background-color:rgb(90, 86, 95); */
   
 }}
 QSpinBox::up-button {{
   width: 20px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
   image: url(ui/up.svg);
   border-width: 0px;
+  /* background-color:rgb(90, 86, 95); */
   
 }}
 

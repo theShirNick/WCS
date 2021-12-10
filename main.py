@@ -100,10 +100,10 @@ if __name__ == "__main__":
     
     help_text = '''Example of a valid program input:<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="LightYellow">fly</font> <font color="Salmon">X</font> if <font color="LightYellow">bird</font> <font color="Salmon">X</font> ∧ not <font color="LightYellow">ab_fly</font> <font color="Salmon">X</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="LightYellow">ab_fly</font> <font color="Salmon">X</font> if F;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="LightYellow">bird</font> tweety if T;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="LightYellow">bird</font> jerry if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D5CA85">fly</font> <font color="#EE81B0">X</font> if <font color="#D5CA85">bird</font> <font color="#EE81B0">X</font> and not <font color="#D5CA85">ab_fly</font> <font color="#EE81B0">X</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D5CA85">ab_fly</font> <font color="#EE81B0">X</font> if F;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D5CA85">bird</font> <font color="#BBE491">tweety</font> if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D5CA85">bird</font> <font color="#BBE491">jerry</font> if T;<br>
 <br>
 Only datalog programs are supported.<br>
 Enter clauses separated by a semicolon.<br>
@@ -300,7 +300,7 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
 
         if len(set_of_abducibles) > 0:
             window.spinBox.setVisible(True)
-            while combination_count < 100000 and default_cap <= len(unique_abducible_heads) and default_cap < len(set_of_abducibles):
+            while combination_count < 80000 and default_cap <= len(unique_abducible_heads) and default_cap < len(set_of_abducibles):
                 default_cap = default_cap+1
                 combination_count = combination_count + (math.factorial(len(set_of_abducibles))/(math.factorial(default_cap) * math.factorial(len(set_of_abducibles)-default_cap)))
                 
@@ -331,14 +331,15 @@ The 𝒳 tab performs abduction to find explanations beyond the fixed point.<br>
         for i in range(1, val+1):
             combination_count = combination_count + (math.factorial(len(set_of_abducibles))/(math.factorial(i) * math.factorial(len(set_of_abducibles)- i)))
 
-        if combination_count < 100000:
+        if combination_count < 80000:
             window.spinBox.setStyleSheet("QSpinBox{color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
             window.spinBox.setToolTip('Maximum explanation length')
-        elif combination_count >= 100000 and combination_count <= 4000000:
-            window.spinBox.setStyleSheet("QSpinBox{color:orange; selection-color:orange;}")
+        elif combination_count >= 80000 and combination_count <= 4000000:
+            window.spinBox.setStyleSheet("QSpinBox{border: 1px solid Orange; border-radius:3px; color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
             window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a few seconds to crunch {int(combination_count)} explanations')
         else:
-            window.spinBox.setStyleSheet("QSpinBox{color:red; selection-color:red;} ")
+            # window.spinBox.setStyleSheet("QSpinBox{color:red; selection-color:red;} ")
+            window.spinBox.setStyleSheet("QSpinBox{border: 1px solid DeepPink; border-radius:3px; color:rgb(255, 255, 255); selection-color: rgb(255, 255, 255);}")
             window.spinBox.setToolTip(f'Maximum explanation length.\nIt can take a while to crunch {int(combination_count)} explanations')
 
     window.spinBox.valueChanged.connect(X_len_warning)
