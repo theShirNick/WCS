@@ -42,20 +42,28 @@ class Interpretation:
             s = s + "∅"
         s = s + "}〉"
         return s
+
     def table_latex(self):
+        '''
+        LaTeX string of the interpretation for table representation. A column for trues and a column for falses.
+        '''
         s = ''
         for true_term in self.trues:
-            s = s + f"{str(true_term)}, "
+            s = s + f"{str(true_term).replace(' ', '~')}, "
         if len(self.trues) > 0:
             s = s[:-2]
         s = s + ' & '
         for false_term in self.falses:
-            s = s + f"{str(false_term)}, "
+            s = s + f"{str(false_term).replace(' ', '~')}, "
         if len(self.falses) > 0:
             s = s[:-2]
         return s
 
     def line_latex(self):
+        '''
+        LaTeX string of the interpretation for regular in-line text.
+        '''
+
         s = r"$\langle$\{"
         for true_term in self.trues:
             s = s + true_term +", "
@@ -74,8 +82,10 @@ class Interpretation:
         return s
 
     def isModel(self, program: Program) -> bool:
+        '''
+        An interpretation os a model for a program if all clauses evaluate to T
+        '''
         self.__reset_values()
-
         isModel = True
         for clause in program.clauses:
             if clause.evaluate() != TruthConstant.TRUE:
@@ -112,8 +122,6 @@ class Interpretation:
         return Interpretation(self.ground_terms, self.trues.copy(), self.falses.copy(), self.unknowns.copy())
     
     def __eq__(self, other):
-        # if self == None or other == None:
-        #     return False
         if self.trues == other.trues and self.falses == other.falses and self.unknowns == other.unknowns:
             return True
         else:

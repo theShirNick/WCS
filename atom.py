@@ -1,7 +1,7 @@
 from truth_constant import * 
 class Atom:
     '''
-    A named ground atom
+    A named ground term
     '''
 
     def __init__(self, predicate: str, arguments:list, is_ground:bool):

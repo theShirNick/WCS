@@ -64,6 +64,13 @@ def get_undefined_terms(ground_terms:dict[str, TruthConstant],  program: Program
     return undefined
 
 def get_set_of_abducibles(ground_terms:dict[str, TruthConstant], program: Program):
+    '''
+    For each undefined atom, generate atom ← ⊥; atom ← ⊤ 
+
+    For each non-necesary head, add head ← ⊤ 
+
+    For each factual body, for each abnormality predicate therein, add ab_pred ← ⊤
+    '''
     abducibles = set() # return this
     undefined = get_undefined_terms(ground_terms, program)
     for term in undefined:
@@ -79,7 +86,8 @@ def get_set_of_abducibles(ground_terms:dict[str, TruthConstant], program: Progra
         
         if clause.factual == True:
             for ground_term in ground_terms:
-                if '<font color="#D6CA86">ab' in ground_term:
+                if '<font color="#D6CA86">ab' in ground_term: 
+                    # CAUTION! Color hex code and the 'ab_' prefix are tied to identifying an abnormality predicate
                     if ground_term in str(clause.right_body):
                         extra_abducible = Rule(InfixExpression(ground_term, ground_terms), InfixExpression('T', ground_terms))
                         abducibles.add(extra_abducible)
@@ -93,15 +101,16 @@ def phi_with_abduction(abducibles: list[Rule], max_x_len:int, program: Program, 
     
     fixed_point_clone = fixed_point.clone()
     count = 0
-    explanation_interpretation = list() # of tuples, containing a valid explanation and the corresponding model
+    explanation_interpretation = list() # list of tuples, containing a valid explanation and the corresponding model
+
+    # Explanations are generated from smallest to largest. The iterator will begin with explanations containig one extra rule
     explanations = itertools.chain.from_iterable(itertools.combinations(abducibles, r) for r in range(1, max_x_len+1))
 
-    # print("**************************************")
     for expl in explanations:
         explanation = set(expl)
         count = count + 1
-        # print(f"#{count}   {explanation}")
 
+        # Check if a smaller explanation exists, i.e. if this explanation is not minimal
         redundant = False
         for existing_explanation, interpretation in explanation_interpretation:
             if explanation.issuperset(existing_explanation):
@@ -109,10 +118,8 @@ def phi_with_abduction(abducibles: list[Rule], max_x_len:int, program: Program, 
                 break
         if  redundant:
             continue 
-            # break 
-        
-            
 
+        # A contradictory explanation is one with head ← ⊤ and the same head ← ⊥ simultaneously   
         contradictory = False
         for rule in explanation:
                 for other_rule in explanation:
@@ -123,11 +130,8 @@ def phi_with_abduction(abducibles: list[Rule], max_x_len:int, program: Program, 
                     break
         if contradictory:
             continue
-
-
-
-                        
-
+        
+        # If the explanation is OK, add it to the program and run Phi
         prog = Program(program.clauses + list(explanation)).weakly_complete()
         abduced_interpretation = phi(prog, fixed_point_clone)
         next_phi = phi(prog, abduced_interpretation)
@@ -165,6 +169,9 @@ def phi_with_abduction(abducibles: list[Rule], max_x_len:int, program: Program, 
 
 
 def skeptical(ground_terms:dict[str, TruthConstant],  program: Program, abduced_interpretations:list[Interpretation]) :
+    '''
+    
+    '''
     undefined = get_undefined_terms(ground_terms, program)
     all_skeptical_trues = set()
     all_skeptical_falses = set()

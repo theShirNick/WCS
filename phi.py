@@ -3,7 +3,8 @@ from interpretation import Interpretation
 from truth_constant import TruthConstant
 
 def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
-
+# TODO: DRY condence the three chunks of code
+ 
     new_interpretation = interpretation.clone()
 
     # move true atoms to either falses or unknowns
@@ -100,9 +101,5 @@ def phi(wc_program:Program, interpretation:Interpretation) -> Interpretation:
         interpretation.ground_terms[term] = TruthConstant.FALSE
         new_interpretation.unknowns.remove(term)
         new_interpretation.falses.add(term)
-
-
-  
-
 
     return new_interpretation

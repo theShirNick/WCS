@@ -4,7 +4,7 @@ from truth_constant import TruthConstant
 from truth_tables import equivalence, reverse
 from infix.expression import InfixExpression
 
-# TODO don't like the structure of Clause, WC_Clause and weird incomplete inhereitance of get_equv_clause()
+
 class Clause(ABC):
 
     @abstractmethod
@@ -35,11 +35,12 @@ class Rule(Clause):
         self.left_head = left_head
         self.non_nec = non_necessary_antecedent
         self.factual = factual_conditional
+
     
     def __repr__(self):
         left = str(self.left_head)
         if self.non_nec:
-            left = f'<span style="background-color: #303238">{self.left_head}</span>'
+            left = f'<span style="background-color: #303238">{self.left_head}</span>' 
             pass
         right = str(self.right_body)
         if self.factual:
@@ -52,17 +53,30 @@ class Rule(Clause):
         return self.__repr__()
 
     def latex(self):
+        "Get a LaTeX-compatable string representation"
+
         return f"{self.left_head.latex()}$\leftarrow$~{self.right_body.latex()}"[:-1] +  r",\\<br>"
     
     def __eq__(self, o: object) -> bool:
+        '''
+        Possibbly unnecessary function. Concider deleting.
+        '''
+
         if self.left_head == o.left_head and self.right_body == o.right_body and self.non_nec == o.non_nec and self.factual == o.factual:
             return True
         return False
     
     def __hash__(self) -> int:
+        '''
+        Possibbly unnecessary function. Concider deleting.
+        '''
+
         return self.left_head.__hash__() + self.right_body.__hash__() + self.non_nec.__hash__() + (3*self.factual.__hash__())
 
     def evaluate(self) -> TruthConstant:
+        '''
+        Evaluate left_head ← right_body
+        '''
 
         return reverse(self.left_head.evaluate(), self.right_body.evaluate())
     
@@ -72,8 +86,8 @@ class Rule(Clause):
     def is_ground(self) -> bool:
         return self.left_head.is_ground() and self.right_body.is_ground()
 
-### Weakly Completed Clauses
 
+### Weakly Completed Clauses
 class WC_Rule(Clause):
 
     def __init__(self, left_head: InfixExpression, right_body: InfixExpression):
@@ -96,5 +110,7 @@ class WC_Rule(Clause):
         return f"{self.left_head.latex()}$\leftrightarrow$~{self.right_body.latex()}"[:-1] +  r",\\<br>"
 
     def evaluate(self) -> TruthConstant:
-
+        '''
+        Evaluate left_head ↔ right_body
+        '''
         return equivalence(self.left_head.evaluate(), self.right_body.evaluate())

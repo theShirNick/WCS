@@ -83,7 +83,7 @@ class Example(Enum):
                             bird jerry if T'''
     DATALOG_2_OBSERVATION = 'not fly jerry'
 
-    # 
+    # Integrity Constraints
     IA2 = '''b X if c X and not ab_cb X;
             ab_cb X if F;
             c o5 if T;
@@ -125,6 +125,7 @@ class Example(Enum):
     IE4_CONSTRAINT_LEFT = 'U'
     IE4_CONSTRAINT_RIGHT = "c X and c' X"
 
+    # Context operator
     CONTEXT_TWEETY_DEFAULT_PROGRAM = '''fly X if bird X and not ab_fly X;\n
                             ab_fly X if ctxt kiwi X;\n
                             ab_fly X if ctxt penguin X;\n

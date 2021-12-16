@@ -24,7 +24,6 @@ class TokenType(Enum):
 class Token:
     type: TokenType
     value: any = None
-    # latex: str = None
 
     def __repr__(self):
         return self.type.name + (f":{self.value}" if self.value != None else "")

@@ -5,7 +5,7 @@ from truth_tables import *
 class Interpreter:
     def visit(self, node, ground_terms:dict):
         '''
-        Generic for a method to visit a node and compute.
+        Generic for a method to visit a node and get the truth constant.
 
         Returns the appropriate method for the type of node, i.e. visit_AtomNode
         '''

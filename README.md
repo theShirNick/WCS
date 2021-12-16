@@ -1,17 +1,18 @@
-# WCS
+# WCS Reasoner
 
-## How to run
+## How to run from code
 Python 3.9.2 or newer is required (make sure PATH has path to Python and Python/Scripts)
 
-Homebrew (tested on arm64 Mac):
+### Homebrew (tested on arm64 Mac):
 `brew install pyqt@5`
+
 https://formulae.brew.sh/formula/pyqt@5
 
 
-Pip
+### Pip
 Install all dependencies with pip:
 
-`pip install -r requirements.txt`
+`pip install pyqt5`
 
 Run main.py with the appropriate Python interpreter:
 

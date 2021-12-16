@@ -14,18 +14,30 @@ CONDITIONAL_CLASSIFIER = '*'
 
 class Lexer:
     def __init__(self, text: str) -> None:
-        self.text = iter(text)
-        self.token_sequence = list()
-        self.bracket_stack = deque()
+        self.text = iter(text) # plain-text input
+        self.token_sequence = list() # list of analyzed lexical unites
+        self.bracket_stack = deque() # stack of opened brackets
         self.advance()
 
     def advance(self):
+        '''
+        Advance the iterator and assign next charachter. Assign None when finished.
+        '''
         try:
             self.current_char = next(self.text)
         except StopIteration:
             self.current_char = None
 
     def generate_tokens(self):
+        '''
+        Classify text as a lexical unit of a logical expression, i.e. Token.
+
+        Examples of Token types:
+        - Atom
+        - Ordering left parenthesis
+        - Negation operator
+        '''
+
         while self.current_char != None:
             if self.current_char in WHITESPACE:
                 self.advance()
@@ -99,6 +111,9 @@ class Lexer:
 
     
     def __parse_word(self) -> Token:
+        '''
+        A string in between spaces can be a reserved word or an Atom/Variable/Constant
+        '''
         str = self.current_char
         self.advance()
  
