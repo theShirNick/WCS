@@ -1,4 +1,3 @@
-
 import sys
 import os, platform
 import math
@@ -27,11 +26,18 @@ if __name__ == "__main__":
     QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling) # possibly does nothing
 
     app = QApplication(sys.argv)
+    # Initialize main window and dialog
     window = Main_window()
     starting_i_dialog = Starting_i_dialog()
     halting_dialog = Halting_dialog()
-
+    # Attach css classes (more in the initialize_windows function)
+    starting_i_dialog.truths.setProperty('class', 'top-left-rounded')
+    starting_i_dialog.falses.setProperty('class', 'top-right-rounded')
+    starting_i_dialog.submit_button.setProperty('class', ['bot-right-rounded', 'bot-left-rounded'])
+    halting_dialog.halt_phi.setProperty('class', ['top-right-rounded', 'top-left-rounded'])
+    halting_dialog.safety_off.setProperty('class', ['bot-right-rounded', 'bot-left-rounded'])
     initialize_windows(app, window, starting_i_dialog)
+        
 
     ####################################################### App State #######################################################
     global ground_terms

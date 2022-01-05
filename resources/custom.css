@@ -19,8 +19,8 @@ padding-bottom: 0px;
 padding-left: 0px;
 padding-right: 0px;
 margin-top: -11px;
-border-top-left-radius: 5px; 
-border-top-right-radius: 5px;
+border-radius: 5px; 
+background-color: rgb(34,34,34);
 }}
 
 QTabWidget::tab-bar{{
@@ -206,4 +206,17 @@ QSpinBox::down-button:hover , QSpinBox::up-button:hover, QSpinBox::down-arrow:ho
 }}
 QSpinBox::down-button:pressed , QSpinBox::up-button:pressed{{
   /* background-color: rgba(90, 86, 95, 1); */
+}}
+
+.bot-left-rounded{{
+  border-bottom-left-radius: 5px;
+}}
+.bot-right-rounded{{
+  border-bottom-right-radius: 5px;
+}}
+.top-left-rounded{{
+  border-top-left-radius: 5px;
+}}
+.top-right-rounded{{
+  border-top-right-radius: 5px;
 }}

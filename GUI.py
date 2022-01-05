@@ -53,7 +53,17 @@ def initialize_windows(app, window, starting_i_dialog):
 
     QFontDatabase.addApplicationFont(resource_path('resources/OverpassMono-Regular.ttf'))
 
+    # Attach css classes
+    window.clear_program_button.setProperty('class', ['bot-right-rounded', 'bot-left-rounded'])
+    window.open_guide_button.setProperty('class', ['bot-right-rounded', 'bot-left-rounded'])
+    window.to_wc_button.setProperty('class', 'bot-left-rounded')
+    window.p_latex.setProperty('class', 'bot-right-rounded')
+    window.to_phi_button.setProperty('class', 'bot-left-rounded')
+    window.wcP_latex.setProperty('class', 'bot-right-rounded')
+    window.phi_latex.setProperty('class', 'bot-right-rounded')
+    window.x_latex.setProperty('class', ['bot-right-rounded', 'bot-left-rounded'])
     
+
     #disable mac outline upon selecting a lineedit
     window.observation_line_edit.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
     window.disjunction_line_edit_left.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
