@@ -1,5 +1,12 @@
 # WCS Reasoner
 
+## Download Executables
+
+
+<a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Apple.Silicon.dmg"><img src="https://upload.wikimedia.org/wikipedia/commons/3/30/MacOS_logo.svg" alt="Download for macOS (Apple Silicon)" width="100" height="100"></a> <a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Intel.Mac.dmg"><img src="https://upload.wikimedia.org/wikipedia/commons/3/30/MacOS_logo.svg" alt="Download for macOS (Intel)" width="100" height="100"> </a> <a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Windows.x86.zip"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Font_Awesome_5_brands_windows.svg" alt="Download for Windows" width="100" height="100"></a> <a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Linux.x86.zip"><img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Font_Awesome_5_brands_linux.svg" alt="Download for Linux" width="100" height="100"></a>
+
+
+
 ## How to run from code
 Python 3.9.2 or newer is required (make sure PATH has path to Python and Python/Scripts)
 
