@@ -3,9 +3,9 @@
 ## Download Executables
 
 
-<a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Apple.Silicon.dmg"><img src="https://cdn-icons-png.flaticon.com/512/888/888851.png" alt="Download for macOS (Apple Silicon)" width="50" height="50"> macOS Apple Silicon</a>
+<a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Apple.Silicon.dmg"><img src="https://upload.wikimedia.org/wikipedia/en/9/98/FinderBigSur.png" alt="Download for macOS (Apple Silicon)" width="50" height="50"> macOS Apple Silicon</a>
 
-<a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Intel.Mac.dmg"><img src="https://cdn-icons-png.flaticon.com/512/888/888851.png" alt="Download for macOS (Intel)" width="50" height="50"> macOS Intel</a>
+<a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Intel.Mac.dmg"><img src="https://upload.wikimedia.org/wikipedia/en/9/98/FinderBigSur.png" alt="Download for macOS (Intel)" width="50" height="50"> macOS Intel</a>
 
 <a href="https://github.com/theShirNick/WCS/releases/download/v1.0.0/WCS.Reasoner.Windows.x86.zip"><img src="https://cdn-icons-png.flaticon.com/512/888/888882.png" alt="Download for Windows" width="50" height="50"> Windows</a>
 
