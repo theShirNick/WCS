@@ -31,16 +31,19 @@ class Interpretation:
             s = s + true_term +", "
         if self.trues != set(): # if not empty
             s = s[:-2] # delete the last comma
-        else:
-            s = s + "∅"
-        s = s + "}, {"
+            s = s + "}, {"
+        else: # if empty
+            s = s[:-1] + "∅"
+            s = s + ", {"
         for false_term in self.falses:
             s = s + false_term+", "
         if self.falses != set(): # if not empty
             s = s[:-2] # delete the last comma 
-        else:
-            s = s + "∅"
-        s = s + "}〉"
+            s = s + "}〉"
+        else: # if empty
+            s = s[:-1] + "∅"
+            s = s + "〉"
+        
         return s
 
     def table_latex(self):

@@ -83,7 +83,7 @@ class Example(Enum):
                             bird jerry if T'''
     DATALOG_2_OBSERVATION = 'not fly jerry'
 
-    # Integrity Constraints
+    # Syllogisms
     IA2 = '''b X if c X and not ab_cb X;
             ab_cb X if F;
             c o5 if T;
@@ -104,8 +104,7 @@ class Example(Enum):
             a' X if b X and not ab_bna X;
             ab_bna o1 if F;
             a X if not a' X and not ab_naa X;
-            ab_naa o1 if F;
-            ab_naa o2 if F'''
+            ab_naa X if F;'''
     OA4_CONSTRAINT_LEFT = 'U'
     OA4_CONSTRAINT_RIGHT = "a X and a' X"
 
@@ -121,7 +120,7 @@ class Example(Enum):
             c' X if b X and not ab_bnc X;
             ab_bnc X if F;
             c X if not c' X and not ab_ncc X;
-            ab_ncc o5 if F'''
+            ab_ncc X if F'''
     IE4_CONSTRAINT_LEFT = 'U'
     IE4_CONSTRAINT_RIGHT = "c X and c' X"
 
