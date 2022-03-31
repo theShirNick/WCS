@@ -415,7 +415,7 @@
        <string/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -724,7 +724,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,8,5">
+         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,6,3,3">
           <item>
            <widget class="QSpinBox" name="spinBox">
             <property name="sizePolicy">
@@ -767,7 +767,28 @@
              <string>Skeptical abduction</string>
             </property>
             <property name="text">
-             <string>Next</string>
+             <string>Abduction</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="to_syll_button">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>13</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Syllogism ⊨</string>
             </property>
             <property name="flat">
              <bool>true</bool>

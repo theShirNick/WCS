@@ -3,6 +3,7 @@ from PyQt5.QtSvg import QSvgWidget
 from PyQt5 import uic, QtCore
 from helpers import *
 from PyQt5.QtGui import QFontDatabase, QIcon
+from CONSTANTS import *
 
 # Define windows and dialogs
 class Main_window(QMainWindow):
@@ -22,6 +23,15 @@ class Starting_i_dialog(QDialog):
     def __init__(self):
         super(Starting_i_dialog, self).__init__()
         uic.loadUi(resource_path("resources/starting_i_dialog.ui"), self)
+
+class Syllogism_dialog(QDialog):
+    '''
+    Dialog of the WCR Reasoner app for finding the entailment of syllogisms
+    '''
+
+    def __init__(self):
+        super(Syllogism_dialog, self).__init__()
+        uic.loadUi(resource_path("resources/syllogism_dialog.ui"), self)
 
 class Halting_dialog(QDialog):
     '''
@@ -90,12 +100,12 @@ def initialize_windows(app, window, starting_i_dialog):
     # error tab
     window.tabWidget.setTabVisible(5, False)
 
-    help_text = '''Example of a valid program input:<br>
+    help_text = f'''Example of a valid program input:<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D6CA86">fly</font> <font color="#89DCFB">X</font> if <font color="#D6CA86">bird</font> <font color="#89DCFB">X</font> and not <font color="#D6CA86">ab_fly</font> <font color="#89DCFB">X</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D6CA86">ab_fly</font> <font color="#89DCFB">X</font> if F;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D6CA86">bird</font> <font color="#BBE491">tweety</font> if T;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; <font color="#D6CA86">bird</font> <font color="#BBE491">jerry</font> if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; {PREDICATE_FONT}fly</font> {VAR_FONT}X</font> if PREDICATE_FONTbird</font> {VAR_FONT}X</font> and not PREDICATE_FONTab_fly</font> {VAR_FONT}X</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; {PREDICATE_FONT}ab_fly</font> {VAR_FONT}X</font> if F;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; {PREDICATE_FONT}bird</font> {ARGUMENT_FONT}tweety</font> if T;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; {PREDICATE_FONT}bird</font> {ARGUMENT_FONT}jerry</font> if T;<br>
 <br>
 Only datalog programs are supported.<br>
 Enter clauses separated by a semicolon.<br>

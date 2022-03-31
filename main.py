@@ -7,7 +7,7 @@ import subprocess
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication
 
-from GUI import Main_window, Starting_i_dialog, Halting_dialog, initialize_windows
+from GUI import Main_window, Starting_i_dialog, Halting_dialog, Syllogism_dialog, initialize_windows
 
 from helpers import resource_path
 from truth_constant import TruthConstant
@@ -19,6 +19,8 @@ from infix.expression import InfixExpression
 from phi import phi
 from examples import Example
 from ground import ground, find_vars_and_consts
+from helpers import get_predicates
+from syllogism_entailment import get_entailment_of_syllogism 
 
 if __name__ == "__main__":
 
@@ -29,6 +31,7 @@ if __name__ == "__main__":
     # Initialize main window and dialog
     window = Main_window()
     starting_i_dialog = Starting_i_dialog()
+    syllogism_dialog = Syllogism_dialog()
     halting_dialog = Halting_dialog()
     # Attach css classes (more in the initialize_windows function)
     starting_i_dialog.truths.setProperty('class', 'top-left-rounded')
@@ -476,7 +479,8 @@ if __name__ == "__main__":
                                      r"\noindent $\mathcal{M}_{\mathcal{P}\cup\mathcal{X}}$ = " +  \
                                      interpr.line_latex().replace(r'_', r'\_') + \
                                      r'\\<hr>'
-                        
+
+                # perform skeptical abduction and construct the string output for it        
                 skeptical_result = skeptical(ground_terms, ground_program, abduced_interpretations)
                 x_output = skeptical_result + x_output
             else:
@@ -487,7 +491,64 @@ if __name__ == "__main__":
         
     # Connect the 'Explain with Skeptical Abduction' button to the function
     window.to_x_button.clicked.connect(abduction)
-        
+
+    # 'Syllogism ⊨' button and dialog interactions
+    def open_syllogistic_entailment_dialog():
+        syllogism_dialog.result_label.setText("_")
+        syllogism_dialog.entailment_button.setEnabled(True)
+        predicates = get_predicates(program.clauses+integrity_constraints)
+        syllogism_dialog.first_combo.clear()
+        syllogism_dialog.second_combo.clear()
+        syllogism_dialog.first_combo.addItems(predicates)
+        syllogism_dialog.second_combo.addItems(predicates)
+        if len(predicates)>1:
+            syllogism_dialog.second_combo.setCurrentIndex(1)
+        else:
+            syllogism_dialog.entailment_button.setEnabled(False)
+        syllogism_dialog.exec_()
+    # Connect the 'Syllogistic entailment' button to the function
+    window.to_syll_button.clicked.connect(open_syllogistic_entailment_dialog)
+
+    def syll_mood_changed():
+        if syllogism_dialog.mood_combo.currentText() == "Some (O)":
+            syllogism_dialog.are_label.setText("are not")
+        else:
+            syllogism_dialog.are_label.setText("are")
+    # Connect the selection of the mood to the function
+    syllogism_dialog.mood_combo.currentTextChanged.connect(syll_mood_changed)
+
+    def syll_first_combo_changed():
+        if syllogism_dialog.first_combo.currentText() == syllogism_dialog.second_combo.currentText() \
+        and syllogism_dialog.first_combo.count() > 1:
+            if syllogism_dialog.first_combo.currentIndex() == 0:
+                syllogism_dialog.second_combo.setCurrentIndex(1)
+            else:
+                syllogism_dialog.second_combo.setCurrentIndex(0)
+    # Connect the selection of the first part of the syllogism to the function
+    syllogism_dialog.first_combo.currentTextChanged.connect(syll_first_combo_changed)
+
+    def syll_second_combo_changed():
+        if syllogism_dialog.first_combo.currentText() == syllogism_dialog.second_combo.currentText() \
+        and syllogism_dialog.first_combo.count() > 1:
+            if syllogism_dialog.second_combo.currentIndex() == 0:
+                syllogism_dialog.first_combo.setCurrentIndex(1)
+            else:
+                syllogism_dialog.first_combo.setCurrentIndex(0)
+    # Connect the selection of the second part of the syllogism to the function
+    syllogism_dialog.second_combo.currentTextChanged.connect(syll_second_combo_changed)
+
+    def show_entailment_of_syllogism():
+        mood = syllogism_dialog.mood_combo.currentText()
+        a = syllogism_dialog.first_combo.currentText()
+        b = syllogism_dialog.second_combo.currentText()
+        result = get_entailment_of_syllogism(interpretation_stack[-1], mood, a, b)
+        if result:
+            syllogism_dialog.result_label.setText(TruthConstant.TRUE.value)
+        else:
+            syllogism_dialog.result_label.setText(TruthConstant.FALSE.value)
+    # Connect the ⊨ button to the function
+    syllogism_dialog.entailment_button.clicked.connect(show_entailment_of_syllogism)
+
     # Exclusive disjunction button
     def XOR_switch():
         global is_OR
@@ -498,7 +559,6 @@ if __name__ == "__main__":
             window.exclusive_button.setText("XOR")  
     # Connect the XOR switch to the function  
     window.exclusive_button.clicked.connect(XOR_switch)
-
 
     # P Latex output switch button
     def P_latex_switch():

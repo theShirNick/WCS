@@ -7,6 +7,7 @@ from program import Program
 from clauses import Rule, WC_Rule
 from infix.tokens import TokenType
 from infix.expression import InfixExpression
+from CONSTANTS import *
 
 
 class Observation:
@@ -86,7 +87,7 @@ def get_set_of_abducibles(ground_terms:dict[str, TruthConstant], program: Progra
         
         if clause.factual == True:
             for ground_term in ground_terms:
-                if '<font color="#D6CA86">ab' in ground_term: 
+                if f'{PREDICATE_FONT}ab' in ground_term: 
                     # CAUTION! Color hex code and the 'ab_' prefix are tied to identifying an abnormality predicate
                     if ground_term in str(clause.right_body):
                         extra_abducible = Rule(InfixExpression(ground_term, ground_terms), InfixExpression('T', ground_terms))

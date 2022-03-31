@@ -1,5 +1,6 @@
 from collections import deque
 from infix.tokens import Token, TokenType
+from CONSTANTS import *
 
 from atom import *
 
@@ -136,7 +137,7 @@ class Lexer:
             return Token(TokenType.TRUTHCONST, TruthConstant.UNKNOWN)
 
         if str[0].isupper():
-            return Token(TokenType.VAR, f'<font color="#89DCFB">{str}</font>')
+            return Token(TokenType.VAR, f'{VAR_FONT}{str}</font>')
 
         return Token(TokenType.TBD, str)
 

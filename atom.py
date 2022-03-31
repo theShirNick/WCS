@@ -1,4 +1,5 @@
 from truth_constant import * 
+from CONSTANTS import *
 class Atom:
     '''
     A named ground term
@@ -12,12 +13,12 @@ class Atom:
         if len(self.arguments) > 1:
             args = ''
             for arg in self.arguments:
-                args = args + f'<font color="#BBE491">{arg}</font>' +','
-            self.string = f'<font color="#D6CA86">{self.predicate}</font>({args[:-1]})'
+                args = args + f'{ARGUMENT_FONT}{arg}</font>' +','
+            self.string = f'{PREDICATE_FONT}{self.predicate}</font>({args[:-1]})'
         elif self.predicate != None:
-            self.string =  f'<font color="#D6CA86">{self.predicate}</font> <font color="#BBE491">{self.arguments[0]}</font>'
+            self.string =  f'{PREDICATE_FONT}{self.predicate}</font> {ARGUMENT_FONT}{self.arguments[0]}</font>'
         else:
-            self.string = f'<font color="#BBE491">{self.arguments[0]}</font>'
+            self.string = f'{ARGUMENT_FONT}{self.arguments[0]}</font>'
 
     def __str__(self):
        return self.string
